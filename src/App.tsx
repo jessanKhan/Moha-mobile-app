@@ -9,12 +9,12 @@ const Stack = createNativeStackNavigator();
 function HomeScreen() {
   const isDarkMode = useColorScheme() === 'dark';
   return (
-    <View style={[styles.container, isDarkMode ? styles.darkBg : styles.lightBg]}>
-      <Text style={[styles.title, isDarkMode ? styles.darkText : styles.lightText]}>
+    <View className="flex-1 items-center justify-center bg-white dark:bg-black">
+      <Text className="text-2xl font-bold text-blue-600 dark:text-blue-400">
         Home Screen
       </Text>
-      <Text style={styles.subtitle}>
-        Standard React Native styles are now used.
+      <Text className="text-gray-500 mt-2">
+        NativeWind is now configured!
       </Text>
     </View>
   );
