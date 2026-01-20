@@ -32,6 +32,7 @@ const SERVICES = [
 ];
 
 import { useNavigation } from '@react-navigation/native';
+import { ScaledSheet } from 'react-native-size-matters';
 
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
@@ -39,11 +40,27 @@ const HomeScreen = () => {
   const renderHeader = () => (
     <View className="bg-white dark:bg-black">
       <Slider />
-      <View className="px-4 mt-2 mb-4">
-        <Text className="text-xl font-bold text-slate-800 dark:text-white">সেবা সমূহ</Text>
+      <View style={styles.headerTitleContainer}>
+        <Text
+          className="font-bold text-slate-800 dark:text-white"
+          style={styles.headerTitle}
+        >
+          সেবা সমূহ
+        </Text>
       </View>
     </View>
   );
+
+  const styles = ScaledSheet.create({
+    headerTitleContainer: {
+      paddingHorizontal: '16@s',
+      marginTop: '8@vs',
+      marginBottom: '16@vs'
+    },
+    headerTitle: {
+      fontSize: '20@ms'
+    }
+  });
 
   return (
     <View className="flex-1 bg-white dark:bg-black">

@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, FlatList, Image, Dimensions, StyleSheet } from 'react-native';
+import { View, FlatList, Image, Dimensions } from 'react-native';
+import { ScaledSheet, scale, verticalScale } from 'react-native-size-matters';
 
 const { width } = Dimensions.get('window');
 
@@ -48,7 +49,7 @@ const Slider = () => {
 
     const renderItem = ({ item }: any) => {
         return (
-            <View style={{ width: width - 40, height: 180, marginHorizontal: 20 }}>
+            <View style={styles.slideItem}>
                 <View className="rounded-2xl overflow-hidden h-full shadow-lg bg-gray-200">
                     <Image
                         source={{ uri: item.image }}
@@ -65,7 +66,7 @@ const Slider = () => {
     };
 
     return (
-        <View className="py-4">
+        <View style={styles.container}>
             <FlatList
                 ref={flatListRef}
                 data={SLIDE_DATA}
@@ -75,13 +76,11 @@ const Slider = () => {
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
                 snapToAlignment="center"
-                snapToInterval={width} // Actually with margin it's tricky, let's just make it full width or adjusted
-                // To make a nice card slider with peek, we often use snapToInterval = cardWidth + margin
-                // But for simplicity let's do single item paging
+                snapToInterval={width}
                 decelerationRate="fast"
                 onViewableItemsChanged={onViewRef.current}
                 viewabilityConfig={viewConfigRef.current}
-                contentContainerStyle={{ paddingHorizontal: 0 }} // We want centered items
+                contentContainerStyle={{ paddingHorizontal: 0 }}
             />
 
             {/* Pagination Dots */}
@@ -89,13 +88,39 @@ const Slider = () => {
                 {SLIDE_DATA.map((_, index) => (
                     <View
                         key={index.toString()}
-                        className={`h-2 rounded-full ${index === activeIndex ? 'w-6 bg-[#009689]' : 'w-2 bg-gray-300'
+                        className={`rounded-full ${index === activeIndex ? 'bg-[#009689]' : 'bg-gray-300'
                             }`}
+                        style={[
+                            styles.dot,
+                            index === activeIndex ? styles.activeDot : null
+                        ]}
                     />
                 ))}
             </View>
         </View>
     );
 };
+
+const styles = ScaledSheet.create({
+    container: {
+        paddingVertical: '16@vs'
+    },
+    slideItem: {
+        width: width - scale(40), // Combining mix of window width and scale is tricky in string syntax unless using simple calc or just leaving as inline/computed.
+        // Since width depends on runtime dimension, we might keep inline or use a helper.
+        // ScaledSheet doesn't solve window width subtraction easily.
+        // We will keep 'width' logic in render but use 'height' and margins here if constant.
+        // Actually, let's keep the dynamic width inline in renderItem but move others.
+        height: '180@vs',
+        marginHorizontal: '20@s'
+    },
+    dot: {
+        width: '8@s',
+        height: '8@s'
+    },
+    activeDot: {
+        width: '24@s'
+    }
+});
 
 export default Slider;
