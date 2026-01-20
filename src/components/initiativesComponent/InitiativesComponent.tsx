@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     gap: scale(12),
   },
   text: {
-    flex: 1, // ✅ Text কে Full width নিতে দিবে
+    flex: 1,
     fontSize: scale(18),
     fontWeight: '400',
     color: 'rgba(255, 255, 255, 1)',
