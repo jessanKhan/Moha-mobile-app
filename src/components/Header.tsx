@@ -30,25 +30,21 @@ const Header: React.FC<HeaderProps> = ({
     };
 
     return (
-        <View className="overflow-hidden rounded-b-[24px]">
-            <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+        <View className="overflow-hidden rounded-b-[32px] bg-[#009689]">
+
+
+            {/* Single Vertical Gradient for Header and Status Bar */}
             <LinearGradient
-                colors={['#1447E6', '#009689']}
+                colors={['#009689', '#1E3A5F']}
                 start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
+                end={{ x: 0, y: 1 }}
                 style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
-            />
-            <LinearGradient
-                colors={['#1E3A5F', '#0D7377']}
-                start={{ x: 0, y: 1 }}
-                end={{ x: 0, y: 0 }}
-                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.8 }}
             />
 
             <View
                 style={{
-                    paddingTop: insets.top + 16,
-                    paddingBottom: 24,
+                    paddingTop: insets.top + (Platform.OS === 'android' ? 24 : 10),
+                    paddingBottom: 28,
                     paddingHorizontal: 20,
                 }}
                 className="flex-row items-center justify-between"
