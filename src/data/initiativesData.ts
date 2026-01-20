@@ -12,7 +12,7 @@ export const initiativeData = [
     description:
       'স্বরাষ্ট্র মন্ত্রণালয় ও সমাজকল্যাণ মন্ত্রণালয়ের যৌথ উদ্যোগে পরিচালিত জাতীয় কর্মসূচি। সীমান্ত নিরাপত্তা জোরদার এবং ভুক্তভোগী পুনর্বাসনে বিশেষ গুরুত্ব দেওয়া হচ্ছে।',
     icon: Building,
-    gradientColors: ['#00786F', '#009689'],
+    gradientColors: ['#009689', '#00786F'], //'#00786F', '#009689'
     iconBgColor: 'rgba(255, 255, 255, 1)',
   },
   {
@@ -21,7 +21,7 @@ export const initiativeData = [
     description:
       'BLAST, Ain o Salish Kendra, আশা ফাউন্ডেশন সহ বিভিন্ন এনজিও আইনি সহায়তা, পুনর্বাসন এবং সচেতনতা বৃদ্ধিতে কাজ করছে।',
     icon: UsersRound,
-    gradientColors: ['#00786F', '#009689'],
+    gradientColors: ['#009689', '#00786F'],
     iconBgColor: 'rgba(255, 255, 255, 1)',
   },
   {
@@ -30,7 +30,7 @@ export const initiativeData = [
     description:
       'বিভিন্ন জেলায় নিয়মিত প্রশিক্ষণ এবং সচেতনতামূলক ক্যাম্প আয়োজন করা হচ্ছে। বিশেষত ঝুঁকিপূর্ণ এলাকায় তরুণ-তরুণী ও অভিভাবকদের সচেতন করা হচ্ছে।',
     icon: GraduationCap,
-    gradientColors: ['#00786F', '#009689'],
+    gradientColors: ['#009689', '#00786F'],
     iconBgColor: 'rgba(255, 255, 255, 1)',
   },
   {
@@ -39,7 +39,7 @@ export const initiativeData = [
     description:
       'স্থানীয় পর্যায়ে কমিউনিটি ভিত্তিক সহায়তা কর্মসূচি। ভুক্তভোগীদের সামাজিক পুনর্বাসন, মানসিক পরামর্শ এবং জীবিকা সহায়তা প্রদান করা হচ্ছে।',
     icon: Heart,
-    gradientColors: ['#00786F', '#009689'],
+    gradientColors: ['#009689', '#00786F'],
     iconBgColor: 'rgba(255, 255, 255, 1)',
   },
 ];

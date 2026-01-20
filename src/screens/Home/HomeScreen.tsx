@@ -9,7 +9,7 @@ import Initiatives from '../Initiative/Initiatives';
 const HomeScreen = () => {
   return (
     //className="flex-1 items-center justify-center bg-white dark:bg-black"
-    <View className=" bg-white dark:bg-black">
+    <View className="flex-1 bg-white dark:bg-black">
       {/* <ServiceComponent /> */}
       {/* <CustomCommonIcon
         icon={ChartColumn}

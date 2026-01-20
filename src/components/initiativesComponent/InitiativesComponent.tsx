@@ -35,9 +35,9 @@ const InitiativesComponent: FC<InitiativeCardProps> = ({
             icon={icon}
             bgColor="rgba(255, 255, 255, 0.2)"
             iconColor={iconBgColor || '#ffffff'}
-            size={moderateScale(28)}
+            size={moderateScale(25)}
           />
-          <Text style={styles.text} numberOfLines={2}>
+          <Text style={styles.text} numberOfLines={1}>
             {title}
           </Text>
         </View>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   linearGradient: {
-    height: verticalScale(82),
+    height: verticalScale(65),
     borderTopLeftRadius: scale(14),
     borderTopRightRadius: scale(14),
   },
@@ -76,8 +76,8 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
-    fontSize: scale(18),
-    fontWeight: '400',
+    fontSize: scale(14),
+    fontWeight: '600',
     color: 'rgba(255, 255, 255, 1)',
     flexWrap: 'wrap',
   },
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     padding: scale(20),
   },
   textDescription: {
-    fontSize: scale(16),
+    fontSize: scale(12),
     fontWeight: '400',
     color: 'rgba(69, 85, 108, 1)',
     lineHeight: scale(22),
