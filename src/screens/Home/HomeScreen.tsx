@@ -5,6 +5,8 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { moderateScale } from 'react-native-size-matters';
 import Initiatives from '../Initiative/Initiatives';
+import PolicyAndLawComponent from '../../components/policyAndLawComponent/PolicyAndLawComponent';
+import PolicyAndLawScreen from '../PolicyAndLaw/PolicyAndLawScreen';
 
 const HomeScreen = () => {
   return (
@@ -18,7 +20,8 @@ const HomeScreen = () => {
         size={moderateScale(28)}
       /> */}
       {/* <InitiativesComponent /> */}
-      <Initiatives />
+      {/* <Initiatives /> */}
+      <PolicyAndLawScreen />
       {/* <Text className="text-2xl font-bold text-blue-600 dark:text-blue-400">
         Home Screen
       </Text>
