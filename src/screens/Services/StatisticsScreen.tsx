@@ -81,7 +81,7 @@ const StatisticsScreen = () => {
                 </View>
 
                 {/* Rescue Report Chart */}
-                <ChartCard title="উদ্ধার প্রতিবেদন" fullWidth={true}>
+                <ChartCard title="উদ্ধার প্রতিবেদন">
                     <BarChart
                         barWidth={scale(35)}
                         noOfSections={3}
@@ -99,7 +99,7 @@ const StatisticsScreen = () => {
                 </ChartCard>
 
                 {/* Incident Trends Chart */}
-                <ChartCard title="সময়ভিত্তিক ঘটনার প্রবণতা" fullWidth={true}>
+                <ChartCard title="সময়ভিত্তিক ঘটনার প্রবণতা">
                     <LineChart
                         data={lineData1}
                         data2={lineData2}
@@ -134,7 +134,7 @@ const StatisticsScreen = () => {
                 </ChartCard>
 
                 {/* Analysis Type Chart */}
-                <ChartCard title="ঘটনার ধরন অনুযায়ী বিশ্লেষণ" fullWidth={true}>
+                <ChartCard title="ঘটনার ধরন অনুযায়ী বিশ্লেষণ">
                     <BarChart
                         barWidth={scale(45)}
                         noOfSections={4}
