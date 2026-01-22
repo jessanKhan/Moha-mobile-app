@@ -36,7 +36,7 @@ const BottomBanner = () => {
 const styles = ScaledSheet.create({
     container: {
         marginHorizontal: '16@s',
-        marginBottom: '96@vs',
+        marginBottom: '20@vs',
         marginTop: '16@vs',
         height: '128@vs',
         borderRadius: '12@s'

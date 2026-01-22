@@ -51,16 +51,7 @@ const HomeScreen = () => {
     </View>
   );
 
-  const styles = ScaledSheet.create({
-    headerTitleContainer: {
-      paddingHorizontal: '16@s',
-      marginTop: '8@vs',
-      marginBottom: '16@vs'
-    },
-    headerTitle: {
-      fontSize: '20@ms'
-    }
-  });
+
 
   return (
     <View className="flex-1 bg-white dark:bg-black">
@@ -95,16 +86,26 @@ const HomeScreen = () => {
         ListFooterComponent={() => (
           <View>
             <BottomBanner />
-            {/* Spacer for the bottom fixed bar */}
-            <View className="h-24" />
+            <View className="h-4" />
+            <HotlineBar />
+            <View className="h-4" />
           </View>
         )}
         showsVerticalScrollIndicator={false}
       />
 
-      <HotlineBar />
+
     </View>
   );
 };
-
+const styles = ScaledSheet.create({
+  headerTitleContainer: {
+    paddingHorizontal: '16@s',
+    marginTop: '8@vs',
+    marginBottom: '16@vs'
+  },
+  headerTitle: {
+    fontSize: '20@ms'
+  }
+});
 export default HomeScreen;
