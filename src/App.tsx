@@ -10,8 +10,9 @@ function App(): React.JSX.Element {
   return (
     <SafeAreaProvider>
       <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={isDarkMode ? 'black' : 'white'}
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent={true}
       />
       <NavigationContainer>
         <AppNavigator />
