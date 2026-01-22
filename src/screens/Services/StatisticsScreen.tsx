@@ -22,8 +22,13 @@ const StatisticsScreen = () => {
             colors={colors}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            className="w-[48%] p-4 rounded-[20px] mb-4 flex justify-between"
-            style={{ height: 160 }}
+            // Keep functional layout classes, but move radius to style for reliability
+            className="w-[48%] p-4 mb-4 flex justify-between"
+            style={{
+                height: 160,
+                borderRadius: 20, // Explicitly set 20px
+                overflow: 'hidden' // Ensures the gradient doesn't bleed past the corners
+            }}
         >
             <View className="bg-white/20 self-start p-2 rounded-xl">
                 <Icon size={24} color="white" />
