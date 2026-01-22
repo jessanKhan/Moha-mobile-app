@@ -19,8 +19,8 @@ export const barData2 = [
 ];
 
 export const pieData = [
-    { value: 37, color: '#EC4899', text: 'নারী 37%' },
-    { value: 20, color: '#3B82F6', text: 'পুরুষ 20%' },
-    { value: 25, color: '#F59E0B', text: 'শিশু 25%' },
-    { value: 18, color: '#8B5CF6', text: 'কিশোর 18%' },
+    { value: 37, color: '#F14294', text: 'নারী: 37%', textColor: '#F14294' },
+    { value: 20, color: '#3B82F6', text: 'পুরুষ: 20%', textColor: '#3B82F6' },
+    { value: 25, color: '#F59E0B', text: 'শিশু: 25%', textColor: '#F59E0B' },
+    { value: 18, color: '#8854F6', text: 'কিশোর/কিশোরী: 18%', textColor: '#8854F6' },
 ];

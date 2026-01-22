@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-nati
 import Header from '../../components/Header';
 import { Filter, Search, BarChart3, Users, Scale, PhoneCall, Handshake, FileText, Newspaper, ShieldCheck, Link as LinkIcon } from 'lucide-react-native';
 import { LineChart, BarChart, PieChart } from 'react-native-gifted-charts';
+import { Text as SvgText } from 'react-native-svg';
 import { ScaledSheet } from 'react-native-size-matters';
 import { barData1, lineData1, lineData2, lineData3, barData2, pieData } from '../../data/statisticsData';
 import LinearGradient from 'react-native-linear-gradient';
@@ -40,9 +41,9 @@ const StatisticsScreen = () => {
         </LinearGradient>
     );
 
-    const ChartCard = ({ title, children }: any) => (
-        <View className="bg-white dark:bg-zinc-900 mx-4 p-4 rounded-[20px] mb-4 shadow-sm">
-            <Text className="text-gray-800 dark:text-white font-bold text-lg mb-6">{title}</Text>
+    const ChartCard = ({ title, children, fullWidth = false }: any) => (
+        <View className={`${fullWidth ? 'bg-white dark:bg-zinc-900 mb-4 shadow-sm' : 'bg-white dark:bg-zinc-900 mx-4 p-4 rounded-[20px] mb-4 shadow-sm'}`}>
+            <Text className={`text-gray-800 dark:text-white font-bold text-lg mb-6 ${fullWidth ? 'px-4 pt-4' : ''}`}>{title}</Text>
             {children}
         </View>
     );
@@ -85,7 +86,7 @@ const StatisticsScreen = () => {
                 </View>
 
                 {/* Rescue Report Chart */}
-                <ChartCard title="উদ্ধার প্রতিবেদন">
+                <ChartCard title="উদ্ধার প্রতিবেদন" fullWidth={true}>
                     <BarChart
                         barWidth={35}
                         noOfSections={3}
@@ -97,19 +98,19 @@ const StatisticsScreen = () => {
                         xAxisColor={'#E5E7EB'}
                         hideRules
                         height={200}
-                        width={screenWidth - 80}
+                        width={screenWidth - 20}
                         xAxisLabelTextStyle={{ color: '#6B7280', fontSize: 10 }}
                     />
                 </ChartCard>
 
                 {/* Incident Trends Chart */}
-                <ChartCard title="সময়ভিত্তিক ঘটনার প্রবণতা">
+                <ChartCard title="সময়ভিত্তিক ঘটনার প্রবণতা" fullWidth={true}>
                     <LineChart
                         data={lineData1}
                         data2={lineData2}
                         data3={lineData3}
                         height={200}
-                        width={screenWidth - 80}
+                        width={screenWidth - 20}
                         initialSpacing={20}
                         color1="#3B82F6"
                         color2="#14B8A6"
@@ -130,7 +131,7 @@ const StatisticsScreen = () => {
                         xAxisThickness={1}
                         xAxisColor={'#E5E7EB'}
                     />
-                    <View className="flex-row justify-center gap-4 mt-4">
+                    <View className="flex-row justify-center gap-4 mt-4 pb-4">
                         <View className="flex-row items-center"><View className="w-2 h-2 rounded-full bg-blue-500 mr-2" /><Text className="text-gray-500 text-xs">উদ্ধার</Text></View>
                         <View className="flex-row items-center"><View className="w-2 h-2 rounded-full bg-teal-500 mr-2" /><Text className="text-gray-500 text-xs">চলমান</Text></View>
                         <View className="flex-row items-center"><View className="w-2 h-2 rounded-full bg-orange-500 mr-2" /><Text className="text-gray-500 text-xs">রিপোর্ট</Text></View>
@@ -138,7 +139,7 @@ const StatisticsScreen = () => {
                 </ChartCard>
 
                 {/* Analysis Type Chart */}
-                <ChartCard title="ঘটনার ধরন অনুযায়ী বিশ্লেষণ">
+                <ChartCard title="ঘটনার ধরন অনুযায়ী বিশ্লেষণ" fullWidth={true}>
                     <BarChart
                         barWidth={45}
                         noOfSections={3}
@@ -149,31 +150,37 @@ const StatisticsScreen = () => {
                         xAxisColor={'#E5E7EB'}
                         hideRules
                         height={200}
-                        width={screenWidth - 80}
+                        width={screenWidth - 20}
                         xAxisLabelTextStyle={{ color: '#6B7280', fontSize: 10, width: 60, textAlign: 'center' }}
                     />
                 </ChartCard>
 
                 {/* Pie Chart */}
                 <ChartCard title="বয়স ও লিঙ্গভিত্তিক তথ্য">
-                    <View className="items-center">
+                    <View className="items-center py-6">
                         <PieChart
                             data={pieData}
-                            donut
-                            showGradient
-                            sectionAutoFocus
+                            donut={false}
+                            showExternalLabels
                             radius={120}
-                            innerRadius={60}
-                            innerCircleColor={'white'}
+                            // showText={false}
+                            labelsPosition="outward"
+                            // labelLineConfig={{
+                            //     length: 20,
+                            //     tailLength: 10,
+                            // }}
+                            externalLabelComponent={(item: any) => (
+                                <SvgText
+                                    fill={item.textColor}
+                                    fontSize="12"
+                                    fontWeight="bold"
+                                    x={item.shiftTextX || 0}
+                                    y={item.shiftTextY || 0}
+                                >
+                                    {item.text}
+                                </SvgText>
+                            )}
                         />
-                    </View>
-                    <View className="flex-wrap flex-row gap-4 justify-center mt-6">
-                        {pieData.map((item, index) => (
-                            <View key={index} className="flex-row items-center">
-                                <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: item.color, marginRight: 6 }} />
-                                <Text className="text-gray-600 text-xs">{item.text}</Text>
-                            </View>
-                        ))}
                     </View>
                 </ChartCard>
 
