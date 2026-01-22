@@ -142,16 +142,20 @@ const StatisticsScreen = () => {
                 <ChartCard title="ঘটনার ধরন অনুযায়ী বিশ্লেষণ" fullWidth={true}>
                     <BarChart
                         barWidth={45}
-                        noOfSections={3}
+                        noOfSections={4}
+                        maxValue={100}
                         barBorderRadius={4}
                         data={barData2}
-                        yAxisThickness={0}
+                        yAxisThickness={1}
+                        yAxisColor={'#9CA3AF'}
                         xAxisThickness={1}
-                        xAxisColor={'#E5E7EB'}
-                        hideRules
+                        xAxisColor={'#9CA3AF'}
+                        rulesType="dashed"
+                        rulesColor={'#E5E7EB'}
                         height={200}
                         width={screenWidth - 20}
                         xAxisLabelTextStyle={{ color: '#6B7280', fontSize: 10, width: 60, textAlign: 'center' }}
+                        yAxisTextStyle={{ color: '#6B7280', fontSize: 10 }}
                     />
                 </ChartCard>
 
