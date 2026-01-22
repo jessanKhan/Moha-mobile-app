@@ -4,7 +4,7 @@ import Header from '../../components/Header';
 import { Filter, Search, BarChart3, Users, Scale, PhoneCall, Handshake, FileText, Newspaper, ShieldCheck, Link as LinkIcon } from 'lucide-react-native';
 import { LineChart, BarChart, PieChart } from 'react-native-gifted-charts';
 import { Text as SvgText } from 'react-native-svg';
-import { ScaledSheet } from 'react-native-size-matters';
+import { ScaledSheet, scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { barData1, lineData1, lineData2, lineData3, barData2, pieData } from '../../data/statisticsData';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -12,9 +12,9 @@ const screenWidth = Dimensions.get('window').width;
 
 const StatisticsScreen = () => {
     const renderRightComponent = () => (
-        <TouchableOpacity className="bg-white/20 flex-row items-center px-3 py-1.5 rounded-full border border-white/30">
-            <Filter size={16} color="white" />
-            <Text className="text-white ml-2 text-xs font-medium">ফিল্টার</Text>
+        <TouchableOpacity className="bg-white/20 flex-row items-center border border-white/30" style={styles.filterBtn}>
+            <Filter size={moderateScale(16)} color="white" />
+            <Text className="text-white font-medium" style={styles.filterText}>ফিল্টার</Text>
         </TouchableOpacity>
     );
 
@@ -23,27 +23,22 @@ const StatisticsScreen = () => {
             colors={colors}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            // Keep functional layout classes, but move radius to style for reliability
-            className="w-[48%] p-4 mb-4 flex justify-between"
-            style={{
-                height: 160,
-                borderRadius: 20, // Explicitly set 20px
-                overflow: 'hidden' // Ensures the gradient doesn't bleed past the corners
-            }}
+            className="w-[48%] flex justify-between"
+            style={styles.summaryCard}
         >
-            <View className="bg-white/20 self-start p-2 rounded-xl">
-                <Icon size={24} color="white" />
+            <View className="bg-white/20 self-start rounded-xl" style={styles.iconWrapper}>
+                <Icon size={moderateScale(24)} color="white" />
             </View>
             <View>
-                <Text className="text-white text-2xl font-bold mb-1">{count}</Text>
-                <Text className="text-white/90 text-xs font-medium">{title}</Text>
+                <Text className="text-white font-bold" style={styles.countText}>{count}</Text>
+                <Text className="text-white/90 font-medium" style={styles.titleText}>{title}</Text>
             </View>
         </LinearGradient>
     );
 
     const ChartCard = ({ title, children, fullWidth = false }: any) => (
-        <View className={`${fullWidth ? 'bg-white dark:bg-zinc-900 mb-4 shadow-sm' : 'bg-white dark:bg-zinc-900 mx-4 p-4 rounded-[20px] mb-4 shadow-sm'}`}>
-            <Text className={`text-gray-800 dark:text-white font-bold text-lg mb-6 ${fullWidth ? 'px-4 pt-4' : ''}`}>{title}</Text>
+        <View className={`bg-white dark:bg-zinc-900 shadow-sm ${fullWidth ? 'mb-4' : 'mx-4 mb-4'}`} style={!fullWidth && styles.cardRounded}>
+            <Text className={`text-gray-800 dark:text-white font-bold ${fullWidth ? 'px-4 pt-4' : ''}`} style={styles.chartTitle}>{title}</Text>
             {children}
         </View>
     );
@@ -56,9 +51,9 @@ const StatisticsScreen = () => {
                 showBackButton={true}
                 rightComponent={renderRightComponent()}
             />
-            <ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: 100 }}>
+            <ScrollView className="flex-1" contentContainerStyle={styles.scrollContent}>
                 {/* Summary Cards Grid */}
-                <View className="flex-row flex-wrap justify-between p-4 px-4 pt-6">
+                <View className="flex-row flex-wrap justify-between" style={styles.gridContainer}>
                     <SummaryCard
                         icon={BarChart3}
                         count="১,২৪৫"
@@ -88,7 +83,7 @@ const StatisticsScreen = () => {
                 {/* Rescue Report Chart */}
                 <ChartCard title="উদ্ধার প্রতিবেদন" fullWidth={true}>
                     <BarChart
-                        barWidth={35}
+                        barWidth={scale(35)}
                         noOfSections={3}
                         barBorderRadius={4}
                         frontColor="#14B8A6"
@@ -97,9 +92,9 @@ const StatisticsScreen = () => {
                         xAxisThickness={1}
                         xAxisColor={'#E5E7EB'}
                         hideRules
-                        height={200}
-                        width={screenWidth - 20}
-                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: 10 }}
+                        height={verticalScale(200)}
+                        width={screenWidth - scale(20)}
+                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(10) }}
                     />
                 </ChartCard>
 
@@ -109,9 +104,9 @@ const StatisticsScreen = () => {
                         data={lineData1}
                         data2={lineData2}
                         data3={lineData3}
-                        height={200}
-                        width={screenWidth - 20}
-                        initialSpacing={20}
+                        height={verticalScale(200)}
+                        width={screenWidth - scale(20)}
+                        initialSpacing={scale(20)}
                         color1="#3B82F6"
                         color2="#14B8A6"
                         color3="#F59E0B"
@@ -131,17 +126,17 @@ const StatisticsScreen = () => {
                         xAxisThickness={1}
                         xAxisColor={'#E5E7EB'}
                     />
-                    <View className="flex-row justify-center gap-4 mt-4 pb-4">
-                        <View className="flex-row items-center"><View className="w-2 h-2 rounded-full bg-blue-500 mr-2" /><Text className="text-gray-500 text-xs">উদ্ধার</Text></View>
-                        <View className="flex-row items-center"><View className="w-2 h-2 rounded-full bg-teal-500 mr-2" /><Text className="text-gray-500 text-xs">চলমান</Text></View>
-                        <View className="flex-row items-center"><View className="w-2 h-2 rounded-full bg-orange-500 mr-2" /><Text className="text-gray-500 text-xs">রিপোর্ট</Text></View>
+                    <View className="flex-row justify-center mt-4 pb-4" style={{ gap: scale(16) }}>
+                        <View className="flex-row items-center"><View className="rounded-full bg-blue-500 mr-2" style={styles.legendDot} /><Text className="text-gray-500" style={styles.legendText}>উদ্ধার</Text></View>
+                        <View className="flex-row items-center"><View className="rounded-full bg-teal-500 mr-2" style={styles.legendDot} /><Text className="text-gray-500" style={styles.legendText}>চলমান</Text></View>
+                        <View className="flex-row items-center"><View className="rounded-full bg-orange-500 mr-2" style={styles.legendDot} /><Text className="text-gray-500" style={styles.legendText}>রিপোর্ট</Text></View>
                     </View>
                 </ChartCard>
 
                 {/* Analysis Type Chart */}
                 <ChartCard title="ঘটনার ধরন অনুযায়ী বিশ্লেষণ" fullWidth={true}>
                     <BarChart
-                        barWidth={45}
+                        barWidth={scale(45)}
                         noOfSections={4}
                         maxValue={100}
                         barBorderRadius={4}
@@ -152,10 +147,12 @@ const StatisticsScreen = () => {
                         xAxisColor={'#9CA3AF'}
                         rulesType="dashed"
                         rulesColor={'#E5E7EB'}
-                        height={200}
-                        width={screenWidth - 20}
-                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: 10, width: 60, textAlign: 'center' }}
-                        yAxisTextStyle={{ color: '#6B7280', fontSize: 10 }}
+                        height={verticalScale(200)}
+                        width={screenWidth - scale(20)}
+                        spacing={(screenWidth - scale(40) - (scale(45) * 4)) / 4}
+                        initialSpacing={scale(20)}
+                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(10), width: scale(60), textAlign: 'center' }}
+                        yAxisTextStyle={{ color: '#6B7280', fontSize: moderateScale(10) }}
                     />
                 </ChartCard>
 
@@ -166,17 +163,12 @@ const StatisticsScreen = () => {
                             data={pieData}
                             donut={false}
                             showExternalLabels
-                            radius={120}
-                            // showText={false}
+                            radius={scale(120)}
                             labelsPosition="outward"
-                            // labelLineConfig={{
-                            //     length: 20,
-                            //     tailLength: 10,
-                            // }}
                             externalLabelComponent={(item: any) => (
                                 <SvgText
                                     fill={item.textColor}
-                                    fontSize="12"
+                                    fontSize={moderateScale(12)}
                                     fontWeight="bold"
                                     x={item.shiftTextX || 0}
                                     y={item.shiftTextY || 0}
@@ -192,5 +184,56 @@ const StatisticsScreen = () => {
         </View>
     );
 };
+
+const styles = ScaledSheet.create({
+    filterBtn: {
+        paddingHorizontal: '12@s',
+        paddingVertical: '6@vs',
+        borderRadius: '20@ms'
+    },
+    filterText: {
+        fontSize: '12@ms',
+        marginLeft: '8@s'
+    },
+    scrollContent: {
+        paddingBottom: '100@vs'
+    },
+    gridContainer: {
+        padding: '16@ms',
+        paddingTop: '24@vs'
+    },
+    summaryCard: {
+        height: '160@vs',
+        padding: '16@ms',
+        borderRadius: '20@ms',
+        marginBottom: '16@vs',
+        overflow: 'hidden'
+    },
+    iconWrapper: {
+        padding: '8@ms'
+    },
+    countText: {
+        fontSize: '24@ms',
+        marginBottom: '4@vs'
+    },
+    titleText: {
+        fontSize: '12@ms'
+    },
+    cardRounded: {
+        borderRadius: '20@ms',
+        padding: '16@ms'
+    },
+    chartTitle: {
+        fontSize: '18@ms',
+        marginBottom: '24@vs'
+    },
+    legendDot: {
+        width: '8@ms',
+        height: '8@ms'
+    },
+    legendText: {
+        fontSize: '12@ms'
+    }
+});
 
 export default StatisticsScreen;

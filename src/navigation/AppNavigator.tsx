@@ -20,20 +20,6 @@ const AppNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MainTabs" component={TabNavigator} />
-      {/* Kept as fallback or example */}
-      <Stack.Screen name="ServiceDetails" component={ServiceDetailScreen} />
-
-      {/* New Service Screens */}
-      <Stack.Screen name="Statistics" component={StatisticsScreen} />
-      <Stack.Screen name="PolicyLaw" component={PolicyLawScreen} />
-      <Stack.Screen name="EmergencyContact" component={EmergencyContactScreen} />
-      <Stack.Screen name="Initiatives" component={InitiativesScreen} />
-      <Stack.Screen name="Complaint" component={ComplaintScreen} />
-      <Stack.Screen name="NewsMedia" component={NewsMediaScreen} />
-      <Stack.Screen name="PreventiveMeasures" component={PreventiveMeasuresScreen} />
-      <Stack.Screen name="QuickLink" component={QuickLinkScreen} />
-      <Stack.Screen name="TraffickerInfo" component={TraffickerInfoScreen} />
-      <Stack.Screen name="ServiceSearch" component={ServiceSearchScreen} />
     </Stack.Navigator>
   );
 };
