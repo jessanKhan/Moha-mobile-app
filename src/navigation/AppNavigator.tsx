@@ -13,8 +13,8 @@ import PreventiveMeasuresScreen from '../screens/Services/PreventiveMeasuresScre
 import QuickLinkScreen from '../screens/Services/QuickLinkScreen';
 import TraffickerInfoScreen from '../screens/Services/TraffickerInfoScreen';
 import ServiceSearchScreen from '../screens/Services/ServiceSearchScreen';
-import Initiatives from '../screens/Initiative/Initiatives';
 import PolicyAndLawScreen from '../screens/Services/PolicyAndLawScreen';
+import InitiativesScreen from '../screens/Services/InitiativesScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,7 +32,7 @@ const AppNavigator = () => {
         name="EmergencyContact"
         component={EmergencyContactScreen}
       />
-      <Stack.Screen name="Initiatives" component={Initiatives} />
+      <Stack.Screen name="Initiatives" component={InitiativesScreen} />
       <Stack.Screen name="Complaint" component={ComplaintScreen} />
       <Stack.Screen name="NewsMedia" component={NewsMediaScreen} />
       <Stack.Screen
