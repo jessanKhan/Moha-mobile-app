@@ -6,7 +6,7 @@ import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 const HotlineBar = () => {
     return (
         <View
-            className="absolute bg-[#1E293B] rounded-2xl flex-row items-center justify-between shadow-lg"
+            className="bg-[#1E293B] rounded-2xl flex-row items-center justify-between shadow-lg"
             style={styles.container}
         >
             <View className="flex-row items-center" style={styles.leftContainer}>
@@ -31,9 +31,8 @@ const HotlineBar = () => {
 
 const styles = ScaledSheet.create({
     container: {
-        bottom: '16@vs',
-        left: '16@s',
-        right: '16@s',
+        marginBottom: '16@vs',
+        marginHorizontal: '16@s',
         padding: '16@s'
     },
     leftContainer: {
