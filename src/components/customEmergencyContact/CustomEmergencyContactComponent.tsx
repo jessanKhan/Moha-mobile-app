@@ -18,7 +18,7 @@ const CustomEmergencyContactComponent: FC<
   return (
     <LinearGradient
       colors={['rgba(15, 23, 43, 1)', 'rgba(29, 41, 61, 1)']}
-      style={styles.container}
+      style={[styles.container]}
     >
       <View style={styles.row}>
         {/* Icon */}
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
-    width: '95%',
+    width: '100%',
     alignSelf: 'center',
   },
 
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
 
   hotlineTxt: {
-    fontSize: moderateScale(16),
+    fontSize: moderateScale(15),
     fontWeight: '400',
     color: 'rgba(202, 213, 226, 1)',
     lineHeight: moderateScale(20),
