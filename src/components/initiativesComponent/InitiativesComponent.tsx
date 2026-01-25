@@ -53,7 +53,7 @@ export default InitiativesComponent;
 
 const styles = StyleSheet.create({
   container: {
-    width: width - 32,
+    width: width - scale(15),
     backgroundColor: '#FFFFFF',
     borderRadius: scale(14),
     shadowColor: '#000',
