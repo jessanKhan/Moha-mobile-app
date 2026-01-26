@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Upload } from 'lucide-react-native';
-import { moderateScale } from 'react-native-size-matters';
+import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 
 interface Props {
     formData: any;
@@ -9,29 +9,32 @@ interface Props {
 }
 
 const Step1BasicInfo = ({ formData, setFormData }: Props) => (
-    <View className="px-4 py-8">
-        <Text className="text-gray-900 dark:text-gray-100 font-bold text-lg mb-1">পাচারকারীর প্রাথমিক তথ্য</Text>
-        <Text className="text-gray-400 dark:text-gray-500 text-sm mb-6">যতটুকু জানেন ততটুকু দিন</Text>
+    <View style={styles.container}>
+        <Text style={styles.title}>পাচারকারীর প্রাথমিক তথ্য</Text>
+        <Text style={styles.subtitle}>যতটুকু জানেন ততটুকু দিন</Text>
 
-        <TouchableOpacity className="bg-gray-50 dark:bg-zinc-900 border border-dashed border-gray-300 dark:border-zinc-700 rounded-3xl p-10 items-center justify-center mb-8">
-            <View className="bg-white dark:bg-zinc-800 p-4 rounded-full mb-3 shadow-sm">
+        <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.uploadCard}
+        >
+            <View style={styles.iconWrapper}>
                 <Upload size={moderateScale(32)} color="#9CA3AF" />
             </View>
-            <Text className="text-gray-600 dark:text-gray-400 font-bold text-base">ছবি আপলোড</Text>
-            <Text className="text-gray-400 dark:text-gray-500 text-xs mt-1">(ঐচ্ছিক)</Text>
+            <Text style={styles.uploadText}>ছবি আপলোড</Text>
+            <Text style={styles.uploadOptional}>(ঐচ্ছিক)</Text>
         </TouchableOpacity>
 
-        <View className="space-y-4">
+        <View style={styles.inputContainer}>
             <TextInput
                 placeholder="পাচারকারীর নাম (যদি জানা থাকে)"
-                className="bg-white dark:bg-zinc-900 rounded-2xl px-6 py-4 border border-gray-200 dark:border-zinc-800 text-gray-800 dark:text-gray-100"
+                style={styles.input}
                 placeholderTextColor="#9CA3AF"
                 value={formData.name}
                 onChangeText={(val) => setFormData({ ...formData, name: val })}
             />
             <TextInput
                 placeholder="ডাকনাম / পরিচিত নাম"
-                className="bg-white dark:bg-zinc-900 rounded-2xl px-6 py-4 border border-gray-200 dark:border-zinc-800 text-gray-800 dark:text-gray-100"
+                style={styles.input}
                 placeholderTextColor="#9CA3AF"
                 value={formData.nickname}
                 onChangeText={(val) => setFormData({ ...formData, nickname: val })}
@@ -39,22 +42,28 @@ const Step1BasicInfo = ({ formData, setFormData }: Props) => (
             <TextInput
                 placeholder="আনুমানিক বয়স"
                 keyboardType="numeric"
-                className="bg-white dark:bg-zinc-900 rounded-2xl px-6 py-4 border border-gray-200 dark:border-zinc-800 text-gray-800 dark:text-gray-100"
+                style={styles.input}
                 placeholderTextColor="#9CA3AF"
                 value={formData.age}
                 onChangeText={(val) => setFormData({ ...formData, age: val })}
             />
         </View>
 
-        <Text className="text-gray-700 dark:text-gray-300 font-bold text-base mt-8 mb-4">লিঙ্গ</Text>
-        <View className="flex-row space-x-3">
+        <Text style={styles.label}>লিঙ্গ</Text>
+        <View style={styles.genderRow}>
             {['পুরুষ', 'মহিলা', 'অন্যান্য'].map((item) => (
                 <TouchableOpacity
                     key={item}
                     onPress={() => setFormData({ ...formData, gender: item })}
-                    className={`px-8 py-3 rounded-xl border ${formData.gender === item ? 'bg-[#EEF2FF] border-[#2563EB]' : 'bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800'}`}
+                    style={[
+                        styles.genderButton,
+                        formData.gender === item && styles.genderButtonActive
+                    ]}
                 >
-                    <Text className={`font-bold text-sm ${formData.gender === item ? 'text-[#2563EB]' : 'text-gray-600 dark:text-gray-400'}`}>
+                    <Text style={[
+                        styles.genderButtonText,
+                        formData.gender === item && styles.genderButtonTextActive
+                    ]}>
                         {item}
                     </Text>
                 </TouchableOpacity>
@@ -62,5 +71,101 @@ const Step1BasicInfo = ({ formData, setFormData }: Props) => (
         </View>
     </View>
 );
+
+const styles = ScaledSheet.create({
+    container: {
+        paddingHorizontal: '20@ms',
+        paddingVertical: '24@vs',
+    },
+    title: {
+        fontSize: '18@ms',
+        fontWeight: 'bold',
+        color: '#111827',
+        marginBottom: '4@vs',
+    },
+    subtitle: {
+        fontSize: '13@ms',
+        color: '#9CA3AF',
+        marginBottom: '24@vs',
+    },
+    uploadCard: {
+        backgroundColor: '#F9FAFB',
+        borderWidth: 1,
+        borderStyle: 'dashed',
+        borderColor: '#D1D5DB',
+        borderRadius: '24@ms',
+        padding: '32@ms',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: '24@vs',
+    },
+    iconWrapper: {
+        backgroundColor: 'white',
+        padding: '16@ms',
+        borderRadius: '30@ms',
+        marginBottom: '12@vs',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+        elevation: 1,
+    },
+    uploadText: {
+        fontSize: '15@ms',
+        fontWeight: 'bold',
+        color: '#4B5563',
+    },
+    uploadOptional: {
+        fontSize: '11@ms',
+        color: '#9CA3AF',
+        marginTop: '2@vs',
+    },
+    inputContainer: {
+        gap: '12@vs',
+    },
+    input: {
+        backgroundColor: 'white',
+        borderRadius: '16@ms',
+        paddingHorizontal: '20@ms',
+        height: '56@vs',
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        color: '#1F2937',
+        fontSize: '15@ms',
+    },
+    label: {
+        fontSize: '16@ms',
+        fontWeight: 'bold',
+        color: '#374151',
+        marginTop: '24@vs',
+        marginBottom: '12@vs',
+    },
+    genderRow: {
+        flexDirection: 'row',
+        gap: '10@ms',
+    },
+    genderButton: {
+        flex: 1,
+        height: '48@vs',
+        borderRadius: '12@ms',
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        backgroundColor: 'white',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    genderButtonActive: {
+        backgroundColor: '#EEF2FF',
+        borderColor: '#2563EB',
+    },
+    genderButtonText: {
+        fontSize: '14@ms',
+        fontWeight: 'bold',
+        color: '#4B5563',
+    },
+    genderButtonTextActive: {
+        color: '#2563EB',
+    },
+});
 
 export default Step1BasicInfo;

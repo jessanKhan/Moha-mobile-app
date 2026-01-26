@@ -54,7 +54,7 @@ const AboutTraffickingScreen = () => {
     ];
 
     return (
-        <View className="flex-1 bg-[#F8F9FA] dark:bg-black">
+        <View style={styles.mainContainer}>
             <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
             <Header
                 title="মানবপাচার সম্পর্কে জানুন"
@@ -62,7 +62,7 @@ const AboutTraffickingScreen = () => {
                 showBackButton={true}
             />
 
-            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+            <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
                 <View style={styles.container}>
                     {/* Intro Section */}
                     <View style={styles.introCard}>
@@ -158,6 +158,13 @@ const AboutTraffickingScreen = () => {
 };
 
 const styles = ScaledSheet.create({
+    mainContainer: {
+        flex: 1,
+        backgroundColor: '#F8F9FA',
+    },
+    scrollContainer: {
+        flex: 1,
+    },
     container: {
         padding: '16@ms',
     },

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Check } from 'lucide-react-native';
-import { moderateScale } from 'react-native-size-matters';
+import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 
 interface Props {
     formData: any;
@@ -9,57 +9,64 @@ interface Props {
 }
 
 const Step2Details = ({ formData, setFormData }: Props) => (
-    <View className="px-4 py-8">
-        <Text className="text-gray-900 dark:text-gray-100 font-bold text-lg mb-1">পরিচয় ও কার্যকলাপ</Text>
-        <Text className="text-gray-400 dark:text-gray-500 text-sm mb-6">বিস্তারিত তথ্য প্রদান করুন</Text>
+    <View style={styles.container}>
+        <Text style={styles.title}>পরিচয় ও কার্যকলাপ</Text>
+        <Text style={styles.subtitle}>বিস্তারিত তথ্য প্রদান করুন</Text>
 
-        <View className="space-y-4">
+        <View style={styles.inputContainer}>
             <TextInput
                 placeholder="মোবাইল নম্বর (যদি জানা থাকে)"
                 keyboardType="phone-pad"
-                className="bg-white dark:bg-zinc-900 rounded-2xl px-6 py-4 border border-gray-200 dark:border-zinc-800 text-gray-800 dark:text-gray-100"
+                style={styles.input}
                 placeholderTextColor="#9CA3AF"
                 value={formData.mobile}
                 onChangeText={(val) => setFormData({ ...formData, mobile: val })}
             />
             <TextInput
                 placeholder="সোশ্যাল মিডিয়া লিংক (ঐচ্ছিক)"
-                className="bg-white dark:bg-zinc-900 rounded-2xl px-6 py-4 border border-gray-200 dark:border-zinc-800 text-gray-800 dark:text-gray-100"
+                style={styles.input}
                 placeholderTextColor="#9CA3AF"
                 value={formData.socialLink}
                 onChangeText={(val) => setFormData({ ...formData, socialLink: val })}
             />
             <TextInput
                 placeholder="কোথায় দেখা গেছে"
-                className="bg-white dark:bg-zinc-900 rounded-2xl px-6 py-4 border border-gray-200 dark:border-zinc-800 text-gray-800 dark:text-gray-100"
+                style={styles.input}
                 placeholderTextColor="#9CA3AF"
                 value={formData.lastSeen}
                 onChangeText={(val) => setFormData({ ...formData, lastSeen: val })}
             />
         </View>
 
-        <Text className="text-gray-700 dark:text-gray-300 font-bold text-base mt-8 mb-2">কী ধরনের কার্যকলাপ</Text>
-        <Text className="text-gray-400 dark:text-gray-500 text-xs mb-6">(একাধিক নির্বাচন করতে পারবেন)</Text>
+        <Text style={styles.label}>কী ধরনের কার্যকলাপ</Text>
+        <Text style={styles.labelHint}>(একাধিক নির্বাচন করতে পারবেন)</Text>
 
-        <View className="space-y-3">
+        <View style={styles.activityContainer}>
             {['কাজের প্রলোভন', 'বিদেশে পাঠানোর কথা', 'বলপূর্বক চলাচল', 'মিথ্যা বিবাহের প্রস্তাব', 'শিশু পাচার'].map((item) => {
                 const isSelected = formData.activities.includes(item);
                 return (
                     <TouchableOpacity
                         key={item}
+                        activeOpacity={0.7}
                         onPress={() => {
                             const newActivities = isSelected
                                 ? formData.activities.filter((a: string) => a !== item)
                                 : [...formData.activities, item];
                             setFormData({ ...formData, activities: newActivities });
                         }}
-                        className={`flex-row items-center justify-between px-6 py-4 rounded-2xl border ${isSelected ? 'bg-teal-50 border-teal-500' : 'bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800'}`}
+                        style={[
+                            styles.activityButton,
+                            isSelected && styles.activityButtonActive
+                        ]}
                     >
-                        <Text className={`font-bold text-sm ${isSelected ? 'text-teal-700' : 'text-gray-600 dark:text-gray-400'}`}>
+                        <Text style={[
+                            styles.activityText,
+                            isSelected && styles.activityTextActive
+                        ]}>
                             {item}
                         </Text>
                         {isSelected && (
-                            <View className="bg-teal-500 rounded-full p-1">
+                            <View style={styles.checkWrapper}>
                                 <Check size={moderateScale(12)} color="white" />
                             </View>
                         )}
@@ -69,5 +76,80 @@ const Step2Details = ({ formData, setFormData }: Props) => (
         </View>
     </View>
 );
+
+const styles = ScaledSheet.create({
+    container: {
+        paddingHorizontal: '20@ms',
+        paddingVertical: '24@vs',
+    },
+    title: {
+        fontSize: '18@ms',
+        fontWeight: 'bold',
+        color: '#111827',
+        marginBottom: '4@vs',
+    },
+    subtitle: {
+        fontSize: '13@ms',
+        color: '#9CA3AF',
+        marginBottom: '24@vs',
+    },
+    inputContainer: {
+        gap: '12@vs',
+    },
+    input: {
+        backgroundColor: 'white',
+        borderRadius: '16@ms',
+        paddingHorizontal: '20@ms',
+        height: '56@vs',
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        color: '#1F2937',
+        fontSize: '15@ms',
+    },
+    label: {
+        fontSize: '16@ms',
+        fontWeight: 'bold',
+        color: '#374151',
+        marginTop: '24@vs',
+        marginBottom: '2@vs',
+    },
+    labelHint: {
+        fontSize: '11@ms',
+        color: '#9CA3AF',
+        marginBottom: '16@vs',
+    },
+    activityContainer: {
+        gap: '12@vs',
+    },
+    activityButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: '20@ms',
+        height: '56@vs',
+        borderRadius: '16@ms',
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        backgroundColor: 'white',
+    },
+    activityButtonActive: {
+        backgroundColor: '#F0FDF4',
+        borderColor: '#10B981',
+    },
+    activityText: {
+        fontSize: '14@ms',
+        fontWeight: 'bold',
+        color: '#4B5563',
+        flex: 1,
+    },
+    activityTextActive: {
+        color: '#047857',
+    },
+    checkWrapper: {
+        backgroundColor: '#10B981',
+        borderRadius: '10@ms',
+        padding: '4@ms',
+    },
+});
 
 export default Step2Details;

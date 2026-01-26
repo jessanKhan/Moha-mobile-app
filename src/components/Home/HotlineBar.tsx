@@ -6,24 +6,23 @@ import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 const HotlineBar = () => {
     return (
         <View
-            className="bg-[#1E293B] rounded-2xl flex-row items-center justify-between shadow-lg"
             style={styles.container}
         >
-            <View className="flex-row items-center" style={styles.leftContainer}>
-                <View className="bg-[#EF4444] rounded-full" style={styles.iconContainer}>
+            <View style={styles.leftContainer}>
+                <View style={styles.iconContainer}>
                     <Phone size={moderateScale(24)} color="white" fill="white" />
                 </View>
                 <View>
-                    <Text className="text-gray-400" style={styles.label}>২৪/৭ জরুরি হটলাইন</Text>
-                    <Text className="text-white font-bold tracking-widest" style={styles.number}>১৯১৯</Text>
+                    <Text style={styles.label}>২৪/৭ জরুরি হটলাইন</Text>
+                    <Text style={styles.number}>১৯১৯</Text>
                 </View>
             </View>
 
             <TouchableOpacity
-                className="bg-white/10 rounded-lg border border-white/20"
+                activeOpacity={0.8}
                 style={styles.button}
             >
-                <Text className="text-white font-medium" style={styles.buttonText}>কল করুন</Text>
+                <Text style={styles.buttonText}>কল করুন</Text>
             </TouchableOpacity>
         </View>
     );
@@ -31,27 +30,51 @@ const HotlineBar = () => {
 
 const styles = ScaledSheet.create({
     container: {
+        backgroundColor: '#1E293B',
+        borderRadius: '16@ms',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         marginBottom: '16@vs',
-        marginHorizontal: '16@s',
-        padding: '16@s'
+        marginHorizontal: '16@ms',
+        padding: '16@ms',
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
     },
     leftContainer: {
-        gap: '16@s'
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: '16@ms'
     },
     iconContainer: {
-        padding: '12@s'
+        backgroundColor: '#EF4444',
+        borderRadius: '24@ms',
+        padding: '12@ms'
     },
     label: {
+        color: '#9CA3AF',
         fontSize: '12@ms'
     },
     number: {
+        color: 'white',
+        fontWeight: 'bold',
+        letterSpacing: moderateScale(2),
         fontSize: '20@ms'
     },
     button: {
-        paddingHorizontal: '16@s',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        borderRadius: '8@ms',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        paddingHorizontal: '16@ms',
         paddingVertical: '8@vs'
     },
     buttonText: {
+        color: 'white',
+        fontWeight: '500',
         fontSize: '14@ms'
     }
 });

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { moderateScale, verticalScale } from 'react-native-size-matters';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 import LinearGradient from 'react-native-linear-gradient';
 import { Phone } from 'lucide-react-native';
 
@@ -13,8 +13,6 @@ type CustomEmergencyContactComponentProps = {
 const CustomEmergencyContactComponent: FC<
   CustomEmergencyContactComponentProps
 > = ({ onPress, title, hotLineNumber }) => {
-  const CIRCLE_SIZE = 47;
-
   return (
     <LinearGradient
       colors={['rgba(15, 23, 43, 1)', 'rgba(29, 41, 61, 1)']}
@@ -23,14 +21,7 @@ const CustomEmergencyContactComponent: FC<
       <View style={styles.row}>
         {/* Icon */}
         <View
-          style={[
-            styles.callContainer,
-            {
-              height: moderateScale(CIRCLE_SIZE),
-              width: moderateScale(CIRCLE_SIZE),
-              borderRadius: moderateScale(CIRCLE_SIZE) / 2,
-            },
-          ]}
+          style={styles.callContainer}
         >
           <Phone color="#fff" size={moderateScale(25)} />
         </View>
@@ -60,13 +51,11 @@ const CustomEmergencyContactComponent: FC<
   );
 };
 
-export default CustomEmergencyContactComponent;
-
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   container: {
-    borderRadius: moderateScale(16),
-    padding: moderateScale(16),
-    marginBottom: verticalScale(12),
+    borderRadius: '16@ms',
+    padding: '16@ms',
+    marginBottom: '12@vs',
     shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowRadius: 4,
@@ -84,47 +73,52 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(251, 44, 54, 1)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: moderateScale(16),
+    marginRight: '16@ms',
     flexShrink: 0,
+    height: '47@ms',
+    width: '47@ms',
+    borderRadius: '23.5@ms',
   },
 
   textBlock: {
     flex: 1,
-    marginRight: moderateScale(12),
+    marginRight: '12@ms',
     minWidth: 0,
   },
 
   hotlineTxt: {
-    fontSize: moderateScale(16),
+    fontSize: '16@ms',
     fontWeight: '400',
     color: 'rgba(202, 213, 226, 1)',
-    lineHeight: moderateScale(20),
+    lineHeight: '20@ms',
   },
 
   hotlineNumber: {
-    fontSize: moderateScale(26),
+    fontSize: '26@ms',
     fontWeight: '400',
     color: '#FFFFFF',
-    lineHeight: moderateScale(32),
+    lineHeight: '32@ms',
   },
 
   hotlineBtn: {
     backgroundColor: 'rgba(255, 255, 255, 0.12)',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: moderateScale(14),
-    height: moderateScale(32),
-    paddingHorizontal: moderateScale(16),
-    minWidth: moderateScale(90),
+    borderRadius: '14@ms',
+    height: '32@ms',
+    paddingHorizontal: '16@ms',
+    minWidth: '90@ms',
     flexShrink: 0,
   },
 
   hotlineBtntxt: {
-    fontSize: moderateScale(14),
+    fontSize: '14@ms',
     fontWeight: '500',
     color: '#FFFFFF',
-    lineHeight: moderateScale(20),
+    lineHeight: '20@ms',
     includeFontPadding: false,
     textAlignVertical: 'center',
   },
 });
+
+export default CustomEmergencyContactComponent;

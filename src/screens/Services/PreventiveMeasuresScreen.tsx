@@ -1,19 +1,49 @@
 import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import Header from '../../components/Header';
+import { ScaledSheet } from 'react-native-size-matters';
 
 const PreventiveMeasuresScreen = () => {
     return (
-        <View className="flex-1 bg-white dark:bg-black">
+        <View style={styles.container}>
             <Header title="প্রতিরোধমূলক ব্যবস্থা" showBackButton={true} />
-            <ScrollView className="flex-1 p-4">
-                <View className="bg-gray-50 dark:bg-zinc-900 p-6 rounded-2xl border border-gray-100 dark:border-zinc-800">
-                    <Text className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">প্রতিরোধমূলক ব্যবস্থা</Text>
-                    <Text className="text-gray-600 dark:text-gray-300 leading-6">This screen will contain preventive measures.</Text>
+            <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                <View style={styles.contentBanner}>
+                    <Text style={styles.title}>প্রতিরোধমূলক ব্যবস্থা</Text>
+                    <Text style={styles.description}>This screen will contain preventive measures.</Text>
                 </View>
             </ScrollView>
         </View>
     );
 };
+
+const styles = ScaledSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+    },
+    scrollContent: {
+        flex: 1,
+        padding: '16@ms',
+    },
+    contentBanner: {
+        backgroundColor: '#F9FAFB',
+        padding: '24@ms',
+        borderRadius: '16@ms',
+        borderWidth: 1,
+        borderColor: '#F3F4F6',
+    },
+    title: {
+        fontSize: '20@ms',
+        fontWeight: 'bold',
+        color: '#1F2937',
+        marginBottom: '16@vs',
+    },
+    description: {
+        color: '#4B5563',
+        fontSize: '14@ms',
+        lineHeight: '24@ms',
+    },
+});
 
 export default PreventiveMeasuresScreen;

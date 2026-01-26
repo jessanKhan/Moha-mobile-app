@@ -111,32 +111,18 @@ const HomeScreen = () => {
   const navigation = useNavigation<any>();
 
   const renderHeader = () => (
-    <View className="bg-white dark:bg-black">
+    <View style={styles.headerContent}>
       <Slider />
       <View style={styles.headerTitleContainer}>
-        <Text
-          className="font-bold text-slate-800 dark:text-white"
-          style={styles.headerTitle}
-        >
+        <Text style={styles.headerTitle}>
           সেবা সমূহ
         </Text>
       </View>
     </View>
   );
 
-  const styles = ScaledSheet.create({
-    headerTitleContainer: {
-      paddingHorizontal: '16@s',
-      marginTop: '8@vs',
-      marginBottom: '16@vs',
-    },
-    headerTitle: {
-      fontSize: '20@ms',
-    },
-  });
-
   return (
-    <View className="flex-1 bg-white dark:bg-black">
+    <View style={styles.container}>
       <StatusBar
         translucent
         backgroundColor="transparent"
@@ -147,9 +133,8 @@ const HomeScreen = () => {
         title="জাতীয় মানব পাচার দমন সংস্থা"
         subtitle="মানবপাচার মোকাবিলায় জাতীয় পর্যায়ে সমন্বিত উদ্যোগ"
         rightComponent={
-          <View className="h-10 w-10 rounded-full bg-white/20 items-center justify-center border border-white/30">
-            {/* Profile placeholder */}
-            <View className="h-full w-full rounded-full bg-gray-300 overflow-hidden">
+          <View style={styles.profileContainer}>
+            <View style={styles.profilePlaceholder}>
               {/* Image can go here */}
             </View>
           </View>
@@ -167,31 +152,61 @@ const HomeScreen = () => {
         )}
         keyExtractor={item => item.id}
         numColumns={2}
-        columnWrapperStyle={{ paddingHorizontal: 12 }}
+        columnWrapperStyle={styles.columnWrapper}
         ListHeaderComponent={renderHeader}
         ListFooterComponent={() => (
-          <View>
+          <View style={styles.footer}>
             <BottomBanner onPress={() => navigation.navigate('AboutTrafficking')} />
-            <View className="h-4" />
             <HotlineBar />
-            <View className="h-4" />
           </View>
         )}
         showsVerticalScrollIndicator={false}
       />
-
-
     </View>
   );
 };
+
 const styles = ScaledSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  headerContent: {
+    backgroundColor: 'white',
+  },
   headerTitleContainer: {
-    paddingHorizontal: '16@s',
+    paddingHorizontal: '20@ms',
     marginTop: '8@vs',
-    marginBottom: '16@vs'
+    marginBottom: '16@vs',
   },
   headerTitle: {
-    fontSize: '20@ms'
-  }
+    fontSize: '20@ms',
+    fontWeight: 'bold',
+    color: '#1E293B',
+  },
+  profileContainer: {
+    height: '40@ms',
+    width: '40@ms',
+    borderRadius: '20@ms',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  profilePlaceholder: {
+    height: '100%',
+    width: '100%',
+    borderRadius: '20@ms',
+    backgroundColor: '#D1D5DB',
+    overflow: 'hidden',
+  },
+  columnWrapper: {
+    paddingHorizontal: '12@ms',
+  },
+  footer: {
+    paddingBottom: '20@vs',
+  },
 });
+
 export default HomeScreen;

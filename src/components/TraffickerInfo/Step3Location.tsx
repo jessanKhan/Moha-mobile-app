@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TextInput } from 'react-native';
+import { ScaledSheet } from 'react-native-size-matters';
 
 interface Props {
     formData: any;
@@ -7,28 +8,28 @@ interface Props {
 }
 
 const Step3Location = ({ formData, setFormData }: Props) => (
-    <View className="px-4 py-8">
-        <Text className="text-gray-900 dark:text-gray-100 font-bold text-lg mb-1">স্থান ও সময়</Text>
-        <Text className="text-gray-400 dark:text-gray-500 text-sm mb-6">ঘটনার বিবরণ দিন</Text>
+    <View style={styles.container}>
+        <Text style={styles.title}>স্থান ও সময়</Text>
+        <Text style={styles.subtitle}>ঘটনার বিবরণ দিন</Text>
 
-        <View className="space-y-4">
+        <View style={styles.inputContainer}>
             <TextInput
                 placeholder="ঘটনার স্থান"
-                className="bg-white dark:bg-zinc-900 rounded-2xl px-6 py-4 border border-gray-200 dark:border-zinc-800 text-gray-800 dark:text-gray-100"
+                style={styles.input}
                 placeholderTextColor="#9CA3AF"
                 value={formData.eventPlace}
                 onChangeText={(val) => setFormData({ ...formData, eventPlace: val })}
             />
             <TextInput
                 placeholder="স্থান নির্বাচন করুন"
-                className="bg-white dark:bg-zinc-900 rounded-2xl px-6 py-4 border border-gray-200 dark:border-zinc-800 text-gray-800 dark:text-gray-100"
+                style={styles.input}
                 placeholderTextColor="#9CA3AF"
                 value={formData.selectPlace}
                 onChangeText={(val) => setFormData({ ...formData, selectPlace: val })}
             />
             <TextInput
                 placeholder="ঠিকানা লিখুন"
-                className="bg-white dark:bg-zinc-900 rounded-2xl px-6 py-4 border border-gray-200 dark:border-zinc-800 text-gray-800 dark:text-gray-100"
+                style={styles.input}
                 placeholderTextColor="#9CA3AF"
                 value={formData.address}
                 onChangeText={(val) => setFormData({ ...formData, address: val })}
@@ -38,7 +39,7 @@ const Step3Location = ({ formData, setFormData }: Props) => (
                 multiline
                 numberOfLines={4}
                 textAlignVertical="top"
-                className="bg-white dark:bg-zinc-900 rounded-2xl px-6 py-4 border border-gray-200 dark:border-zinc-800 text-gray-800 dark:text-gray-100 min-h-[120px]"
+                style={[styles.input, styles.textArea]}
                 placeholderTextColor="#9CA3AF"
                 value={formData.description}
                 onChangeText={(val) => setFormData({ ...formData, description: val })}
@@ -46,5 +47,41 @@ const Step3Location = ({ formData, setFormData }: Props) => (
         </View>
     </View>
 );
+
+const styles = ScaledSheet.create({
+    container: {
+        paddingHorizontal: '20@ms',
+        paddingVertical: '24@vs',
+    },
+    title: {
+        fontSize: '18@ms',
+        fontWeight: 'bold',
+        color: '#111827',
+        marginBottom: '4@vs',
+    },
+    subtitle: {
+        fontSize: '13@ms',
+        color: '#9CA3AF',
+        marginBottom: '24@vs',
+    },
+    inputContainer: {
+        gap: '12@vs',
+    },
+    input: {
+        backgroundColor: 'white',
+        borderRadius: '16@ms',
+        paddingHorizontal: '20@ms',
+        height: '56@vs',
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        color: '#1F2937',
+        fontSize: '15@ms',
+    },
+    textArea: {
+        height: 'auto',
+        minHeight: '120@vs',
+        paddingVertical: '16@vs',
+    }
+});
 
 export default Step3Location;

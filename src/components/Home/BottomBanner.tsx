@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground, TouchableOpacity } from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, StyleSheet } from 'react-native';
 import { ShieldAlert } from 'lucide-react-native';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 
@@ -11,23 +11,20 @@ const BottomBanner = ({ onPress }: BottomBannerProps) => {
         <TouchableOpacity
             activeOpacity={0.9}
             onPress={onPress}
-            className="overflow-hidden"
             style={styles.container}
         >
             <ImageBackground
                 source={{ uri: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }}
-                className="flex-1 justify-center items-center"
+                style={styles.imageBackground}
             >
-                <View className="absolute inset-0 bg-black/50" />
-                <View className="items-center z-10">
+                <View style={styles.overlay} />
+                <View style={styles.content}>
                     <View
-                        className="bg-[#009689]/80 rounded-full mb-2"
                         style={styles.iconContainer}
                     >
                         <ShieldAlert size={moderateScale(24)} color="white" />
                     </View>
                     <Text
-                        className="text-white font-bold"
                         style={styles.text}
                     >
                         মানবপাচার সম্পর্কে জানুন
@@ -40,18 +37,41 @@ const BottomBanner = ({ onPress }: BottomBannerProps) => {
 
 const styles = ScaledSheet.create({
     container: {
-        marginHorizontal: '16@s',
-        marginBottom: '20@vs',
-        marginTop: '16@vs',
-        height: '128@vs',
-        borderRadius: '12@s'
+        height: '140@vs',
+        borderRadius: '24@ms',
+        marginHorizontal: '16@ms',
+        overflow: 'hidden',
+        elevation: 4,
+        marginVertical: '16@vs',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+    },
+    imageBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    overlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    content: {
+        alignItems: 'center',
+        zIndex: 10,
     },
     iconContainer: {
-        padding: '8@s'
+        backgroundColor: 'rgba(0, 150, 137, 0.8)',
+        borderRadius: '30@ms',
+        padding: '12@ms',
+        marginBottom: '8@vs',
     },
     text: {
-        fontSize: '18@ms'
-    }
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: '18@ms',
+    },
 });
 
 export default BottomBanner;

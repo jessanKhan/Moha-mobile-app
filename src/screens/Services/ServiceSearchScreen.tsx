@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Home, Shield } from 'lucide-react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { scale, verticalScale, moderateScale, ScaledSheet } from 'react-native-size-matters';
 
 type RootStackParamList = {
     ServiceList: { category: string; title: string };
@@ -45,9 +45,9 @@ const ServiceSearchScreen = () => {
     };
 
     return (
-        <View className="flex-1 bg-white dark:bg-black">
+        <View style={styles.container}>
             <Header title="সেবা অনুসন্ধান" subtitle='আপনার প্রয়োজন অনুযায়ী সেবা খুঁজুন' showBackButton={true} />
-            <ScrollView className="flex-1 p-4" showsVerticalScrollIndicator={false}>
+            <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
                 {categories.map((item) => (
                     <TouchableOpacity
                         key={item.id}
@@ -76,10 +76,18 @@ const ServiceSearchScreen = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+    },
+    scrollContent: {
+        flex: 1,
+        padding: '16@ms',
+    },
     cardContainer: {
-        marginBottom: verticalScale(16),
-        borderRadius: moderateScale(16),
+        marginBottom: '16@vs',
+        borderRadius: '16@ms',
         overflow: 'hidden',
         elevation: 4,
         shadowColor: '#000',
@@ -90,27 +98,27 @@ const styles = StyleSheet.create({
     gradient: {
         flexDirection: 'row',
         alignItems: 'center',
-        padding: moderateScale(20),
-        height: verticalScale(100),
+        padding: '20@ms',
+        height: '100@vs',
     },
     iconWrapper: {
         backgroundColor: 'rgba(255, 255, 255, 0.2)',
-        padding: moderateScale(12),
-        borderRadius: moderateScale(12),
-        marginRight: moderateScale(16),
+        padding: '12@ms',
+        borderRadius: '12@ms',
+        marginRight: '16@ms',
     },
     textWrapper: {
         flex: 1,
     },
     title: {
         color: 'white',
-        fontSize: moderateScale(22),
+        fontSize: '22@ms',
         fontWeight: 'bold',
-        marginBottom: verticalScale(4),
+        marginBottom: '4@vs',
     },
     subtitle: {
         color: 'rgba(255, 255, 255, 0.8)',
-        fontSize: moderateScale(14),
+        fontSize: '14@ms',
     },
 });
 

@@ -1,32 +1,32 @@
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import React, { FC } from 'react';
-import { scale, verticalScale } from 'react-native-size-matters';
+import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 import { CustomCommonIconProps } from '../../type/CustomCommonIconType';
 
 const CustomCommonIcon: FC<CustomCommonIconProps> = ({
   icon,
   bgColor,
   iconColor,
-  size,
+  size = 24,
 }) => {
   const Icon: any = icon;
   return (
     <View
-      className="items-center justify-center"
       style={[styles.container, { backgroundColor: bgColor }]}
     >
-      {/* <Building color="#fff" size={moderateScale(28)} /> */}
-      <Icon color={iconColor} size={size} />
+      <Icon color={iconColor} size={moderateScale(size)} />
     </View>
   );
 };
 
-export default CustomCommonIcon;
-
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   container: {
-    height: verticalScale(40),
-    width: scale(40),
-    borderRadius: scale(14),
+    height: '40@vs',
+    width: '40@ms',
+    borderRadius: '14@ms',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
+
+export default CustomCommonIcon;

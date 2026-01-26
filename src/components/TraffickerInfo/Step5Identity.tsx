@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { UserX, UserPlus, Check } from 'lucide-react-native';
-import { moderateScale } from 'react-native-size-matters';
+import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 
 interface Props {
     formData: any;
@@ -9,26 +9,36 @@ interface Props {
 }
 
 const Step5Identity = ({ formData, setFormData }: Props) => (
-    <View className="px-4 py-8">
-        <Text className="text-gray-900 dark:text-gray-100 font-bold text-lg mb-1">আপনার পরিচয়</Text>
-        <Text className="text-gray-400 dark:text-gray-500 text-sm mb-8">সম্পূর্ণ ঐচ্ছিক</Text>
+    <View style={styles.container}>
+        <Text style={styles.title}>আপনার পরিচয়</Text>
+        <Text style={styles.subtitle}>সম্পূর্ণ ঐচ্ছিক</Text>
 
-        <View className="space-y-4">
+        <View style={styles.optionContainer}>
             <TouchableOpacity
                 onPress={() => setFormData({ ...formData, identityPreference: 'anonymous' })}
-                className={`p-6 rounded-3xl border ${formData.identityPreference === 'anonymous' ? 'bg-[#EEF2FF] border-[#2563EB]' : 'bg-white dark:bg-zinc-900 border-gray-100 dark:border-zinc-800'} flex-row items-center justify-between`}
+                activeOpacity={0.8}
+                style={[
+                    styles.optionCard,
+                    formData.identityPreference === 'anonymous' && styles.optionCardActive
+                ]}
             >
-                <View className="flex-row items-center flex-1">
-                    <View className={`p-4 rounded-2xl mr-4 ${formData.identityPreference === 'anonymous' ? 'bg-[#2563EB]' : 'bg-[#E5E7EB]'}`}>
+                <View style={styles.optionMain}>
+                    <View style={[
+                        styles.iconWrapper,
+                        formData.identityPreference === 'anonymous' ? styles.iconWrapperActive : styles.iconWrapperInactive
+                    ]}>
                         <UserX size={moderateScale(24)} color="white" />
                     </View>
-                    <View className="flex-1">
-                        <Text className={`font-bold text-sm mb-1 ${formData.identityPreference === 'anonymous' ? 'text-blue-900' : 'text-gray-800'}`}>পরিচয় গোপন রেখে জমা দেব</Text>
-                        <Text className="text-gray-500 text-[10px] leading-4">আপনার পরিচয় সম্পূর্ণ গোপন থাকবে। কর্তৃপক্ষ আপনার সাথে যোগাযোগ করতে পারবে না।</Text>
+                    <View style={styles.textWrapper}>
+                        <Text style={[
+                            styles.optionTitle,
+                            formData.identityPreference === 'anonymous' && styles.optionTitleActive
+                        ]}>পরিচয় গোপন রেখে জমা দেব</Text>
+                        <Text style={styles.optionDesc}>আপনার পরিচয় সম্পূর্ণ গোপন থাকবে। কর্তৃপক্ষ আপনার সাথে যোগাযোগ করতে পারবে না।</Text>
                     </View>
                 </View>
                 {formData.identityPreference === 'anonymous' && (
-                    <View className="bg-[#2563EB] rounded-full p-1">
+                    <View style={styles.checkWrapper}>
                         <Check size={moderateScale(14)} color="white" />
                     </View>
                 )}
@@ -36,19 +46,29 @@ const Step5Identity = ({ formData, setFormData }: Props) => (
 
             <TouchableOpacity
                 onPress={() => setFormData({ ...formData, identityPreference: 'contact' })}
-                className={`p-6 rounded-3xl border ${formData.identityPreference === 'contact' ? 'bg-[#EEF2FF] border-[#2563EB]' : 'bg-white dark:bg-zinc-900 border-gray-100 dark:border-zinc-800'} flex-row items-center justify-between`}
+                activeOpacity={0.8}
+                style={[
+                    styles.optionCard,
+                    formData.identityPreference === 'contact' && styles.optionCardActive
+                ]}
             >
-                <View className="flex-row items-center flex-1">
-                    <View className={`p-4 rounded-2xl mr-4 ${formData.identityPreference === 'contact' ? 'bg-[#2563EB]' : 'bg-[#E5E7EB]'}`}>
+                <View style={styles.optionMain}>
+                    <View style={[
+                        styles.iconWrapper,
+                        formData.identityPreference === 'contact' ? styles.iconWrapperActive : styles.iconWrapperInactive
+                    ]}>
                         <UserPlus size={moderateScale(24)} color="white" />
                     </View>
-                    <View className="flex-1">
-                        <Text className={`font-bold text-sm mb-1 ${formData.identityPreference === 'contact' ? 'text-blue-900' : 'text-gray-800'}`}>যোগাযোগ তথ্য দিতে চাই</Text>
-                        <Text className="text-gray-500 text-[10px] leading-4">প্রয়োজনে কর্তৃপক্ষ আরও তথ্যের জন্য আপনার সাথে যোগাযোগ করতে পারবে।</Text>
+                    <View style={styles.textWrapper}>
+                        <Text style={[
+                            styles.optionTitle,
+                            formData.identityPreference === 'contact' && styles.optionTitleActive
+                        ]}>যোগাযোগ তথ্য দিতে চাই</Text>
+                        <Text style={styles.optionDesc}>প্রয়োজনে কর্তৃপক্ষ আরও তথ্যের জন্য আপনার সাথে যোগাযোগ করতে পারবে।</Text>
                     </View>
                 </View>
                 {formData.identityPreference === 'contact' && (
-                    <View className="bg-[#2563EB] rounded-full p-1">
+                    <View style={styles.checkWrapper}>
                         <Check size={moderateScale(14)} color="white" />
                     </View>
                 )}
@@ -56,5 +76,78 @@ const Step5Identity = ({ formData, setFormData }: Props) => (
         </View>
     </View>
 );
+
+const styles = ScaledSheet.create({
+    container: {
+        paddingHorizontal: '20@ms',
+        paddingVertical: '24@vs',
+    },
+    title: {
+        fontSize: '18@ms',
+        fontWeight: 'bold',
+        color: '#111827',
+        marginBottom: '4@vs',
+    },
+    subtitle: {
+        fontSize: '13@ms',
+        color: '#9CA3AF',
+        marginBottom: '24@vs',
+    },
+    optionContainer: {
+        gap: '16@vs',
+    },
+    optionCard: {
+        padding: '20@ms',
+        borderRadius: '24@ms',
+        borderWidth: 1,
+        borderColor: '#F3F4FB',
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    optionCardActive: {
+        backgroundColor: '#EEF2FF',
+        borderColor: '#2563EB',
+    },
+    optionMain: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
+    iconWrapper: {
+        padding: '12@ms',
+        borderRadius: '16@ms',
+        marginRight: '16@ms',
+    },
+    iconWrapperActive: {
+        backgroundColor: '#2563EB',
+    },
+    iconWrapperInactive: {
+        backgroundColor: '#E5E7EB',
+    },
+    textWrapper: {
+        flex: 1,
+    },
+    optionTitle: {
+        fontSize: '14@ms',
+        fontWeight: 'bold',
+        color: '#1F2937',
+        marginBottom: '4@vs',
+    },
+    optionTitleActive: {
+        color: '#1E40AF',
+    },
+    optionDesc: {
+        fontSize: '10@ms',
+        color: '#6B7280',
+        lineHeight: '14@ms',
+    },
+    checkWrapper: {
+        backgroundColor: '#2563EB',
+        borderRadius: '12@ms',
+        padding: '3@ms',
+    },
+});
 
 export default Step5Identity;

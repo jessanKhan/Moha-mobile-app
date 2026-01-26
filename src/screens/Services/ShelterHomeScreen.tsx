@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Header from '../../components/Header';
 import { Search, ListFilter, MapPin, Phone } from 'lucide-react-native';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { scale, verticalScale, moderateScale, ScaledSheet } from 'react-native-size-matters';
 
 const ShelterHomeScreen = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -42,7 +42,7 @@ const ShelterHomeScreen = () => {
     };
 
     return (
-        <View className="flex-1 bg-[#F8F9FA] dark:bg-black">
+        <View style={styles.container}>
             <Header
                 title="সেল্টার হোম"
                 subtitle="নিরাপদ অস্থায়ী আশ্রয়"
@@ -55,17 +55,17 @@ const ShelterHomeScreen = () => {
                     <TextInput
                         placeholder="সেবা বা এলাকা লিখুন"
                         placeholderTextColor="#9CA3AF"
-                        className="flex-1 ml-2 text-gray-800 dark:text-gray-100"
+                        style={styles.textInput}
                         value={searchQuery}
                         onChangeText={setSearchQuery}
                     />
                 </View>
-                <TouchableOpacity style={styles.filterButton}>
+                <TouchableOpacity activeOpacity={0.7} style={styles.filterButton}>
                     <ListFilter color="#374151" size={moderateScale(20)} />
                 </TouchableOpacity>
             </View>
 
-            <ScrollView className="flex-1 px-4 py-2" showsVerticalScrollIndicator={false}>
+            <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
                 {filteredServices.map((service) => (
                     <View key={service.id} style={styles.card}>
                         <Text style={styles.serviceName}>{service.name}</Text>
@@ -75,14 +75,15 @@ const ShelterHomeScreen = () => {
                             <Text style={styles.locationText}>{service.location}</Text>
                         </View>
 
-                        <Text style={styles.description}>{service.description}</Text>
+                        <Text style={styles.descriptionText}>{service.description}</Text>
 
                         <View style={styles.buttonRow}>
-                            <TouchableOpacity style={styles.detailsButton}>
+                            <TouchableOpacity activeOpacity={0.7} style={styles.detailsButton}>
                                 <Text style={styles.detailsButtonText}>বিস্তারিত</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
+                                activeOpacity={0.8}
                                 style={styles.callButton}
                                 onPress={() => handleCall(service.phone)}
                             >
@@ -92,101 +93,123 @@ const ShelterHomeScreen = () => {
                         </View>
                     </View>
                 ))}
-                <View style={{ height: verticalScale(20) }} />
+                <View style={styles.footerSpacer} />
             </ScrollView>
         </View>
     );
 };
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F8F9FA',
+    },
     searchContainer: {
         flexDirection: 'row',
-        padding: moderateScale(16),
+        padding: '16@ms',
         alignItems: 'center',
         backgroundColor: 'white',
+        borderBottomWidth: 1,
+        borderBottomColor: '#F3F4F6',
     },
     searchBarWrapper: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#F9FAFB',
         borderWidth: 1,
         borderColor: '#E5E7EB',
-        borderRadius: moderateScale(12),
-        paddingHorizontal: moderateScale(12),
-        height: verticalScale(48),
+        borderRadius: '12@ms',
+        paddingHorizontal: '12@ms',
+        height: '48@vs',
+    },
+    textInput: {
+        flex: 1,
+        marginLeft: '10@ms',
+        fontSize: '14@ms',
+        color: '#1F2937',
     },
     filterButton: {
-        marginLeft: moderateScale(12),
-        padding: moderateScale(12),
+        marginLeft: '12@ms',
+        padding: '12@ms',
         borderWidth: 1,
         borderColor: '#E5E7EB',
-        borderRadius: moderateScale(12),
-        backgroundColor: 'white',
+        borderRadius: '12@ms',
+        backgroundColor: '#F9FAFB',
+    },
+    scrollContent: {
+        flex: 1,
+        paddingHorizontal: '16@ms',
+        paddingVertical: '12@vs',
     },
     card: {
         backgroundColor: 'white',
-        borderRadius: moderateScale(16),
-        padding: moderateScale(20),
-        marginBottom: verticalScale(16),
+        borderRadius: '16@ms',
+        padding: '20@ms',
+        marginBottom: '16@vs',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 8,
         elevation: 3,
+        borderWidth: 1,
+        borderColor: '#F3F4F6',
     },
     serviceName: {
-        fontSize: moderateScale(18),
+        fontSize: '18@ms',
         fontWeight: 'bold',
         color: '#1F2937',
-        marginBottom: verticalScale(8),
+        marginBottom: '8@vs',
     },
     locationRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: verticalScale(12),
+        marginBottom: '12@vs',
     },
     locationText: {
-        fontSize: moderateScale(14),
+        fontSize: '14@ms',
         color: '#6B7280',
-        marginLeft: moderateScale(4),
+        marginLeft: '4@ms',
     },
-    description: {
-        fontSize: moderateScale(14),
+    descriptionText: {
+        fontSize: '14@ms',
         color: '#4B5563',
-        lineHeight: verticalScale(20),
-        marginBottom: verticalScale(20),
+        lineHeight: '20@ms',
+        marginBottom: '20@vs',
     },
     buttonRow: {
         flexDirection: 'row',
-        gap: moderateScale(12),
+        gap: '12@ms',
     },
     detailsButton: {
         flex: 1,
         backgroundColor: '#F3F4F6',
-        paddingVertical: verticalScale(12),
-        borderRadius: moderateScale(10),
+        paddingVertical: '12@vs',
+        borderRadius: '10@ms',
         alignItems: 'center',
     },
     detailsButtonText: {
         color: '#374151',
         fontWeight: '600',
-        fontSize: moderateScale(15),
+        fontSize: '15@ms',
     },
     callButton: {
         flex: 1.2,
         flexDirection: 'row',
         backgroundColor: '#2563EB',
-        paddingVertical: verticalScale(12),
-        borderRadius: moderateScale(10),
+        paddingVertical: '12@vs',
+        borderRadius: '10@ms',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: moderateScale(8),
+        gap: '8@ms',
     },
     callButtonText: {
         color: 'white',
         fontWeight: '600',
-        fontSize: moderateScale(15),
+        fontSize: '15@ms',
+    },
+    footerSpacer: {
+        height: '40@vs',
     },
 });
 

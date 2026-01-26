@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import React, { FC } from 'react';
-import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
+import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 import LinearGradient from 'react-native-linear-gradient';
 import CustomCommonIcon from '../customCommonIconComponent/CustomCommonIcon';
 import { LucideIcon } from 'lucide-react-native';
@@ -25,7 +25,7 @@ const InitiativesComponent: FC<InitiativeCardProps> = ({
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={colors}
+        colors={colors as (string | number)[]}
         style={styles.linearGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
@@ -35,7 +35,7 @@ const InitiativesComponent: FC<InitiativeCardProps> = ({
             icon={icon}
             bgColor="rgba(255, 255, 255, 0.2)"
             iconColor={iconBgColor || '#ffffff'}
-            size={moderateScale(25)}
+            size={25}
           />
           <Text style={styles.text} numberOfLines={1}>
             {title}
@@ -49,13 +49,11 @@ const InitiativesComponent: FC<InitiativeCardProps> = ({
   );
 };
 
-export default InitiativesComponent;
-
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   container: {
-    width: width - scale(15),
+    width: width - moderateScale(15),
     backgroundColor: '#FFFFFF',
-    borderRadius: scale(14),
+    borderRadius: '14@ms',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.3,
@@ -63,31 +61,32 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   linearGradient: {
-    height: verticalScale(65),
-    borderTopLeftRadius: scale(14),
-    borderTopRightRadius: scale(14),
+    height: '65@vs',
+    borderTopLeftRadius: '14@ms',
+    borderTopRightRadius: '14@ms',
   },
   iconAndTextContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     height: '100%',
-    paddingHorizontal: scale(20),
-    gap: scale(12),
+    paddingHorizontal: '20@ms',
+    gap: '12@ms',
   },
   text: {
     flex: 1,
-    fontSize: scale(14),
+    fontSize: '14@ms',
     fontWeight: '600',
     color: 'rgba(255, 255, 255, 1)',
-    flexWrap: 'wrap',
   },
   textDescriptionContainer: {
-    padding: scale(20),
+    padding: '20@ms',
   },
   textDescription: {
-    fontSize: scale(12),
+    fontSize: '12@ms',
     fontWeight: '400',
     color: 'rgba(69, 85, 108, 1)',
-    lineHeight: scale(22),
+    lineHeight: '22@ms',
   },
 });
+
+export default InitiativesComponent;

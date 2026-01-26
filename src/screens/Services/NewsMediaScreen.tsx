@@ -83,21 +83,22 @@ const NewsMediaScreen = () => {
         <View style={styles.slideItem}>
             <ImageBackground
                 source={{ uri: item.image }}
-                className="flex-1 justify-end p-6"
-                imageStyle={{ borderRadius: scale(24) }}
+                style={styles.slideImage}
+                imageStyle={{ borderRadius: scale(20) }}
             >
-                {/* <View className="bg-black/40 absolute inset-0 rounded-3xl" /> */}
-                <Text className="text-white font-bold text-xl mb-1">{item.title}</Text>
-                <Text className="text-white/90 text-xs">{item.subtitle}</Text>
+                <View style={styles.slideOverlay}>
+                    <Text style={styles.slideTitle}>{item.title}</Text>
+                    <Text style={styles.slideSubtitle}>{item.subtitle}</Text>
+                </View>
             </ImageBackground>
         </View>
     );
 
     return (
-        <View className="flex-1 bg-[#F8F9FA] dark:bg-black">
+        <View style={styles.container}>
             <Header title="সংবাদ ও মিডিয়া" subtitle='সর্বশেষ খবর এবং আপডেট' showBackButton={true} />
 
-            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+            <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
 
                 {/* Refactored Carousel (Paging) */}
                 <View style={styles.carouselContainer}>
@@ -115,71 +116,56 @@ const NewsMediaScreen = () => {
                         onViewableItemsChanged={onViewRef.current}
                         viewabilityConfig={viewConfigRef.current}
                     />
-
-                    {/* Pagination Dots */}
-                    {/* <View className="flex-row justify-center mt-3 space-x-2">
-                        {carouselItems.map((_, index) => (
-                            <View
-                                key={index.toString()}
-                                className={`rounded-full ${index === activeIndex ? 'bg-[#009689]' : 'bg-gray-300'
-                                    }`}
-                                style={[
-                                    styles.dot,
-                                    index === activeIndex ? styles.activeDot : null
-                                ]}
-                            />
-                        ))}
-                    </View> */}
                 </View>
 
                 {/* News Section Card */}
-                <View className="mx-4 mb-8 bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-zinc-800">
-                    <View className="bg-[#2563EB] flex-row items-center px-6 py-4">
+                <View style={styles.newsCard}>
+                    <View style={styles.newsHeader}>
                         <Newspaper size={moderateScale(20)} color="white" />
-                        <Text className="text-white font-bold text-lg ml-3">খবর</Text>
+                        <Text style={styles.newsHeaderText}>খবর</Text>
                     </View>
 
-                    <View className="px-6 py-2">
+                    <View style={styles.newsList}>
                         {newsItems.map((item, index) => (
                             <TouchableOpacity
                                 key={item.id}
-                                className={`py-4 ${index !== newsItems.length - 1 ? 'border-b border-gray-100 dark:border-zinc-800' : ''}`}
+                                style={[styles.newsItem, index !== newsItems.length - 1 && styles.borderBottom]}
                             >
-                                <Text className="text-gray-900 dark:text-gray-100 font-bold text-sm mb-2 leading-5">
+                                <Text style={styles.newsItemTitle}>
                                     {item.title}
                                 </Text>
-                                <Text className="text-gray-500 dark:text-gray-400 text-xs leading-5 mb-3" numberOfLines={2}>
+                                <Text style={styles.newsItemDesc} numberOfLines={2}>
                                     {item.description}
                                 </Text>
-                                <View className="flex-row items-center">
+                                <View style={styles.dateWrapper}>
                                     <Clock size={moderateScale(12)} color="#9CA3AF" />
-                                    <Text className="text-gray-400 dark:text-gray-500 text-[10px] ml-1">{item.date}</Text>
+                                    <Text style={styles.dateText}>{item.date}</Text>
                                 </View>
                             </TouchableOpacity>
                         ))}
                     </View>
 
-                    <TouchableOpacity className="bg-[#2563EB] mx-6 mb-6 py-3 rounded-xl items-center justify-center">
-                        <Text className="text-white font-bold text-sm">আরো ও দেখুন</Text>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.viewMoreBtn}>
+                        <Text style={styles.viewMoreText}>আরো ও দেখুন</Text>
                     </TouchableOpacity>
                 </View>
 
                 {/* Upcoming Events */}
-                <View className="px-4 mb-12">
-                    <Text className="text-gray-800 dark:text-gray-200 font-bold text-lg mb-4">আসন্ন কর্মসূচি</Text>
-                    <View className="bg-[#E0F2F1] dark:bg-zinc-900/50 rounded-3xl p-6 border border-[#B2DFDB] dark:border-zinc-800">
+                <View style={styles.eventsSection}>
+                    <Text style={styles.sectionTitle}>আসন্ন কর্মসূচি</Text>
+                    <View style={styles.eventsList}>
                         {upcomingEvents.map((event, index) => (
                             <View
                                 key={event.id}
-                                className={`flex-row items-center justify-between ${index !== upcomingEvents.length - 1 ? 'mb-6 pb-6 border-b border-[#B2DFDB]/30 dark:border-zinc-800' : ''}`}
+                                style={[styles.eventItem, index !== upcomingEvents.length - 1 && styles.eventBorder]}
                             >
-                                <View className="flex-row items-center flex-1">
-                                    <View className="bg-[#00897B] p-2 rounded-xl mr-4">
+                                <View style={styles.eventInfo}>
+                                    <View style={styles.eventIconWrapper}>
                                         <Calendar size={moderateScale(20)} color="white" />
                                     </View>
-                                    <View className="flex-1">
-                                        <Text className="text-gray-800 dark:text-gray-200 font-bold text-sm mb-1">{event.title}</Text>
-                                        <Text className="text-teal-600 dark:text-teal-400 font-medium text-xs">{event.date}</Text>
+                                    <View style={styles.flex1}>
+                                        <Text style={styles.eventTitle}>{event.title}</Text>
+                                        <Text style={styles.eventDate}>{event.date}</Text>
                                     </View>
                                 </View>
                                 <ChevronRight size={moderateScale(18)} color="#9CA3AF" />
@@ -189,7 +175,7 @@ const NewsMediaScreen = () => {
                 </View>
 
                 {/* Hotline Bar */}
-                <View className="px-4 pb-8">
+                <View style={styles.footerHotline}>
                     <HotlineBanner />
                 </View>
 
@@ -199,21 +185,168 @@ const NewsMediaScreen = () => {
 };
 
 const styles = ScaledSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F8F9FA',
+    },
+    flex1: {
+        flex: 1,
+    },
     carouselContainer: {
-        paddingVertical: '16@vs'
+        paddingVertical: '16@vs',
     },
     slideItem: {
-        width: width - scale(40),
+        width: width,
         height: '180@vs',
-        marginHorizontal: '20@s'
+        paddingHorizontal: '16@ms',
     },
-    dot: {
-        width: '8@s',
-        height: '8@s'
+    slideImage: {
+        flex: 1,
+        justifyContent: 'flex-end',
     },
-    activeDot: {
-        width: '24@s'
-    }
+    slideOverlay: {
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        padding: '16@ms',
+        borderRadius: '20@ms',
+        justifyContent: 'flex-end',
+        height: '100%',
+    },
+    slideTitle: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: '18@ms',
+        marginBottom: '4@vs',
+    },
+    slideSubtitle: {
+        color: 'rgba(255, 255, 255, 0.9)',
+        fontSize: '12@ms',
+    },
+    newsCard: {
+        marginHorizontal: '16@ms',
+        marginBottom: '24@vs',
+        backgroundColor: 'white',
+        borderRadius: '24@ms',
+        overflow: 'hidden',
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 10,
+    },
+    newsHeader: {
+        backgroundColor: '#2563EB',
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: '20@ms',
+        paddingVertical: '12@vs',
+    },
+    newsHeaderText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: '18@ms',
+        marginLeft: '12@ms',
+    },
+    newsList: {
+        paddingHorizontal: '20@ms',
+        paddingVertical: '8@vs',
+    },
+    newsItem: {
+        paddingVertical: '16@vs',
+    },
+    borderBottom: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#F3F4F6',
+    },
+    newsItemTitle: {
+        color: '#111827',
+        fontWeight: 'bold',
+        fontSize: '14@ms',
+        marginBottom: '8@vs',
+        lineHeight: '20@ms',
+    },
+    newsItemDesc: {
+        color: '#6B7280',
+        fontSize: '12@ms',
+        lineHeight: '18@ms',
+        marginBottom: '12@vs',
+    },
+    dateWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    dateText: {
+        color: '#9CA3AF',
+        fontSize: '10@ms',
+        marginLeft: '4@ms',
+    },
+    viewMoreBtn: {
+        backgroundColor: '#2563EB',
+        marginHorizontal: '20@ms',
+        marginBottom: '20@vs',
+        paddingVertical: '12@vs',
+        borderRadius: '12@ms',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    viewMoreText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: '14@ms',
+    },
+    eventsSection: {
+        paddingHorizontal: '16@ms',
+        marginBottom: '32@vs',
+    },
+    sectionTitle: {
+        color: '#1F2937',
+        fontWeight: 'bold',
+        fontSize: '18@ms',
+        marginBottom: '16@vs',
+    },
+    eventsList: {
+        backgroundColor: '#E0F2F1',
+        borderRadius: '24@ms',
+        padding: '24@ms',
+        borderWidth: 1,
+        borderColor: '#B2DFDB',
+    },
+    eventItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    eventBorder: {
+        marginBottom: '20@vs',
+        paddingBottom: '20@vs',
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(178, 223, 219, 0.5)',
+    },
+    eventInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
+    eventIconWrapper: {
+        backgroundColor: '#00897B',
+        padding: '8@ms',
+        borderRadius: '12@ms',
+        marginRight: '16@ms',
+    },
+    eventTitle: {
+        color: '#1F2937',
+        fontWeight: 'bold',
+        fontSize: '14@ms',
+        marginBottom: '4@vs',
+    },
+    eventDate: {
+        color: '#00897B',
+        fontWeight: '500',
+        fontSize: '12@ms',
+    },
+    footerHotline: {
+        paddingHorizontal: '16@ms',
+        paddingBottom: '32@vs',
+    },
 });
 
 export default NewsMediaScreen;

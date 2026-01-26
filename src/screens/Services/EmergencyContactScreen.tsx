@@ -2,53 +2,34 @@ import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import Header from '../../components/Header';
 import { Clock3 } from 'lucide-react-native';
-import { moderateScale } from 'react-native-size-matters';
+import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 
 const EmergencyContactScreen = () => {
   return (
-    <View className="flex-1 bg-white">
+    <View style={styles.container}>
       <Header title="জরুরি যোগাযোগ" showBackButton />
 
-      <ScrollView className="flex-1 px-4 pt-4">
+      <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View
-          className="flex-row items-center rounded-2xl px-4 py-4"
-          style={{
-            backgroundColor: 'rgba(255, 220, 220, 1)',
-            borderWidth: 1,
-            borderColor: 'rgba(255, 190, 190, 1)',
-          }}
+          style={styles.bannerContainer}
         >
           <View
-            className="items-center justify-center rounded-full"
-            style={{
-              height: moderateScale(36),
-              width: moderateScale(36),
-              backgroundColor: 'rgba(255, 200, 200, 1)',
-            }}
+            style={styles.iconWrapper}
           >
             <Clock3 color="rgba(255, 77, 77, 1)" size={moderateScale(20)} />
           </View>
 
           {/* Texts */}
-          <View className="ml-3 flex-1">
+          <View style={styles.textWrapper}>
             <Text
-              className="font-inter-semibold"
-              style={{
-                color: 'rgba(255, 77, 77, 1)',
-                fontSize: moderateScale(14),
-              }}
+              style={styles.urgencyText}
               numberOfLines={1}
             >
               জরুরি পরিস্থিতি?
             </Text>
 
             <Text
-              className="font-inter-regular"
-              style={{
-                color: 'rgba(255, 128, 128, 1)',
-                fontSize: moderateScale(12),
-                marginTop: 2,
-              }}
+              style={styles.callText}
               numberOfLines={1}
             >
               অবিলম্বে ৯৯৯ নম্বরে কল করুন
@@ -59,5 +40,49 @@ const EmergencyContactScreen = () => {
     </View>
   );
 };
+
+const styles = ScaledSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  scrollContent: {
+    flex: 1,
+    paddingHorizontal: '16@ms',
+    paddingTop: '16@vs',
+  },
+  bannerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: '16@ms',
+    paddingHorizontal: '16@ms',
+    paddingVertical: '16@ms',
+    backgroundColor: 'rgba(255, 220, 220, 1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 190, 190, 1)',
+  },
+  iconWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '18@ms',
+    height: '36@ms',
+    width: '36@ms',
+    backgroundColor: 'rgba(255, 200, 200, 1)',
+  },
+  textWrapper: {
+    marginLeft: '12@ms',
+    flex: 1,
+  },
+  urgencyText: {
+    color: 'rgba(255, 77, 77, 1)',
+    fontSize: '14@ms',
+    fontWeight: '600',
+  },
+  callText: {
+    color: 'rgba(255, 128, 128, 1)',
+    fontSize: '12@ms',
+    marginTop: '2@vs',
+  },
+});
 
 export default EmergencyContactScreen;
