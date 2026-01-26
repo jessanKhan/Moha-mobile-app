@@ -13,6 +13,9 @@ import PreventiveMeasuresScreen from '../screens/Services/PreventiveMeasuresScre
 import QuickLinkScreen from '../screens/Services/QuickLinkScreen';
 import TraffickerInfoScreen from '../screens/Services/TraffickerInfoScreen';
 import ServiceSearchScreen from '../screens/Services/ServiceSearchScreen';
+import RehabilitationScreen from '../screens/Services/RehabilitationScreen';
+import RepatriationScreen from '../screens/Services/RepatriationScreen';
+import ShelterHomeScreen from '../screens/Services/ShelterHomeScreen';
 import Initiatives from '../screens/Initiative/Initiatives';
 import PolicyAndLawScreen from '../screens/Services/PolicyAndLawScreen';
 
@@ -42,6 +45,9 @@ const AppNavigator = () => {
       <Stack.Screen name="QuickLink" component={QuickLinkScreen} />
       <Stack.Screen name="TraffickerInfo" component={TraffickerInfoScreen} />
       <Stack.Screen name="ServiceSearch" component={ServiceSearchScreen} />
+      <Stack.Screen name="Rehabilitation" component={RehabilitationScreen} />
+      <Stack.Screen name="Repatriation" component={RepatriationScreen} />
+      <Stack.Screen name="ShelterHome" component={ShelterHomeScreen} />
     </Stack.Navigator>
   );
 };
