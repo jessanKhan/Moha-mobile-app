@@ -171,7 +171,6 @@ const styles = ScaledSheet.create({
     padding: '24@ms',
     borderRadius: '16@ms',
     marginBottom: '24@vs',
-    //marginTop: '10@vs',
     backgroundColor: 'rgba(255, 255, 255, 1)',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
