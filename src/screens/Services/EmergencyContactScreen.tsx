@@ -18,7 +18,7 @@ const EmergencyContactScreen = () => {
       />
 
       <ScrollView
-        className="flex-1 px-10 pt-4"
+        className="flex-1 p-4"
         keyboardShouldPersistTaps="handled"
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
