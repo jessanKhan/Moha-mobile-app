@@ -18,6 +18,7 @@ import RepatriationScreen from '../screens/Services/RepatriationScreen';
 import ShelterHomeScreen from '../screens/Services/ShelterHomeScreen';
 import Initiatives from '../screens/Initiative/Initiatives';
 import PolicyAndLawScreen from '../screens/Services/PolicyAndLawScreen';
+import AboutTraffickingScreen from '../screens/Services/AboutTraffickingScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +49,7 @@ const AppNavigator = () => {
       <Stack.Screen name="Rehabilitation" component={RehabilitationScreen} />
       <Stack.Screen name="Repatriation" component={RepatriationScreen} />
       <Stack.Screen name="ShelterHome" component={ShelterHomeScreen} />
+      <Stack.Screen name="AboutTrafficking" component={AboutTraffickingScreen} />
     </Stack.Navigator>
   );
 };

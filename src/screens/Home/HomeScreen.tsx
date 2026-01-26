@@ -171,7 +171,7 @@ const HomeScreen = () => {
         ListHeaderComponent={renderHeader}
         ListFooterComponent={() => (
           <View>
-            <BottomBanner />
+            <BottomBanner onPress={() => navigation.navigate('AboutTrafficking')} />
             <View className="h-4" />
             <HotlineBar />
             <View className="h-4" />

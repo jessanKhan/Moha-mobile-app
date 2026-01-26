@@ -1,11 +1,16 @@
-import React from 'react';
-import { View, Text, ImageBackground } from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity } from 'react-native';
 import { ShieldAlert } from 'lucide-react-native';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 
-const BottomBanner = () => {
+interface BottomBannerProps {
+    onPress?: () => void;
+}
+
+const BottomBanner = ({ onPress }: BottomBannerProps) => {
     return (
-        <View
+        <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={onPress}
             className="overflow-hidden"
             style={styles.container}
         >
@@ -29,7 +34,7 @@ const BottomBanner = () => {
                     </Text>
                 </View>
             </ImageBackground>
-        </View>
+        </TouchableOpacity>
     );
 };
 
