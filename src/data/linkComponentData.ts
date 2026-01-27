@@ -6,6 +6,10 @@ import {
   Leaf,
   Link,
   LinkIcon,
+  House,
+  Scale,
+  HeartHandshake,
+  Globe,
 } from 'lucide-react-native';
 
 export const quickLinksSectionData = [
@@ -23,47 +27,59 @@ export const quickLinksSectionData = [
 
   {
     id: '2',
-    title: 'মানব পাচার',
+    title: 'আশ্রয় কেন্দ্র',
     gradientColors: ['#00796B', '#00695C'],
-    icon: ShieldAlert,
+    icon: House,
     items: [
-      { id: '2-1', text: 'মানব পাচার বিরোধী আইন', linkIcon: LinkIcon },
-      { id: '2-2', text: 'মানব পাচার প্রতিরোধ কমিটি', linkIcon: LinkIcon },
-      { id: '2-3', text: 'মানব পাচার সংক্রান্ত অভিযোগ', linkIcon: LinkIcon },
+      { id: '2-1', text: 'ঢাকা আশ্রয় কেন্দ্র', linkIcon: LinkIcon },
+      { id: '2-2', text: 'চট্টগ্রাম নিরাপদ আশ্রয়', linkIcon: LinkIcon },
+      { id: '2-3', text: 'সিলেট মহিলা সহায়তা কেন্দ্র', linkIcon: LinkIcon },
     ],
   },
 
   {
     id: '3',
-    title: 'নারী সহায়তা',
+    title: 'আইনি সহায়তা',
     gradientColors: ['#1D4ED8', '#1E40AF'],
-    icon: Users,
+    icon: Scale,
     items: [
       { id: '3-1', text: 'BLAST (বাংলাদেশ লিগ্যাল এইড)', linkIcon: LinkIcon },
-      { id: '3-2', text: 'নারী সহায়তা হটলাইন: ১০৯', linkIcon: LinkIcon },
+      {
+        id: '3-2',
+        text: 'জাতীয় আইনি সহায়তা প্রদান সংস্থা',
+        linkIcon: LinkIcon,
+      },
     ],
   },
 
   {
     id: '4',
-    title: 'সার্ভিস সেন্টার',
+    title: 'কাউন্সেলিং সেবা',
     gradientColors: ['#7C3AED', '#6D28D9'],
-    icon: MapPin,
+    icon: HeartHandshake,
     items: [
-      { id: '4-1', text: 'নিকটস্থ থানার অবস্থান', linkIcon: LinkIcon },
-      { id: '4-2', text: 'আইনি সহায়তা কেন্দ্র', linkIcon: LinkIcon },
+      {
+        id: '4-1',
+        text: 'মানসিক স্বাস্থ্য পরামর্শ হটলাইন',
+        linkIcon: LinkIcon,
+      },
+      { id: '4-2', text: 'আশা ফাউন্ডেশন কাউন্সেলিং', linkIcon: LinkIcon },
     ],
   },
 
   {
     id: '5',
-    title: 'পরিবেশ সংরক্ষণ',
+    title: 'সরকারি ওয়েবসাইট',
     gradientColors: ['#0F9D58', '#0B8043'],
-    icon: Leaf,
+    icon: Globe,
     items: [
-      { id: '5-1', text: 'বন অধিদপ্তর', linkIcon: LinkIcon },
-      { id: '5-2', text: 'পরিবেশ দূষণ অভিযোগ', linkIcon: LinkIcon },
-      { id: '5-3', text: 'বন্যপ্রাণী সুরক্ষা', linkIcon: LinkIcon },
+      { id: '5-1', text: 'স্বরাষ্ট্র মন্ত্রণালয়', linkIcon: LinkIcon },
+      {
+        id: '5-2',
+        text: 'মহিলা ও শিশু বিষয়ক মন্ত্রণালয়',
+        linkIcon: LinkIcon,
+      },
+      { id: '5-3', text: 'বাংলাদেশ পুলিশ', linkIcon: LinkIcon },
     ],
   },
 ];
