@@ -6,6 +6,7 @@ import { quickLinksSectionData } from '../../data/linkComponentData';
 import LinkComponent from '../../components/linkComponent/LinkComponent';
 import { ExternalLink } from 'lucide-react-native';
 import { moderateScale } from 'react-native-size-matters';
+import CustomEmergencyContactComponent from '../../components/customEmergencyContact/CustomEmergencyContactComponent';
 
 const QuickLinkScreen = () => {
   return (
@@ -39,6 +40,12 @@ const QuickLinkScreen = () => {
                 isFirst={index === 0}
               />
             )}
+          />
+        )}
+        ListFooterComponent={() => (
+          <CustomEmergencyContactComponent
+            title="২৪/৭ জরুরি হটলাইন"
+            hotLineNumber="৯৯৯"
           />
         )}
       />

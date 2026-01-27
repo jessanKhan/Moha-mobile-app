@@ -5,14 +5,15 @@ import QuickLinksComponent from '../../components/quickLinkComponent/QuickLinksC
 import { moderateScale } from 'react-native-size-matters';
 import PreventiveMeasureComponent from '../../components/preventiveMeasure/PreventiveMeasureComponent';
 import { preventData } from '../../data/preventlinkData';
+import CustomEmergencyContactComponent from '../../components/customEmergencyContact/CustomEmergencyContactComponent';
 
 const PreventiveMeasuresScreen = () => {
   return (
     <View className="flex-1 bg-gray-50 dark:bg-black">
       <Header
-        title="দ্রুত লিংক"
+        title="প্রতিরোধমূলক ব্যবস্থা"
         showBackButton={true}
-        subtitle="প্রয়োজনীয় দ্রুত লিংক"
+        subtitle="নিরাপত্তা টিপস এবং সতর্কতা"
       />
 
       <FlatList
@@ -40,6 +41,15 @@ const PreventiveMeasuresScreen = () => {
               />
             )}
           />
+        )}
+        ListFooterComponent={() => (
+          <>
+            <View style={{ height: moderateScale(20) }} />
+            <CustomEmergencyContactComponent
+              title="২৪/৭ জরুরি হটলাইন"
+              hotLineNumber="৯৯৯"
+            />
+          </>
         )}
       />
     </View>
