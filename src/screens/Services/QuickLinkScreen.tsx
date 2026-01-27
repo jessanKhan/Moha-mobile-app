@@ -1,19 +1,56 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, FlatList } from 'react-native';
 import Header from '../../components/Header';
+import QuickLinksComponent from '../../components/quickLinkComponent/QuickLinksComponent';
+import { quickLinksSectionData } from '../../data/linkComponentData';
+import LinkComponent from '../../components/linkComponent/LinkComponent';
+import { ExternalLink } from 'lucide-react-native';
+import { moderateScale } from 'react-native-size-matters';
+import CustomEmergencyContactComponent from '../../components/customEmergencyContact/CustomEmergencyContactComponent';
 
 const QuickLinkScreen = () => {
-    return (
-        <View className="flex-1 bg-white dark:bg-black">
-            <Header title="দ্রুত লিংক" showBackButton={true} />
-            <ScrollView className="flex-1 p-4">
-                <View className="bg-gray-50 dark:bg-zinc-900 p-6 rounded-2xl border border-gray-100 dark:border-zinc-800">
-                    <Text className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">দ্রুত লিংক</Text>
-                    <Text className="text-gray-600 dark:text-gray-300 leading-6">This screen will contain quick links.</Text>
-                </View>
-            </ScrollView>
-        </View>
-    );
+  return (
+    <View className="flex-1 bg-white dark:bg-black">
+      <Header
+        title="দ্রুত লিংক"
+        showBackButton={true}
+        subtitle="প্রয়োজনীয় দ্রুত লিংক"
+      />
+
+      <FlatList
+        data={quickLinksSectionData}
+        keyExtractor={item => item.id}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          padding: moderateScale(20),
+          gap: moderateScale(15),
+        }}
+        renderItem={({ item }) => (
+          <QuickLinksComponent
+            title={item.title}
+            gradientColors={item.gradientColors}
+            headerIcon={item.icon}
+            data={item.items}
+            keyExtractor={linkItem => linkItem.id}
+            renderItem={({ item: linkItem, index }) => (
+              <LinkComponent
+                text={linkItem.text}
+                icon={ExternalLink}
+                onPress={() => console.log(linkItem.text)}
+                isFirst={index === 0}
+              />
+            )}
+          />
+        )}
+        ListFooterComponent={() => (
+          <CustomEmergencyContactComponent
+            title="২৪/৭ জরুরি হটলাইন"
+            hotLineNumber="৯৯৯"
+          />
+        )}
+      />
+    </View>
+  );
 };
 
 export default QuickLinkScreen;
