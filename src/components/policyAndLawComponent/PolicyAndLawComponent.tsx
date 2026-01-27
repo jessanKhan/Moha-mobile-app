@@ -1,16 +1,15 @@
 import {
   LayoutAnimation,
   Platform,
-  StyleSheet,
   Text,
   TouchableOpacity,
   UIManager,
   View,
 } from 'react-native';
 import React, { FC, useState } from 'react';
-import { moderateScale, verticalScale } from 'react-native-size-matters';
+import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 import CustomCommonIcon from '../customCommonIconComponent/CustomCommonIcon';
-import { Scale, ChevronDown, ChevronUp, LucideIcon } from 'lucide-react-native';
+import { ChevronDown, ChevronUp, LucideIcon } from 'lucide-react-native';
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental?.(true);
@@ -44,7 +43,7 @@ const PolicyAndLawComponent: FC<PolicyAndLawComponentProps> = ({
             icon={icon}
             bgColor={iconBgColor}
             iconColor={iconColors}
-            size={moderateScale(28)}
+            size={28}
           />
           <Text style={styles.text}>{title}</Text>
         </View>
@@ -68,14 +67,11 @@ const PolicyAndLawComponent: FC<PolicyAndLawComponentProps> = ({
   );
 };
 
-export default PolicyAndLawComponent;
-
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
-    borderRadius: moderateScale(16),
-    padding: moderateScale(16),
-    //marginBottom: verticalScale(12),
+    borderRadius: '16@ms',
+    padding: '16@ms',
     shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowRadius: 4,
@@ -91,26 +87,28 @@ const styles = StyleSheet.create({
   iconAndTextContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: moderateScale(20),
+    gap: '20@ms',
   },
   text: {
-    fontSize: moderateScale(16),
+    fontSize: '16@ms',
     fontWeight: '400',
     color: 'rgba(29, 41, 61, 1)',
   },
   textDescriptionContainer: {
     borderTopWidth: 0.5,
     borderColor: 'rgba(178, 190, 195, 1)',
-    marginTop: verticalScale(16),
-    marginHorizontal: -moderateScale(16),
+    marginTop: '16@vs',
+    marginHorizontal: '-16@ms',
   },
   textDescriptionsContainer: {
-    marginTop: verticalScale(12),
-    paddingLeft: moderateScale(90),
+    marginTop: '12@vs',
+    paddingLeft: '90@ms',
   },
   textDescription: {
-    fontSize: moderateScale(14),
+    fontSize: '14@ms',
     fontWeight: '400',
     color: 'rgba(69, 85, 108, 1)',
   },
 });
+
+export default PolicyAndLawComponent;

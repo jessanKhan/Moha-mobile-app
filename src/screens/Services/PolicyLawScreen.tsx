@@ -24,17 +24,17 @@ const PolicyLawScreen = () => {
     const AccordionItem = ({ item, index, expanded, onPress }: any) => {
         const Icon = item.icon;
         return (
-            <View className="bg-white dark:bg-zinc-900 shadow-sm border border-gray-100 dark:border-zinc-800 overflow-hidden" style={styles.accordionContainer}>
+            <View style={styles.accordionContainer}>
                 <TouchableOpacity
                     onPress={onPress}
-                    className="flex-row items-center justify-between"
+                    activeOpacity={0.7}
                     style={styles.accordionHeader}
                 >
-                    <View className="flex-row items-center flex-1" style={{ paddingRight: scale(16) }}>
-                        <View className={`items-center justify-center`} style={[styles.iconContainer, { backgroundColor: item.color }]}>
+                    <View style={styles.headerContent}>
+                        <View style={[styles.iconContainer, { backgroundColor: item.color }]}>
                             <Icon size={moderateScale(24)} color="white" />
                         </View>
-                        <Text className="text-gray-800 dark:text-gray-100 font-bold flex-1" style={styles.itemTitle}>
+                        <Text style={styles.itemTitle}>
                             {item.title}
                         </Text>
                     </View>
@@ -43,7 +43,7 @@ const PolicyLawScreen = () => {
 
                 {expanded && (
                     <View style={styles.expandedContent}>
-                        <Text className="text-gray-600 dark:text-gray-400" style={styles.contentText}>
+                        <Text style={styles.contentText}>
                             {item.content}
                         </Text>
                     </View>
@@ -53,14 +53,14 @@ const PolicyLawScreen = () => {
     };
 
     return (
-        <View className="flex-1 bg-gray-50 dark:bg-black">
+        <View style={styles.container}>
             <Header
                 title="নীতি ও আইন"
                 subtitle="আইনি তথ্য এবং নির্দেশনা"
                 showBackButton={true}
             />
 
-            <ScrollView className="flex-1" contentContainerStyle={styles.scrollContent}>
+            <ScrollView style={styles.flex1} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
                 {policies.map((item, index) => (
                     <AccordionItem
                         key={index}
@@ -72,15 +72,15 @@ const PolicyLawScreen = () => {
                 ))}
 
                 {/* Legal Advice Card */}
-                <View className="bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-100 dark:border-cyan-800/30" style={styles.legalCard}>
-                    <View className="flex-row items-center" style={{ marginBottom: verticalScale(12) }}>
+                <View style={styles.legalCard}>
+                    <View style={styles.legalHeader}>
                         <Scale size={moderateScale(20)} color="#0891B2" />
-                        <Text className="text-cyan-800 dark:text-cyan-400 font-bold" style={styles.legalTitle}>আইনি পরামর্শ</Text>
+                        <Text style={styles.legalTitle}>আইনি পরামর্শ</Text>
                     </View>
-                    <Text className="text-cyan-700 dark:text-cyan-300" style={styles.legalText}>
+                    <Text style={styles.legalText}>
                         আইনি সহায়তা প্রয়োজন হলে নিকটস্থ আইনজীবী বা আইনি সহায়তা কেন্দ্রে যোগাযোগ করুন।
                     </Text>
-                    <Text className="text-cyan-700 dark:text-cyan-300 opacity-80" style={styles.legalSubText}>
+                    <Text style={styles.legalSubText}>
                         সকল তথ্য সম্পূর্ণ গোপনীয় রাখা হবে।
                     </Text>
                 </View>
@@ -98,56 +98,95 @@ const PolicyLawScreen = () => {
 };
 
 const styles = ScaledSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F9FAFB',
+    },
+    flex1: {
+        flex: 1,
+    },
     scrollContent: {
-        paddingHorizontal: '16@s',
-        paddingTop: '24@vs',
-        paddingBottom: '100@vs'
+        paddingHorizontal: '16@ms',
+        paddingTop: '20@vs',
+        paddingBottom: '40@vs',
     },
     accordionContainer: {
+        backgroundColor: 'white',
         marginBottom: '16@vs',
-        borderRadius: '16@ms'
+        borderRadius: '16@ms',
+        borderWidth: 1,
+        borderColor: '#F3F4F6',
+        overflow: 'hidden',
+        elevation: 1,
     },
     accordionHeader: {
-        padding: '16@ms'
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '16@ms',
+    },
+    headerContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+        paddingRight: '16@ms',
     },
     iconContainer: {
-        width: '48@ms',
-        height: '48@ms',
-        borderRadius: '16@ms',
-        marginRight: '16@s'
+        width: '40@ms',
+        height: '40@ms',
+        borderRadius: '10@ms',
+        marginRight: '12@ms',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     itemTitle: {
-        fontSize: '16@ms' // text-lg approx
+        color: '#1F2937',
+        fontWeight: 'bold',
+        fontSize: '15@ms',
+        flex: 1,
     },
     expandedContent: {
-        paddingHorizontal: '16@s',
-        paddingBottom: '24@vs',
-        paddingTop: '8@vs',
-        paddingLeft: '72@s' // 16 (padding) + 48 (icon) + 16 (margin) approx
+        paddingHorizontal: '16@ms',
+        paddingBottom: '20@vs',
+        paddingTop: '4@vs',
+        paddingLeft: '68@ms',
     },
     contentText: {
-        fontSize: '14@ms',
-        lineHeight: '22@ms'
-    },
-    legalCard: {
-        padding: '24@ms',
-        borderRadius: '16@ms',
-        marginBottom: '24@vs',
-        marginTop: '8@vs'
-    },
-    legalTitle: {
-        marginLeft: '12@s',
-        fontSize: '16@ms'
-    },
-    legalText: {
+        color: '#4B5563',
         fontSize: '14@ms',
         lineHeight: '20@ms',
-        marginBottom: '4@vs'
+    },
+    legalCard: {
+        padding: '20@ms',
+        backgroundColor: '#ECFEFF',
+        borderRadius: '16@ms',
+        marginBottom: '24@vs',
+        marginTop: '8@vs',
+        borderWidth: 1,
+        borderColor: '#CFFAFE',
+    },
+    legalHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: '12@vs',
+    },
+    legalTitle: {
+        marginLeft: '10@ms',
+        color: '#0891B2',
+        fontWeight: 'bold',
+        fontSize: '16@ms',
+    },
+    legalText: {
+        color: '#155E75',
+        fontSize: '14@ms',
+        lineHeight: '20@ms',
+        marginBottom: '8@vs',
     },
     legalSubText: {
+        color: '#155E75',
         fontSize: '12@ms',
-        marginTop: '8@vs'
-    }
+        opacity: 0.7,
+    },
 });
 
 export default PolicyLawScreen;

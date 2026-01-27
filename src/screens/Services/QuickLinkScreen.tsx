@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
 import Header from '../../components/Header';
-import QuickLinksComponent from '../../components/quickLinkComponent/QuickLinksComponent';
-import { quickLinksSectionData } from '../../data/linkComponentData';
-import LinkComponent from '../../components/linkComponent/LinkComponent';
 import { ExternalLink } from 'lucide-react-native';
 import { moderateScale } from 'react-native-size-matters';
 import CustomEmergencyContactComponent from '../../components/customEmergencyContact/CustomEmergencyContactComponent';
+import QuickLinksComponent from '../../components/quickLinkComponent/QuickLinksComponent';
+import { quickLinksSectionData } from '../../data/linkComponentData';
+import LinkComponent from '../../components/quickLinkComponent/LinkComponent';
 
 const QuickLinkScreen = () => {
   return (
