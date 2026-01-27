@@ -1,16 +1,15 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { ChartColumn } from 'lucide-react-native';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 
 const ServiceComponent = () => {
   return (
     <TouchableOpacity
-      className="items-center justify-center bg-[#FFFFFF]"
+      activeOpacity={0.8}
       style={styles.container}
     >
       <View
-        className="items-center justify-center bg-[#1447E6]"
         style={styles.iconContainer}
       >
         <ChartColumn color="#fff" size={moderateScale(28)} />
@@ -22,14 +21,14 @@ const ServiceComponent = () => {
   );
 };
 
-export default ServiceComponent;
-
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   container: {
-    height: verticalScale(136),
-    width: scale(190),
+    height: '136@vs',
+    width: '190@ms',
     backgroundColor: '#FFFFFF',
-    borderRadius: scale(10),
+    borderRadius: '10@ms',
+    alignItems: 'center',
+    justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.3,
@@ -37,15 +36,21 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   iconContainer: {
-    height: verticalScale(56),
-    width: scale(56),
-    borderRadius: scale(14),
+    height: '56@vs',
+    width: '56@ms',
+    borderRadius: '14@ms',
+    backgroundColor: '#1447E6',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   textContainer: {
-    marginTop: verticalScale(10),
+    marginTop: '10@vs',
   },
   text: {
-    fontSize: scale(20),
+    fontSize: '20@ms',
     fontWeight: 'bold',
+    color: '#1F2937',
   },
 });
+
+export default ServiceComponent;

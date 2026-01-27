@@ -1,56 +1,49 @@
 import React from 'react';
-import { View, FlatList } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import Header from '../../components/Header';
-import QuickLinksComponent from '../../components/quickLinkComponent/QuickLinksComponent';
-import { quickLinksSectionData } from '../../data/linkComponentData';
-import LinkComponent from '../../components/linkComponent/LinkComponent';
-import { ExternalLink } from 'lucide-react-native';
-import { moderateScale } from 'react-native-size-matters';
-import CustomEmergencyContactComponent from '../../components/customEmergencyContact/CustomEmergencyContactComponent';
+import { ScaledSheet } from 'react-native-size-matters';
 
 const QuickLinkScreen = () => {
-  return (
-    <View className="flex-1 bg-white dark:bg-black">
-      <Header
-        title="দ্রুত লিংক"
-        showBackButton={true}
-        subtitle="প্রয়োজনীয় দ্রুত লিংক"
-      />
-
-      <FlatList
-        data={quickLinksSectionData}
-        keyExtractor={item => item.id}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          padding: moderateScale(20),
-          gap: moderateScale(15),
-        }}
-        renderItem={({ item }) => (
-          <QuickLinksComponent
-            title={item.title}
-            gradientColors={item.gradientColors}
-            headerIcon={item.icon}
-            data={item.items}
-            keyExtractor={linkItem => linkItem.id}
-            renderItem={({ item: linkItem, index }) => (
-              <LinkComponent
-                text={linkItem.text}
-                icon={ExternalLink}
-                onPress={() => console.log(linkItem.text)}
-                isFirst={index === 0}
-              />
-            )}
-          />
-        )}
-        ListFooterComponent={() => (
-          <CustomEmergencyContactComponent
-            title="২৪/৭ জরুরি হটলাইন"
-            hotLineNumber="৯৯৯"
-          />
-        )}
-      />
-    </View>
-  );
+    return (
+        <View style={styles.container}>
+            <Header title="দ্রুত লিংক" showBackButton={true} />
+            <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                <View style={styles.contentBanner}>
+                    <Text style={styles.title}>দ্রুত লিংক</Text>
+                    <Text style={styles.description}>This screen will contain quick links.</Text>
+                </View>
+            </ScrollView>
+        </View>
+    );
 };
+
+const styles = ScaledSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+    },
+    scrollContent: {
+        flex: 1,
+        padding: '16@ms',
+    },
+    contentBanner: {
+        backgroundColor: '#F9FAFB',
+        padding: '24@ms',
+        borderRadius: '16@ms',
+        borderWidth: 1,
+        borderColor: '#F3F4F6',
+    },
+    title: {
+        fontSize: '20@ms',
+        fontWeight: 'bold',
+        color: '#1F2937',
+        marginBottom: '16@vs',
+    },
+    description: {
+        color: '#4B5563',
+        fontSize: '14@ms',
+        lineHeight: '24@ms',
+    },
+});
 
 export default QuickLinkScreen;

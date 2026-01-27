@@ -1,59 +1,49 @@
 import React from 'react';
-import { View, FlatList } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import Header from '../../components/Header';
-import QuickLinksComponent from '../../components/quickLinkComponent/QuickLinksComponent';
-import { moderateScale } from 'react-native-size-matters';
-import PreventiveMeasureComponent from '../../components/preventiveMeasure/PreventiveMeasureComponent';
-import { preventData } from '../../data/preventlinkData';
-import CustomEmergencyContactComponent from '../../components/customEmergencyContact/CustomEmergencyContactComponent';
+import { ScaledSheet } from 'react-native-size-matters';
 
 const PreventiveMeasuresScreen = () => {
-  return (
-    <View className="flex-1 bg-gray-50 dark:bg-black">
-      <Header
-        title="প্রতিরোধমূলক ব্যবস্থা"
-        showBackButton={true}
-        subtitle="নিরাপত্তা টিপস এবং সতর্কতা"
-      />
-
-      <FlatList
-        data={preventData}
-        keyExtractor={item => item.id}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          padding: moderateScale(16),
-          paddingBottom: moderateScale(24),
-        }}
-        ItemSeparatorComponent={() => (
-          <View style={{ height: moderateScale(16) }} />
-        )}
-        renderItem={({ item }) => (
-          <QuickLinksComponent
-            title={item.title}
-            gradientColors={item.gradientColors}
-            headerIcon={item.icon}
-            data={item.items}
-            keyExtractor={linkItem => linkItem.id}
-            renderItem={({ item: linkItem, index }) => (
-              <PreventiveMeasureComponent
-                text={linkItem.text}
-                isFirst={index === 0}
-              />
-            )}
-          />
-        )}
-        ListFooterComponent={() => (
-          <>
-            <View style={{ height: moderateScale(20) }} />
-            <CustomEmergencyContactComponent
-              title="২৪/৭ জরুরি হটলাইন"
-              hotLineNumber="৯৯৯"
-            />
-          </>
-        )}
-      />
-    </View>
-  );
+    return (
+        <View style={styles.container}>
+            <Header title="প্রতিরোধমূলক ব্যবস্থা" showBackButton={true} />
+            <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                <View style={styles.contentBanner}>
+                    <Text style={styles.title}>প্রতিরোধমূলক ব্যবস্থা</Text>
+                    <Text style={styles.description}>This screen will contain preventive measures.</Text>
+                </View>
+            </ScrollView>
+        </View>
+    );
 };
+
+const styles = ScaledSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+    },
+    scrollContent: {
+        flex: 1,
+        padding: '16@ms',
+    },
+    contentBanner: {
+        backgroundColor: '#F9FAFB',
+        padding: '24@ms',
+        borderRadius: '16@ms',
+        borderWidth: 1,
+        borderColor: '#F3F4F6',
+    },
+    title: {
+        fontSize: '20@ms',
+        fontWeight: 'bold',
+        color: '#1F2937',
+        marginBottom: '16@vs',
+    },
+    description: {
+        color: '#4B5563',
+        fontSize: '14@ms',
+        lineHeight: '24@ms',
+    },
+});
 
 export default PreventiveMeasuresScreen;

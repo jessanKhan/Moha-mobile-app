@@ -12,9 +12,9 @@ const screenWidth = Dimensions.get('window').width;
 
 const StatisticsScreen = () => {
     const renderRightComponent = () => (
-        <TouchableOpacity className="bg-white/20 flex-row items-center border border-white/30" style={styles.filterBtn}>
+        <TouchableOpacity activeOpacity={0.8} style={styles.filterBtn}>
             <Filter size={moderateScale(16)} color="white" />
-            <Text className="text-white font-medium" style={styles.filterText}>ফিল্টার</Text>
+            <Text style={styles.filterText}>ফিল্টার</Text>
         </TouchableOpacity>
     );
 
@@ -23,37 +23,36 @@ const StatisticsScreen = () => {
             colors={colors}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            className="w-[48%] flex justify-between"
             style={styles.summaryCard}
         >
-            <View className="bg-white/20 self-start rounded-xl" style={styles.iconWrapper}>
+            <View style={styles.iconWrapper}>
                 <Icon size={moderateScale(24)} color="white" />
             </View>
             <View>
-                <Text className="text-white font-bold" style={styles.countText}>{count}</Text>
-                <Text className="text-white/90 font-medium" style={styles.titleText}>{title}</Text>
+                <Text style={styles.countText}>{count}</Text>
+                <Text style={styles.titleText}>{title}</Text>
             </View>
         </LinearGradient>
     );
 
     const ChartCard = ({ title, children, fullWidth = false }: any) => (
-        <View className={`bg-white dark:bg-zinc-900 shadow-sm ${fullWidth ? 'mb-4' : 'mx-4 mb-4'}`} style={!fullWidth && styles.cardRounded}>
-            <Text className={`text-gray-800 dark:text-white font-bold ${fullWidth ? 'px-4 pt-4' : ''}`} style={styles.chartTitle}>{title}</Text>
+        <View style={[styles.card, fullWidth ? styles.fullWidthCard : styles.marginCard]}>
+            <Text style={styles.chartTitle}>{title}</Text>
             {children}
         </View>
     );
 
     return (
-        <View className="flex-1 bg-gray-50 dark:bg-black">
+        <View style={styles.container}>
             <Header
                 title="পরিসংখ্যান"
                 subtitle="মানব পাচার প্রতিরোধ তথ্য ও উপাত্ত"
                 showBackButton={true}
                 rightComponent={renderRightComponent()}
             />
-            <ScrollView className="flex-1" contentContainerStyle={styles.scrollContent}>
+            <ScrollView style={styles.flex1} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
                 {/* Summary Cards Grid */}
-                <View className="flex-row flex-wrap justify-between" style={styles.gridContainer}>
+                <View style={styles.gridContainer}>
                     <SummaryCard
                         icon={BarChart3}
                         count="১,২৪৫"
@@ -92,8 +91,8 @@ const StatisticsScreen = () => {
                         xAxisThickness={1}
                         xAxisColor={'#E5E7EB'}
                         hideRules
-                        height={verticalScale(200)}
-                        width={screenWidth - scale(20)}
+                        height={verticalScale(180)}
+                        width={screenWidth - scale(60)}
                         xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(10) }}
                     />
                 </ChartCard>
@@ -104,8 +103,8 @@ const StatisticsScreen = () => {
                         data={lineData1}
                         data2={lineData2}
                         data3={lineData3}
-                        height={verticalScale(200)}
-                        width={screenWidth - scale(20)}
+                        height={verticalScale(180)}
+                        width={screenWidth - scale(60)}
                         initialSpacing={scale(20)}
                         color1="#3B82F6"
                         color2="#14B8A6"
@@ -126,10 +125,10 @@ const StatisticsScreen = () => {
                         xAxisThickness={1}
                         xAxisColor={'#E5E7EB'}
                     />
-                    <View className="flex-row justify-center mt-4 pb-4" style={{ gap: scale(16) }}>
-                        <View className="flex-row items-center"><View className="rounded-full bg-blue-500 mr-2" style={styles.legendDot} /><Text className="text-gray-500" style={styles.legendText}>উদ্ধার</Text></View>
-                        <View className="flex-row items-center"><View className="rounded-full bg-teal-500 mr-2" style={styles.legendDot} /><Text className="text-gray-500" style={styles.legendText}>চলমান</Text></View>
-                        <View className="flex-row items-center"><View className="rounded-full bg-orange-500 mr-2" style={styles.legendDot} /><Text className="text-gray-500" style={styles.legendText}>রিপোর্ট</Text></View>
+                    <View style={styles.legendContainer}>
+                        <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: '#3B82F6' }]} /><Text style={styles.legendText}>উদ্ধার</Text></View>
+                        <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: '#14B8A6' }]} /><Text style={styles.legendText}>চলমান</Text></View>
+                        <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: '#F59E0B' }]} /><Text style={styles.legendText}>রিপোর্ট</Text></View>
                     </View>
                 </ChartCard>
 
@@ -147,9 +146,9 @@ const StatisticsScreen = () => {
                         xAxisColor={'#9CA3AF'}
                         rulesType="dashed"
                         rulesColor={'#E5E7EB'}
-                        height={verticalScale(200)}
-                        width={screenWidth - scale(20)}
-                        spacing={(screenWidth - scale(40) - (scale(45) * 4)) / 4}
+                        height={verticalScale(180)}
+                        width={screenWidth - scale(60)}
+                        spacing={(screenWidth - scale(80) - (scale(45) * 4)) / 4}
                         initialSpacing={scale(20)}
                         xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(10), width: scale(60), textAlign: 'center' }}
                         yAxisTextStyle={{ color: '#6B7280', fontSize: moderateScale(10) }}
@@ -158,17 +157,17 @@ const StatisticsScreen = () => {
 
                 {/* Pie Chart */}
                 <ChartCard title="বয়স ও লিঙ্গভিত্তিক তথ্য">
-                    <View className="items-center py-6">
+                    <View style={styles.pieContainer}>
                         <PieChart
                             data={pieData}
                             donut={false}
                             showExternalLabels
-                            radius={scale(120)}
+                            radius={scale(100)}
                             labelsPosition="outward"
                             externalLabelComponent={(item: any) => (
                                 <SvgText
                                     fill={item.textColor}
-                                    fontSize={moderateScale(12)}
+                                    fontSize={moderateScale(11)}
                                     fontWeight="bold"
                                     x={item.shiftTextX || 0}
                                     y={item.shiftTextY || 0}
@@ -179,61 +178,125 @@ const StatisticsScreen = () => {
                         />
                     </View>
                 </ChartCard>
-
             </ScrollView>
         </View>
     );
 };
 
 const styles = ScaledSheet.create({
-    filterBtn: {
-        paddingHorizontal: '12@s',
-        paddingVertical: '6@vs',
-        borderRadius: '20@ms'
+    container: {
+        flex: 1,
+        backgroundColor: '#F9FAFB',
     },
-    filterText: {
-        fontSize: '12@ms',
-        marginLeft: '8@s'
+    flex1: {
+        flex: 1,
     },
     scrollContent: {
-        paddingBottom: '100@vs'
+        paddingBottom: '40@vs',
+    },
+    filterBtn: {
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.3)',
+        paddingHorizontal: '12@ms',
+        paddingVertical: '6@vs',
+        borderRadius: '20@ms',
+    },
+    filterText: {
+        color: 'white',
+        fontWeight: '500',
+        fontSize: '12@ms',
+        marginLeft: '8@ms',
     },
     gridContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
         padding: '16@ms',
-        paddingTop: '24@vs'
+        paddingTop: '20@vs',
     },
     summaryCard: {
-        height: '160@vs',
+        width: '48%',
+        height: '150@vs',
         padding: '16@ms',
         borderRadius: '20@ms',
         marginBottom: '16@vs',
-        overflow: 'hidden'
+        justifyContent: 'space-between',
+        overflow: 'hidden',
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
     },
     iconWrapper: {
-        padding: '8@ms'
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        alignSelf: 'flex-start',
+        borderRadius: '12@ms',
+        padding: '10@ms',
     },
     countText: {
+        color: 'white',
         fontSize: '24@ms',
-        marginBottom: '4@vs'
+        fontWeight: 'bold',
+        marginBottom: '4@vs',
     },
     titleText: {
-        fontSize: '12@ms'
+        color: 'rgba(255, 255, 255, 0.9)',
+        fontSize: '12@ms',
+        fontWeight: '500',
     },
-    cardRounded: {
+    card: {
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 10,
+        elevation: 2,
+    },
+    marginCard: {
+        marginHorizontal: '16@ms',
+        marginBottom: '20@vs',
         borderRadius: '20@ms',
-        padding: '16@ms'
+        padding: '16@ms',
+    },
+    fullWidthCard: {
+        marginBottom: '20@vs',
+        paddingTop: '20@vs',
     },
     chartTitle: {
+        color: '#1F2937',
         fontSize: '18@ms',
-        marginBottom: '24@vs'
+        fontWeight: 'bold',
+        marginBottom: '20@vs',
+    },
+    legendContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: '20@vs',
+        paddingBottom: '10@vs',
+        gap: '16@ms',
+    },
+    legendItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     legendDot: {
         width: '8@ms',
-        height: '8@ms'
+        height: '8@ms',
+        borderRadius: '4@ms',
+        marginRight: '8@ms',
     },
     legendText: {
-        fontSize: '12@ms'
-    }
+        color: '#6B7280',
+        fontSize: '12@ms',
+    },
+    pieContainer: {
+        alignItems: 'center',
+        paddingVertical: '20@vs',
+    },
 });
 
 export default StatisticsScreen;

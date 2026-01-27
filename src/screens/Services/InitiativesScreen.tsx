@@ -1,54 +1,49 @@
-import { FlatList, StyleSheet, View } from 'react-native';
 import React from 'react';
-import { initiativeData } from '../../data/initiativesData';
-import InitiativesComponent from '../../components/initiativesComponent/InitiativesComponent';
+import { View, Text, ScrollView } from 'react-native';
 import Header from '../../components/Header';
-import { scale } from 'react-native-size-matters';
+import { ScaledSheet } from 'react-native-size-matters';
 
 const InitiativesScreen = () => {
-  return (
-    <View style={styles.container}>
-      <Header
-        title="উদ্যোগসমূহ"
-        subtitle="মানব পাচার প্রতিরোধে উদ্যোগ"
-        showBackButton
-      />
-      <FlatList
-        data={initiativeData}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <View style={{ overflow: 'hidden', borderRadius: scale(14) }}>
-            <InitiativesComponent
-              title={item.title}
-              description={item.description}
-              icon={item.icon}
-              colors={item.gradientColors}
-              iconBgColor={item.iconBgColor}
-            />
-          </View>
-        )}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-        style={styles.flatList}
-      />
-    </View>
-  );
+    return (
+        <View style={styles.container}>
+            <Header title="উদ্যোগসমূহ" showBackButton={true} />
+            <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                <View style={styles.contentBanner}>
+                    <Text style={styles.title}>উদ্যোগসমূহ</Text>
+                    <Text style={styles.description}>This screen will contain initiatives.</Text>
+                </View>
+            </ScrollView>
+        </View>
+    );
 };
 
-export default InitiativesScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F7FA',
-  },
-  flatList: {
-    flex: 1,
-    width: '100%',
-  },
-  listContent: {
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    gap: 16,
-  },
+const styles = ScaledSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+    },
+    scrollContent: {
+        flex: 1,
+        padding: '16@ms',
+    },
+    contentBanner: {
+        backgroundColor: '#F9FAFB',
+        padding: '24@ms',
+        borderRadius: '16@ms',
+        borderWidth: 1,
+        borderColor: '#F3F4F6',
+    },
+    title: {
+        fontSize: '20@ms',
+        fontWeight: 'bold',
+        color: '#1F2937',
+        marginBottom: '16@vs',
+    },
+    description: {
+        color: '#4B5563',
+        fontSize: '14@ms',
+        lineHeight: '24@ms',
+    },
 });
+
+export default InitiativesScreen;
