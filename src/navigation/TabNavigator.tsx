@@ -1,11 +1,10 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Home, User, Settings } from 'lucide-react-native';
+import { Home, UserCircle, FilePenLine } from 'lucide-react-native';
 import { useColorScheme } from 'react-native';
 import HomeScreen from '../screens/Home/HomeScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
-import SettingsScreen from '../screens/Settings/SettingsScreen';
 import StatisticsScreen from '../screens/Services/StatisticsScreen';
 import PolicyAndLawScreen from '../screens/Services/PolicyAndLawScreen';
 import EmergencyContactScreen from '../screens/Services/EmergencyContactScreen';
@@ -70,25 +69,26 @@ const TabNavigator = () => {
           shadowOffset: { width: 0, height: verticalScale(-2) },
           shadowOpacity: 0.1,
           shadowRadius: moderateScale(4),
-          height: verticalScale(64),
-          paddingBottom: verticalScale(10),
+          height: verticalScale(60),
+          paddingBottom: verticalScale(5),
           paddingTop: verticalScale(5),
         },
-        tabBarActiveTintColor: '#2563eb', // Blue-600
-        tabBarInactiveTintColor: isDarkMode ? '#9ca3af' : '#6b7280',
+        tabBarLabelPosition: 'below-icon',
+        tabBarActiveTintColor: '#1559F7', // Blue-600
+        tabBarInactiveTintColor: '#8696BB',
         tabBarLabelStyle: {
           fontSize: moderateScale(11),
           fontWeight: '500',
-          marginBottom: verticalScale(5),
+          marginTop: verticalScale(8),
         },
         tabBarIcon: ({ color, size }) => {
           const iconSize = moderateScale(size);
           if (route.name === 'Home') {
             return <Home color={color} size={iconSize} />;
+          } else if (route.name === 'Complaint') {
+            return <FilePenLine color={color} size={iconSize} />;
           } else if (route.name === 'Profile') {
-            return <User color={color} size={iconSize} />;
-          } else if (route.name === 'Settings') {
-            return <Settings color={color} size={iconSize} />;
+            return <UserCircle color={color} size={iconSize} />;
           }
           return null;
         },
@@ -97,17 +97,17 @@ const TabNavigator = () => {
       <Tab.Screen
         name="Home"
         component={HomeStackNavigator}
-        options={{ title: 'Home' }}
+        options={{ title: 'হোম' }}
+      />
+      <Tab.Screen
+        name="Complaint"
+        component={ComplaintScreen}
+        options={{ title: 'অভিযোগ করুন' }}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{ title: 'Profile' }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{ title: 'Settings' }}
+        options={{ title: 'প্রোফাইল' }}
       />
     </Tab.Navigator>
   );
