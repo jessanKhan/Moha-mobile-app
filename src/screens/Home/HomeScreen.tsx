@@ -26,15 +26,15 @@ const SERVICES = [
     id: '1',
     title: 'পরিসংখ্যান',
     icon: BarChart3,
-    color: '#3B82F6',
     bgColor: '#EFF6FF',
     route: 'Statistics',
+    iconGradientColors: ['#155DFC', '#1447E6'],
   },
   {
     id: '2',
     title: 'নীতি ও আইন',
     icon: Scale,
-    color: '#10B981',
+    iconGradientColors: ['#009689', '#00786F'],
     bgColor: '#ECFDF5',
     route: 'PolicyLaw',
   },
@@ -42,7 +42,7 @@ const SERVICES = [
     id: '3',
     title: 'জরুরি যোগাযোগ',
     icon: PhoneCall,
-    color: '#EF4444',
+    iconGradientColors: ['#FB2C36', '#E7000B'],
     bgColor: '#FEF2F2',
     route: 'EmergencyContact',
   },
@@ -50,7 +50,7 @@ const SERVICES = [
     id: '4',
     title: 'উদ্যোগসমূহ',
     icon: Handshake,
-    color: '#8B5CF6',
+    iconGradientColors: ['#2B7FFF', '#155DFC'],
     bgColor: '#F5F3FF',
     route: 'Initiatives',
   },
@@ -58,7 +58,7 @@ const SERVICES = [
     id: '5',
     title: 'অভিযোগ করুন',
     icon: FileText,
-    color: '#F97316',
+    iconGradientColors: ['#FF6900', '#F54900'],
     bgColor: '#FFF7ED',
     route: 'Complaint',
   },
@@ -66,7 +66,7 @@ const SERVICES = [
     id: '6',
     title: 'সংবাদ ও মিডিয়া',
     icon: Newspaper,
-    color: '#D946EF',
+    iconGradientColors: ['#9810FA', '#8200DB'],
     bgColor: '#FDF4FF',
     route: 'NewsMedia',
   },
@@ -74,7 +74,7 @@ const SERVICES = [
     id: '7',
     title: 'প্রতিরোধমূলক ব্যবস্থা',
     icon: ShieldCheck,
-    color: '#14B8A6',
+    iconGradientColors: ['#00A63E', '#008236'],
     bgColor: '#F0FDFA',
     route: 'PreventiveMeasures',
   },
@@ -82,7 +82,7 @@ const SERVICES = [
     id: '8',
     title: 'দ্রুত লিংক',
     icon: LinkIcon,
-    color: '#0EA5E9',
+    iconGradientColors: ['#00BBA7', '#009689'],
     bgColor: '#F0F9FF',
     route: 'QuickLink',
   },
@@ -90,7 +90,7 @@ const SERVICES = [
     id: '9',
     title: 'পাচারকারী সম্পর্কে তথ্য',
     icon: Users,
-    color: '#22C55E',
+    iconGradientColors: ['#00A63E', '#008236'],
     bgColor: '#F0FDF4',
     route: 'TraffickerInfo',
   },
@@ -98,7 +98,7 @@ const SERVICES = [
     id: '10',
     title: 'সেবা অনুসন্ধান',
     icon: Search,
-    color: '#06B6D4',
+    iconGradientColors: ['#155DFC', '#1447E6'],
     bgColor: '#ECFEFF',
     route: 'ServiceSearch',
   },
@@ -146,7 +146,7 @@ const HomeScreen = () => {
           <ServiceCard
             title={item.title}
             icon={item.icon}
-            iconBgColor={item.color}
+            iconGradientColors={item.iconGradientColors}
             onPress={() => navigation.navigate(item.route)}
           />
         )}
