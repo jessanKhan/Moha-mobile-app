@@ -93,6 +93,7 @@ const styles = ScaledSheet.create({
     fontSize: '16@ms',
     fontWeight: '400',
     color: 'rgba(29, 41, 61, 1)',
+    fontFamily: 'July-Bold',
   },
   textDescriptionContainer: {
     borderTopWidth: 0.5,
@@ -108,6 +109,7 @@ const styles = ScaledSheet.create({
     fontSize: '14@ms',
     fontWeight: '400',
     color: 'rgba(69, 85, 108, 1)',
+    fontFamily: 'July-Regular',
   },
 });
 

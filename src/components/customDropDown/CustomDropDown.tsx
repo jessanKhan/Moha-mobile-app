@@ -3,10 +3,9 @@ import {
     View,
     Text,
     TouchableOpacity,
-    StyleSheet,
     ScrollView,
 } from 'react-native';
-import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
+import { moderateScale, scale, verticalScale, ScaledSheet } from 'react-native-size-matters';
 import { ChevronDown } from 'lucide-react-native';
 
 type Country = {
@@ -73,12 +72,12 @@ const CountryDropdown: FC<Props> = ({ onSelect }) => {
 
 export default CountryDropdown;
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
     button: {
         backgroundColor: '#FFFFFF',
-        borderRadius: scale(14),
-        paddingVertical: verticalScale(14),
-        paddingHorizontal: scale(16),
+        borderRadius: '14@ms',
+        paddingVertical: '14@vs',
+        paddingHorizontal: '16@ms',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -86,25 +85,27 @@ const styles = StyleSheet.create({
         borderColor: '#E5E7EB',
     },
     buttonText: {
-        fontSize: moderateScale(15),
+        fontSize: '15@ms',
         fontWeight: '400',
         color: '#1E293B',
+        fontFamily: 'July-Regular',
     },
     dropdown: {
-        marginTop: verticalScale(8),
+        marginTop: '8@vs',
         backgroundColor: '#FFFFFF',
-        borderRadius: scale(14),
+        borderRadius: '14@ms',
         borderWidth: 1,
         borderColor: '#E5E7EB',
         overflow: 'hidden',
-        maxHeight: verticalScale(200),
+        maxHeight: '200@vs',
     },
     item: {
-        paddingVertical: verticalScale(12),
-        paddingHorizontal: scale(16),
+        paddingVertical: '12@vs',
+        paddingHorizontal: '16@ms',
     },
     itemText: {
-        fontSize: moderateScale(14),
+        fontSize: '14@ms',
         color: '#1E293B',
+        fontFamily: 'July-Regular',
     },
 });

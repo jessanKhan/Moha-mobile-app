@@ -113,13 +113,13 @@ const styles = ScaledSheet.create({
         color: 'white',
         fontSize: '20@ms',
         fontWeight: 'bold',
-        fontFamily: 'font-inter-bold',
+        fontFamily: 'July-Bold',
     },
     subtitle: {
         color: 'rgba(255, 255, 255, 0.8)',
         fontSize: '12@ms',
         marginTop: '4@vs',
-        fontFamily: 'font-inter-regular',
+        fontFamily: 'July-Regular',
     },
     rightComponent: {
         marginLeft: '12@ms',

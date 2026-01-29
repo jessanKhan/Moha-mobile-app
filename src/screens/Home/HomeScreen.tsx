@@ -183,6 +183,7 @@ const styles = ScaledSheet.create({
     fontSize: '20@ms',
     fontWeight: 'bold',
     color: '#1E293B',
+    fontFamily: 'July-Bold',
   },
   profileContainer: {
     height: '40@ms',

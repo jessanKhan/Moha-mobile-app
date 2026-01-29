@@ -108,7 +108,8 @@ const styles = ScaledSheet.create({
         fontWeight: '700',
         fontSize: '18@ms',
         lineHeight: '22@ms',
-        padding: '2@ms'
+        padding: '2@ms',
+        fontFamily: 'July-Bold',
     }
 });
 

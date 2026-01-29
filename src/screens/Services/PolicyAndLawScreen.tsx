@@ -98,6 +98,7 @@ const styles = ScaledSheet.create({
     fontSize: '16@ms',
     fontWeight: '400',
     lineHeight: '24@ms',
+    fontFamily: 'July-Bold',
   },
   descriptionContainer: {
     marginTop: '10@vs',
@@ -108,6 +109,7 @@ const styles = ScaledSheet.create({
     fontSize: '14@ms',
     fontWeight: '400',
     lineHeight: '22@ms',
+    fontFamily: 'July-Regular',
   },
 });
 

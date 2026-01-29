@@ -87,11 +87,13 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         color: '#111827',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     subtitle: {
         fontSize: '13@ms',
         color: '#9CA3AF',
         marginBottom: '24@vs',
+        fontFamily: 'July-Regular',
     },
     optionContainer: {
         gap: '16@vs',
@@ -134,6 +136,7 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         color: '#1F2937',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     optionTitleActive: {
         color: '#1E40AF',
@@ -142,6 +145,7 @@ const styles = ScaledSheet.create({
         fontSize: '10@ms',
         color: '#6B7280',
         lineHeight: '14@ms',
+        fontFamily: 'July-Regular',
     },
     checkWrapper: {
         backgroundColor: '#2563EB',

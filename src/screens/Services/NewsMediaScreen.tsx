@@ -216,10 +216,12 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         fontSize: '18@ms',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     slideSubtitle: {
         color: 'rgba(255, 255, 255, 0.9)',
         fontSize: '12@ms',
+        fontFamily: 'July-Regular',
     },
     newsCard: {
         marginHorizontal: '16@ms',
@@ -245,6 +247,7 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         fontSize: '18@ms',
         marginLeft: '12@ms',
+        fontFamily: 'July-Bold',
     },
     newsList: {
         paddingHorizontal: '20@ms',
@@ -263,12 +266,14 @@ const styles = ScaledSheet.create({
         fontSize: '14@ms',
         marginBottom: '8@vs',
         lineHeight: '20@ms',
+        fontFamily: 'July-Bold',
     },
     newsItemDesc: {
         color: '#6B7280',
         fontSize: '12@ms',
         lineHeight: '18@ms',
         marginBottom: '12@vs',
+        fontFamily: 'July-Regular',
     },
     dateWrapper: {
         flexDirection: 'row',
@@ -278,6 +283,7 @@ const styles = ScaledSheet.create({
         color: '#9CA3AF',
         fontSize: '10@ms',
         marginLeft: '4@ms',
+        fontFamily: 'July-Regular',
     },
     viewMoreBtn: {
         backgroundColor: '#2563EB',
@@ -292,6 +298,7 @@ const styles = ScaledSheet.create({
         color: 'white',
         fontWeight: 'bold',
         fontSize: '14@ms',
+        fontFamily: 'July-Bold',
     },
     eventsSection: {
         paddingHorizontal: '16@ms',
@@ -302,6 +309,7 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         fontSize: '18@ms',
         marginBottom: '16@vs',
+        fontFamily: 'July-Bold',
     },
     eventsList: {
         backgroundColor: '#E0F2F1',
@@ -337,11 +345,13 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         fontSize: '14@ms',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     eventDate: {
         color: '#00897B',
         fontWeight: '500',
         fontSize: '12@ms',
+        fontFamily: 'July-Regular',
     },
     footerHotline: {
         paddingHorizontal: '16@ms',

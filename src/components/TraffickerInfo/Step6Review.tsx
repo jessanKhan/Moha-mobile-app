@@ -91,11 +91,13 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         color: '#111827',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     subtitle: {
         fontSize: '13@ms',
         color: '#9CA3AF',
         marginBottom: '24@vs',
+        fontFamily: 'July-Regular',
     },
     cardContainer: {
         gap: '16@vs',
@@ -141,6 +143,7 @@ const styles = ScaledSheet.create({
         color: '#9CA3AF',
         textTransform: 'uppercase',
         letterSpacing: 0.5,
+        fontFamily: 'July-Bold',
     },
     infoRow: {
         flexDirection: 'row',
@@ -150,12 +153,14 @@ const styles = ScaledSheet.create({
         fontSize: '13@ms',
         color: '#6B7280',
         width: '60@ms',
+        fontFamily: 'July-Regular',
     },
     infoValue: {
         fontSize: '13@ms',
         fontWeight: 'bold',
         color: '#1F2937',
         flex: 1,
+        fontFamily: 'July-Bold',
     },
     divider: {
         height: 1,
@@ -167,6 +172,7 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         color: '#9CA3AF',
         marginBottom: '8@vs',
+        fontFamily: 'July-Bold',
     },
     tagRow: {
         flexDirection: 'row',
@@ -183,22 +189,26 @@ const styles = ScaledSheet.create({
         color: '#EF4444',
         fontWeight: 'bold',
         fontSize: '11@ms',
+        fontFamily: 'July-Bold',
     },
     locationMain: {
         fontSize: '14@ms',
         fontWeight: 'bold',
         color: '#1F2937',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     locationSub: {
         fontSize: '12@ms',
         color: '#6B7280',
         marginBottom: '2@vs',
+        fontFamily: 'July-Regular',
     },
     descriptionText: {
         fontSize: '13@ms',
         color: '#4B5563',
         lineHeight: '18@ms',
+        fontFamily: 'July-Regular',
     },
     identityNote: {
         backgroundColor: '#E0F2F1',
@@ -211,12 +221,14 @@ const styles = ScaledSheet.create({
         fontSize: '13@ms',
         fontWeight: 'bold',
         color: '#111827',
+        fontFamily: 'July-Bold',
     },
     identityStatus: {
         fontSize: '11@ms',
         fontWeight: 'bold',
         color: '#00897B',
         marginTop: '4@vs',
+        fontFamily: 'July-Bold',
     },
 });
 

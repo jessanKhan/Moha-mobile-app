@@ -115,10 +115,12 @@ const styles = ScaledSheet.create({
         fontSize: '22@ms',
         fontWeight: 'bold',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     subtitle: {
         color: 'rgba(255, 255, 255, 0.8)',
         fontSize: '14@ms',
+        fontFamily: 'July-Regular',
     },
 });
 

@@ -144,6 +144,7 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         fontSize: '15@ms',
         flex: 1,
+        fontFamily: 'July-Bold',
     },
     expandedContent: {
         paddingHorizontal: '16@ms',
@@ -155,6 +156,7 @@ const styles = ScaledSheet.create({
         color: '#4B5563',
         fontSize: '14@ms',
         lineHeight: '20@ms',
+        fontFamily: 'July-Regular',
     },
     legalCard: {
         padding: '20@ms',
@@ -175,17 +177,20 @@ const styles = ScaledSheet.create({
         color: '#0891B2',
         fontWeight: 'bold',
         fontSize: '16@ms',
+        fontFamily: 'July-Bold',
     },
     legalText: {
         color: '#155E75',
         fontSize: '14@ms',
         lineHeight: '20@ms',
         marginBottom: '8@vs',
+        fontFamily: 'July-Regular',
     },
     legalSubText: {
         color: '#155E75',
         fontSize: '12@ms',
         opacity: 0.7,
+        fontFamily: 'July-Regular',
     },
 });
 

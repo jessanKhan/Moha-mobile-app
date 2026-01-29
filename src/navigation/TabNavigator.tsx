@@ -80,6 +80,7 @@ const TabNavigator = () => {
           fontSize: moderateScale(11),
           fontWeight: '500',
           marginTop: verticalScale(8),
+          fontFamily: 'July-Bold',
         },
         tabBarIcon: ({ color, size }) => {
           const iconSize = moderateScale(size);

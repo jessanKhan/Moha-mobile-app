@@ -128,6 +128,7 @@ const styles = ScaledSheet.create({
         marginLeft: '10@ms',
         fontSize: '14@ms',
         color: '#1F2937',
+        fontFamily: 'July-Regular',
     },
     filterButton: {
         marginLeft: '12@ms',
@@ -160,6 +161,7 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         color: '#1F2937',
         marginBottom: '8@vs',
+        fontFamily: 'July-Bold',
     },
     locationRow: {
         flexDirection: 'row',
@@ -170,12 +172,14 @@ const styles = ScaledSheet.create({
         fontSize: '14@ms',
         color: '#6B7280',
         marginLeft: '4@ms',
+        fontFamily: 'July-Regular',
     },
     descriptionText: {
         fontSize: '14@ms',
         color: '#4B5563',
         lineHeight: '20@ms',
         marginBottom: '20@vs',
+        fontFamily: 'July-Regular',
     },
     buttonRow: {
         flexDirection: 'row',
@@ -192,6 +196,7 @@ const styles = ScaledSheet.create({
         color: '#374151',
         fontWeight: '600',
         fontSize: '15@ms',
+        fontFamily: 'July-Bold',
     },
     callButton: {
         flex: 1.2,
@@ -207,6 +212,7 @@ const styles = ScaledSheet.create({
         color: 'white',
         fontWeight: '600',
         fontSize: '15@ms',
+        fontFamily: 'July-Bold',
     },
     footerSpacer: {
         height: '40@vs',

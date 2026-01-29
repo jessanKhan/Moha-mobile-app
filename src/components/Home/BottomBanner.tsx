@@ -71,6 +71,7 @@ const styles = ScaledSheet.create({
         color: 'white',
         fontWeight: 'bold',
         fontSize: '18@ms',
+        fontFamily: 'July-Bold',
     },
 });
 
