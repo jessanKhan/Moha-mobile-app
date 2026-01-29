@@ -1,11 +1,30 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, ScrollView, ImageBackground, TouchableOpacity, Image, FlatList, Dimensions } from 'react-native';
 import Header from '../../components/Header';
-import { Newspaper, Calendar, ChevronRight, Clock } from 'lucide-react-native';
+import { Newspaper, Calendar, ChevronRight, Clock, RefreshCcw } from 'lucide-react-native';
 import { moderateScale, scale, verticalScale, ScaledSheet } from 'react-native-size-matters';
 import HotlineBanner from '../../components/HotlineBanner';
+import { useQuery } from '@apollo/client/react';
+import { NEWS_ALL_QUERY } from '../../api/queries';
 
 const { width } = Dimensions.get('window');
+
+interface News {
+    id: number;
+    pageId?: number;
+    category?: string;
+    title?: string;
+    titleBn?: string;
+    subtitle?: string;
+    subtitleBn?: string;
+    date?: string;
+    dateBn?: string;
+    thumbnailUrl?: string; // Optional as per user's edit
+}
+
+interface NewsData {
+    newsAll: News[];
+}
 
 const NewsMediaScreen = () => {
     const [activeIndex, setActiveIndex] = useState(0);
@@ -46,33 +65,14 @@ const NewsMediaScreen = () => {
         return () => clearInterval(interval);
     }, [activeIndex]);
 
-    const newsItems = [
-        {
-            id: 1,
-            title: "ঢাকায় মানব পাচার চক্র ভাঙচুর, ১৫ জন গ্রেপ্তার",
-            description: "র‍্যাবের অভিযানে রাজধানীর বিভিন্ন এলাকা থেকে মানব পাচার চক্রের সদস্যদের গ্রেপ্তার করা হয়েছে।",
-            date: "১৫ ডিসেম্বর, ২০২৫"
-        },
-        {
-            id: 2,
-            title: "বিমানবন্দর থেকে বিদেশে পাচারের চেষ্টা, উদ্ধার ৩ কিশোরী",
-            description: "হযরত শাহজালাল আন্তর্জাতিক বিমানবন্দর থেকে পাচারের সময় তিন কিশোরীকে উদ্ধার করেছে আইন-শৃঙ্খলা বাহিনী।",
-            date: "১৪ ডিসেম্বর, ২০২৫"
-        },
-        {
-            id: 3,
-            title: "ভুয়া চাকরির প্রলোভনে মানব পাচার, আটক ৭ দালাল",
-            description: "বিদেশে চাকরির মিথ্যা আশ্বাস দিয়ে পাচারের অভিযোগে ৭ জন দালালকে গ্রেপ্তার করেছে পুলিশ।",
-            date: "১২ ডিসেম্বর, ২০২৫"
-        },
-        {
-            id: 4,
-            title: "মানব পাচার প্রতিরোধে নতুন হটলাইন চালু করল সরকার",
-            description: "মানব পাচার সংক্রান্ত অভিযোগ দ্রুত গ্রহণের জন্য সরকার নতুন একটি বিশেষ হটলাইন নম্বর চালু করেছে।",
-            date: "১১ ডিসেম্বর, ২০২৫"
-        }
-    ];
+    const queryVariables = React.useMemo(() => ({ page: 1, limit: 10 }), []);
 
+    const { data, loading, error, refetch } = useQuery<NewsData>(NEWS_ALL_QUERY, {
+        variables: queryVariables,
+    });
+    if (error) {
+        console.log('GraphQL Error Details:', JSON.stringify(error, null, 2));
+    }
     const upcomingEvents = [
         { id: 1, title: "জাতীয় মানব পাচার প্রতিরোধ দিবস", date: "৩০ জানুয়ারি" },
         { id: 2, title: "সচেতনতা সেমিনার - ঢাকা বিশ্ববিদ্যালয়", date: "৫ ফেব্রুয়ারি" },
@@ -121,28 +121,65 @@ const NewsMediaScreen = () => {
                 {/* News Section Card */}
                 <View style={styles.newsCard}>
                     <View style={styles.newsHeader}>
-                        <Newspaper size={moderateScale(20)} color="white" />
-                        <Text style={styles.newsHeaderText}>খবর</Text>
+                        <View style={styles.flexRow}>
+                            <Newspaper size={moderateScale(20)} color="white" />
+                            <Text style={styles.newsHeaderText}>খবর</Text>
+                        </View>
+                        <TouchableOpacity onPress={() => refetch()} disabled={loading}>
+                            <RefreshCcw size={moderateScale(18)} color="white" style={loading ? { opacity: 0.5 } : {}} />
+                        </TouchableOpacity>
                     </View>
 
                     <View style={styles.newsList}>
-                        {newsItems.map((item, index) => (
-                            <TouchableOpacity
-                                key={item.id}
-                                style={[styles.newsItem, index !== newsItems.length - 1 && styles.borderBottom]}
-                            >
-                                <Text style={styles.newsItemTitle}>
-                                    {item.title}
-                                </Text>
-                                <Text style={styles.newsItemDesc} numberOfLines={2}>
-                                    {item.description}
-                                </Text>
-                                <View style={styles.dateWrapper}>
-                                    <Clock size={moderateScale(12)} color="#9CA3AF" />
-                                    <Text style={styles.dateText}>{item.date}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        ))}
+                        {loading ? (
+                            <View style={styles.centerContent}>
+                                <Text style={styles.statusText}>লোড হচ্ছে...</Text>
+                            </View>
+                        ) : error ? (
+                            <View style={styles.centerContent}>
+                                <Text style={[styles.statusText, { color: '#EF4444' }]}>উহ! খবর লোড করা সম্ভব হয়নি।</Text>
+                            </View>
+                        ) : data?.newsAll && data.newsAll.length > 0 ? (
+                            data.newsAll.map((item, index) => (
+                                <TouchableOpacity
+                                    key={item.id}
+                                    style={[styles.newsItem, index !== data.newsAll.length - 1 && styles.borderBottom]}
+                                >
+                                    <View style={styles.newsItemContent}>
+                                        <View style={styles.newsTextContent}>
+                                            <Text style={styles.newsItemTitle} numberOfLines={2}>
+                                                {item.titleBn}
+                                            </Text>
+                                            {/* {(item.subtitleBn) ? (
+                                                <Text style={styles.newsItemDesc} numberOfLines={2}>
+                                                    {item.subtitleBn}
+                                                </Text>
+                                            ) : null} */}
+                                            <Text style={styles.newsItemDesc} numberOfLines={2}>
+                                                {item.subtitleBn}
+                                            </Text>
+                                            <View style={styles.dateWrapper}>
+                                                <Clock size={moderateScale(12)} color="#9CA3AF" />
+                                                <Text style={styles.dateText}>
+                                                    {item.dateBn || (item.date ? new Date(item.date).toLocaleDateString() : '')}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        {/* {item.thumbnailUrl && (
+                                            <Image
+                                                source={{ uri: item.thumbnailUrl }}
+                                                style={styles.thumbnail}
+                                                resizeMode="cover"
+                                            />
+                                        )} */}
+                                    </View>
+                                </TouchableOpacity>
+                            ))
+                        ) : (
+                            <View style={styles.centerContent}>
+                                <Text style={styles.statusText}>কোনো খবর পাওয়া যায়নি।</Text>
+                            </View>
+                        )}
                     </View>
 
                     <TouchableOpacity activeOpacity={0.8} style={styles.viewMoreBtn}>
@@ -239,8 +276,13 @@ const styles = ScaledSheet.create({
         backgroundColor: '#2563EB',
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
         paddingHorizontal: '20@ms',
         paddingVertical: '12@vs',
+    },
+    flexRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     newsHeaderText: {
         color: 'white',
@@ -249,12 +291,35 @@ const styles = ScaledSheet.create({
         marginLeft: '12@ms',
         fontFamily: 'July-Bold',
     },
+    centerContent: {
+        paddingVertical: '32@vs',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    statusText: {
+        fontSize: '14@ms',
+        fontFamily: 'July-Regular',
+        color: '#6B7280',
+    },
     newsList: {
         paddingHorizontal: '20@ms',
         paddingVertical: '8@vs',
     },
     newsItem: {
         paddingVertical: '16@vs',
+    },
+    newsItemContent: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        gap: '12@ms',
+    },
+    newsTextContent: {
+        flex: 1,
+    },
+    thumbnail: {
+        width: '80@ms',
+        height: '80@ms',
+        borderRadius: '12@ms',
     },
     borderBottom: {
         borderBottomWidth: 1,
@@ -264,7 +329,7 @@ const styles = ScaledSheet.create({
         color: '#111827',
         fontWeight: 'bold',
         fontSize: '14@ms',
-        marginBottom: '8@vs',
+        marginBottom: '4@vs',
         lineHeight: '20@ms',
         fontFamily: 'July-Bold',
     },
@@ -272,7 +337,7 @@ const styles = ScaledSheet.create({
         color: '#6B7280',
         fontSize: '12@ms',
         lineHeight: '18@ms',
-        marginBottom: '12@vs',
+        marginBottom: '8@vs',
         fontFamily: 'July-Regular',
     },
     dateWrapper: {
