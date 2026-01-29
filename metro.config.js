@@ -4,7 +4,10 @@ const { withNativeWind } = require('nativewind/metro');
 const baseConfig = getDefaultConfig(__dirname);
 
 const customConfig = {
-  // You can add any custom metro config here if needed
+  resolver: {
+    unstable_enablePackageExports: true,
+    sourceExts: [...baseConfig.resolver.sourceExts, 'cjs', 'mjs'],
+  },
 };
 
 const mergedConfig = mergeConfig(baseConfig, customConfig);
