@@ -50,16 +50,13 @@ const Slider = () => {
     const renderItem = ({ item }: any) => {
         return (
             <View style={styles.slideItem}>
-                <View className="rounded-2xl overflow-hidden h-full shadow-lg bg-gray-200">
+                <View style={styles.imageContainer}>
                     <Image
                         source={{ uri: item.image }}
-                        className="w-full h-full"
+                        style={styles.image}
                         resizeMode="cover"
                     />
-                    {/* Overlay Gradient could go here */}
-                    <View className="absolute bottom-0 left-0 right-0 p-4 bg-black/40">
-                        {/* Text if needed */}
-                    </View>
+                    <View style={styles.textOverlay} />
                 </View>
             </View>
         );
@@ -84,12 +81,10 @@ const Slider = () => {
             />
 
             {/* Pagination Dots */}
-            <View className="flex-row justify-center mt-3 space-x-2">
+            <View style={styles.paginationContainer}>
                 {SLIDE_DATA.map((_, index) => (
                     <View
                         key={index.toString()}
-                        className={`rounded-full ${index === activeIndex ? 'bg-[#009689]' : 'bg-gray-300'
-                            }`}
                         style={[
                             styles.dot,
                             index === activeIndex ? styles.activeDot : null
@@ -106,20 +101,48 @@ const styles = ScaledSheet.create({
         paddingVertical: '16@vs'
     },
     slideItem: {
-        width: width - scale(40), // Combining mix of window width and scale is tricky in string syntax unless using simple calc or just leaving as inline/computed.
-        // Since width depends on runtime dimension, we might keep inline or use a helper.
-        // ScaledSheet doesn't solve window width subtraction easily.
-        // We will keep 'width' logic in render but use 'height' and margins here if constant.
-        // Actually, let's keep the dynamic width inline in renderItem but move others.
+        width: width,
         height: '180@vs',
-        marginHorizontal: '20@s'
+        paddingHorizontal: '20@ms',
+    },
+    imageContainer: {
+        borderRadius: '16@ms',
+        overflow: 'hidden',
+        height: '100%',
+        backgroundColor: '#F3F4F6',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 4,
+    },
+    image: {
+        width: '100%',
+        height: '100%',
+    },
+    textOverlay: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: '40@vs',
+        backgroundColor: 'rgba(0,0,0,0.3)',
+    },
+    paginationContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: '12@vs',
+        gap: '8@ms',
     },
     dot: {
-        width: '8@s',
-        height: '8@s'
+        width: '8@ms',
+        height: '8@ms',
+        borderRadius: '4@ms',
+        backgroundColor: '#D1D5DB',
     },
     activeDot: {
-        width: '24@s'
+        width: '24@ms',
+        backgroundColor: '#009689',
     }
 });
 
