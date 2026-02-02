@@ -24,7 +24,7 @@ import {
 const SERVICES = [
   {
     id: '1',
-    title: 'পরিসংখ্যান',
+    title: { bn: 'পরিসংখ্যান', en: 'Statistics' },
     icon: BarChart3,
     bgColor: '#EFF6FF',
     route: 'Statistics',
@@ -32,7 +32,7 @@ const SERVICES = [
   },
   {
     id: '2',
-    title: 'নীতি ও আইন',
+    title: { bn: 'নীতি ও আইন', en: 'Policy & Law' },
     icon: Scale,
     iconGradientColors: ['#009689', '#00786F'],
     bgColor: '#ECFDF5',
@@ -40,7 +40,7 @@ const SERVICES = [
   },
   {
     id: '3',
-    title: 'জরুরি যোগাযোগ',
+    title: { bn: 'জরুরি যোগাযোগ', en: 'Emergency Contact' },
     icon: PhoneCall,
     iconGradientColors: ['#FB2C36', '#E7000B'],
     bgColor: '#FEF2F2',
@@ -48,7 +48,7 @@ const SERVICES = [
   },
   {
     id: '4',
-    title: 'উদ্যোগসমূহ',
+    title: { bn: 'উদ্যোগসমূহ', en: 'Initiatives' },
     icon: Handshake,
     iconGradientColors: ['#2B7FFF', '#155DFC'],
     bgColor: '#F5F3FF',
@@ -56,7 +56,7 @@ const SERVICES = [
   },
   {
     id: '5',
-    title: 'অভিযোগ করুন',
+    title: { bn: 'অভিযোগ করুন', en: 'File Complaint' },
     icon: FileText,
     iconGradientColors: ['#FF6900', '#F54900'],
     bgColor: '#FFF7ED',
@@ -64,7 +64,7 @@ const SERVICES = [
   },
   {
     id: '6',
-    title: 'সংবাদ ও মিডিয়া',
+    title: { bn: 'সংবাদ ও মিডিয়া', en: 'News & Media' },
     icon: Newspaper,
     iconGradientColors: ['#9810FA', '#8200DB'],
     bgColor: '#FDF4FF',
@@ -72,7 +72,7 @@ const SERVICES = [
   },
   {
     id: '7',
-    title: 'প্রতিরোধমূলক ব্যবস্থা',
+    title: { bn: 'প্রতিরোধমূলক ব্যবস্থা', en: 'Preventive Measures' },
     icon: ShieldCheck,
     iconGradientColors: ['#00A63E', '#008236'],
     bgColor: '#F0FDFA',
@@ -80,7 +80,7 @@ const SERVICES = [
   },
   {
     id: '8',
-    title: 'দ্রুত লিংক',
+    title: { bn: 'দ্রুত লিংক', en: 'Quick Links' },
     icon: LinkIcon,
     iconGradientColors: ['#00BBA7', '#009689'],
     bgColor: '#F0F9FF',
@@ -88,7 +88,7 @@ const SERVICES = [
   },
   {
     id: '9',
-    title: 'পাচারকারী সম্পর্কে তথ্য',
+    title: { bn: 'পাচারকারী সম্পর্কে তথ্য', en: 'Trafficker Info' },
     icon: Users,
     iconGradientColors: ['#00A63E', '#008236'],
     bgColor: '#F0FDF4',
@@ -96,7 +96,7 @@ const SERVICES = [
   },
   {
     id: '10',
-    title: 'সেবা অনুসন্ধান',
+    title: { bn: 'সেবা অনুসন্ধান', en: 'Service Search' },
     icon: Search,
     iconGradientColors: ['#155DFC', '#1447E6'],
     bgColor: '#ECFEFF',
@@ -106,16 +106,19 @@ const SERVICES = [
 
 import { useNavigation } from '@react-navigation/native';
 import { ScaledSheet } from 'react-native-size-matters';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
+  const languageMode = useSelector((state: RootState) => state.language.mode);
 
   const renderHeader = () => (
     <View style={styles.headerContent}>
       <Slider />
       <View style={styles.headerTitleContainer}>
         <Text style={styles.headerTitle}>
-          সেবা সমূহ
+          {languageMode === 'bn' ? 'সেবা সমূহ' : 'Services'}
         </Text>
       </View>
     </View>
@@ -130,8 +133,8 @@ const HomeScreen = () => {
       />
       <Header
         variant="home"
-        title="জাতীয় মানব পাচার দমন সংস্থা"
-        subtitle="মানবপাচার মোকাবিলায় জাতীয় পর্যায়ে সমন্বিত উদ্যোগ"
+        title={languageMode === 'bn' ? "জাতীয় মানব পাচার দমন সংস্থা" : "National Authority for Prevention of Human Trafficking"}
+        subtitle={languageMode === 'bn' ? "মানবপাচার মোকাবিলায় জাতীয় পর্যায়ে সমন্বিত উদ্যোগ" : "Coordinated National Initiative to Combat Human Trafficking"}
         rightComponent={
           <View style={styles.profileContainer}>
             <View style={styles.profilePlaceholder}>
@@ -144,7 +147,7 @@ const HomeScreen = () => {
         data={SERVICES}
         renderItem={({ item }) => (
           <ServiceCard
-            title={item.title}
+            title={item.title[languageMode]}
             icon={item.icon}
             iconGradientColors={item.iconGradientColors}
             onPress={() => navigation.navigate(item.route)}
