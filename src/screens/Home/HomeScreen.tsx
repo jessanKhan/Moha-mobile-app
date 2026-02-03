@@ -108,14 +108,21 @@ import { useNavigation } from '@react-navigation/native';
 import { ScaledSheet } from 'react-native-size-matters';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { useQuery } from '@apollo/client/react';
+import { GET_SLIDERS_QUERY } from '../../api/queries';
 
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
   const languageMode = useSelector((state: RootState) => state.language.mode);
 
+  const { data: sliderData } = useQuery<any>(GET_SLIDERS_QUERY, {
+    variables: { page: 1, limit: 5 },
+    fetchPolicy: 'cache-and-network',
+  });
+
   const renderHeader = () => (
     <View style={styles.headerContent}>
-      <Slider />
+      <Slider sliders={sliderData?.sliders || []} />
       <View style={styles.headerTitleContainer}>
         <Text style={styles.headerTitle}>
           {languageMode === 'bn' ? 'সেবা সমূহ' : 'Services'}

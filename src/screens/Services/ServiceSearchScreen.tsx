@@ -35,10 +35,6 @@ const ServiceSearchScreen = () => {
 
     const categories = [
         {
-            id: 'shelter_list',
-            title: 'আশ্রয় কেন্দ্রের তালিকা',
-            subtitle: 'নিরাপদ অস্থায়ী আশ্রয়ের তথ্য',
-            icon: Home,
             colors: ['#4285F4', '#1976D2'], // Blue
         },
         {

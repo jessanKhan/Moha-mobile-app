@@ -14,3 +14,16 @@ export const NEWS_ALL_QUERY = gql`
     }
   }
 `;
+
+export const GET_SLIDERS_QUERY = gql`
+  query Sliders($page: Float!, $limit: Float!) {
+    sliders(page: $page, limit: $limit) {
+      id
+      title
+      titleBn
+      subtitle
+      subtitleBn
+      mediaUrl
+    }
+  }
+`;
