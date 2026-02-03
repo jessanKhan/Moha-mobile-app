@@ -39,7 +39,7 @@ const Slider = ({ sliders = [] }: SliderProps) => {
 
     const renderItem = ({ item }: any) => {
         const title = languageMode === 'bn' ? item.titleBn : item.title;
-        // const subtitle = languageMode === 'bn' ? item.subtitleBn : item.subtitle;
+        const subtitle = languageMode === 'bn' ? item.subtitleBn : item.subtitle;
 
         return (
             <View style={styles.slideItem}>
@@ -51,6 +51,7 @@ const Slider = ({ sliders = [] }: SliderProps) => {
                     />
                     <View style={styles.textOverlay}>
                         {title && <Text style={styles.slideTitle} numberOfLines={1}>{title}</Text>}
+                        {subtitle && <Text style={styles.slideSubtitle} numberOfLines={1}>{subtitle}</Text>}
                     </View>
                 </View>
             </View>
@@ -124,8 +125,8 @@ const styles = ScaledSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        height: '40@vs',
-        backgroundColor: 'rgba(0,0,0,0.3)',
+        paddingVertical: '8@vs',
+        backgroundColor: 'rgba(0,0,0,0.4)', // Slightly darker for better readability
         justifyContent: 'center',
         paddingHorizontal: '12@ms',
     },
@@ -134,6 +135,12 @@ const styles = ScaledSheet.create({
         fontSize: '14@ms',
         fontWeight: 'bold',
         fontFamily: 'July-Bold',
+    },
+    slideSubtitle: {
+        color: '#E5E7EB',
+        fontSize: '12@ms',
+        fontFamily: 'July-Regular',
+        marginTop: '2@vs',
     },
     paginationContainer: {
         flexDirection: 'row',
