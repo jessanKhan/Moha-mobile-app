@@ -48,5 +48,6 @@ const styles = ScaledSheet.create({
         fontWeight: '400',
         color: 'rgba(29, 41, 61, 1)',
         lineHeight: '20@ms',
+        fontFamily: 'July-Regular',
     },
 });

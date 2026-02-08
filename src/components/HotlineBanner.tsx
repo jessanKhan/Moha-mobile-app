@@ -55,13 +55,15 @@ const styles = ScaledSheet.create({
     label: {
         color: '#9CA3AF',
         fontSize: '12@ms',
-        marginBottom: '4@vs'
+        marginBottom: '4@vs',
+        fontFamily: 'July-Regular',
     },
     number: {
         color: 'white',
         fontWeight: 'bold',
         letterSpacing: moderateScale(1.5),
-        fontSize: '24@ms'
+        fontSize: '24@ms',
+        fontFamily: 'July-Bold',
     },
     button: {
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -74,7 +76,8 @@ const styles = ScaledSheet.create({
     buttonText: {
         color: 'white',
         fontWeight: '500',
-        fontSize: '12@ms'
+        fontSize: '12@ms',
+        fontFamily: 'July-Regular',
     }
 });
 

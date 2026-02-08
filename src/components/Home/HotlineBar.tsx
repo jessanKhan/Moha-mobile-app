@@ -14,7 +14,7 @@ const HotlineBar = () => {
                 </View>
                 <View>
                     <Text style={styles.label}>২৪/৭ জরুরি হটলাইন</Text>
-                    <Text style={styles.number}>১৯১৯</Text>
+                    <Text style={styles.number}>৯৯৯</Text>
                 </View>
             </View>
 
@@ -50,32 +50,35 @@ const styles = ScaledSheet.create({
         gap: '16@ms'
     },
     iconContainer: {
-        backgroundColor: '#EF4444',
+        backgroundColor: '#FB2C36',
         borderRadius: '24@ms',
         padding: '12@ms'
     },
     label: {
-        color: '#9CA3AF',
-        fontSize: '12@ms'
+        color: '#CAD5E2',
+        fontSize: '16@ms',
+        fontWeight: '400',
+        fontFamily: 'July-Regular',
     },
     number: {
         color: 'white',
-        fontWeight: 'bold',
+        fontWeight: '400',
         letterSpacing: moderateScale(2),
-        fontSize: '20@ms'
+        fontSize: '20@ms',
+        fontFamily: 'July-Bold',
     },
     button: {
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        borderRadius: '8@ms',
-        borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderRadius: '20@ms',
+        // borderColor: 'rgba(255, 255, 255, 0.2)',
         paddingHorizontal: '16@ms',
         paddingVertical: '8@vs'
     },
     buttonText: {
         color: 'white',
-        fontWeight: '500',
-        fontSize: '14@ms'
+        fontWeight: '400',
+        fontSize: '16@ms',
+        fontFamily: 'July-Regular',
     }
 });
 

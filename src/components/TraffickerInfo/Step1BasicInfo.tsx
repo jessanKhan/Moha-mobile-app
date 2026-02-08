@@ -82,11 +82,13 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         color: '#111827',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     subtitle: {
         fontSize: '13@ms',
         color: '#9CA3AF',
         marginBottom: '24@vs',
+        fontFamily: 'July-Regular',
     },
     uploadCard: {
         backgroundColor: '#F9FAFB',
@@ -114,11 +116,13 @@ const styles = ScaledSheet.create({
         fontSize: '15@ms',
         fontWeight: 'bold',
         color: '#4B5563',
+        fontFamily: 'July-Bold',
     },
     uploadOptional: {
         fontSize: '11@ms',
         color: '#9CA3AF',
         marginTop: '2@vs',
+        fontFamily: 'July-Regular',
     },
     inputContainer: {
         gap: '12@vs',
@@ -132,6 +136,7 @@ const styles = ScaledSheet.create({
         borderColor: '#E5E7EB',
         color: '#1F2937',
         fontSize: '15@ms',
+        fontFamily: 'July-Regular',
     },
     label: {
         fontSize: '16@ms',
@@ -139,6 +144,7 @@ const styles = ScaledSheet.create({
         color: '#374151',
         marginTop: '24@vs',
         marginBottom: '12@vs',
+        fontFamily: 'July-Bold',
     },
     genderRow: {
         flexDirection: 'row',
@@ -162,6 +168,7 @@ const styles = ScaledSheet.create({
         fontSize: '14@ms',
         fontWeight: 'bold',
         color: '#4B5563',
+        fontFamily: 'July-Bold',
     },
     genderButtonTextActive: {
         color: '#2563EB',

@@ -91,6 +91,7 @@ const styles = ScaledSheet.create({
     fontWeight: '400',
     color: 'rgba(202, 213, 226, 1)',
     lineHeight: '20@ms',
+    fontFamily: 'July-Bold',
   },
 
   hotlineNumber: {
@@ -98,6 +99,7 @@ const styles = ScaledSheet.create({
     fontWeight: '400',
     color: '#FFFFFF',
     lineHeight: '32@ms',
+    fontFamily: 'July-Bold',
   },
 
   hotlineBtn: {
@@ -118,6 +120,7 @@ const styles = ScaledSheet.create({
     lineHeight: '20@ms',
     includeFontPadding: false,
     textAlignVertical: 'center',
+    fontFamily: 'July-Regular',
   },
 });
 

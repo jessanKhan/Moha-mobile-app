@@ -194,17 +194,20 @@ const styles = ScaledSheet.create({
         fontSize: '20@ms',
         fontWeight: 'bold',
         color: '#1F2937',
+        fontFamily: 'July-Bold',
     },
     introDescription: {
         fontSize: '15@ms',
         color: '#4B5563',
         lineHeight: '22@ms',
+        fontFamily: 'July-Regular',
     },
     sectionTitle: {
         fontSize: '18@ms',
         fontWeight: 'bold',
         color: '#1F2937',
         marginBottom: '16@vs',
+        fontFamily: 'July-Bold',
     },
     typesGrid: {
         flexDirection: 'row',
@@ -229,6 +232,7 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         marginTop: '8@vs',
         fontSize: '16@ms',
+        fontFamily: 'July-Bold',
     },
     cautionSection: {
         backgroundColor: '#EF4444',
@@ -241,6 +245,7 @@ const styles = ScaledSheet.create({
         fontSize: '20@ms',
         fontWeight: 'bold',
         marginBottom: '16@vs',
+        fontFamily: 'July-Bold',
     },
     cautionItem: {
         flexDirection: 'row',
@@ -261,6 +266,7 @@ const styles = ScaledSheet.create({
         color: 'white',
         fontSize: '15@ms',
         fontWeight: '500',
+        fontFamily: 'July-Regular',
     },
     checklist: {
         backgroundColor: 'white',
@@ -279,6 +285,7 @@ const styles = ScaledSheet.create({
         fontSize: '15@ms',
         color: '#4B5563',
         marginLeft: '12@ms',
+        fontFamily: 'July-Regular',
     },
     hotlineBanner: {
         backgroundColor: '#111827',
@@ -302,11 +309,13 @@ const styles = ScaledSheet.create({
     hotlineLabel: {
         color: '#9CA3AF',
         fontSize: '13@ms',
+        fontFamily: 'July-Regular',
     },
     hotlineNumber: {
         color: 'white',
         fontSize: '24@ms',
         fontWeight: 'bold',
+        fontFamily: 'July-Bold',
     },
     callButton: {
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -317,6 +326,7 @@ const styles = ScaledSheet.create({
     callButtonText: {
         color: 'white',
         fontWeight: 'bold',
+        fontFamily: 'July-Bold',
     },
     footerNote: {
         backgroundColor: 'white',
@@ -328,6 +338,7 @@ const styles = ScaledSheet.create({
         fontSize: '14@ms',
         color: '#6B7280',
         textAlign: 'center',
+        fontFamily: 'July-Regular',
     },
 });
 

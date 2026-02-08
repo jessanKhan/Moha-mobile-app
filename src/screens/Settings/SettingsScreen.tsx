@@ -38,11 +38,13 @@ const styles = ScaledSheet.create({
     fontSize: '24@ms',
     fontWeight: 'bold',
     color: '#D97706',
+    fontFamily: 'July-Bold',
   },
   description: {
     fontSize: '14@ms',
     color: '#6B7280',
     marginTop: '8@vs',
+    fontFamily: 'July-Regular',
   },
 });
 

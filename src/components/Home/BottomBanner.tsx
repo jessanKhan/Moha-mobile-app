@@ -62,8 +62,8 @@ const styles = ScaledSheet.create({
         zIndex: 10,
     },
     iconContainer: {
-        backgroundColor: 'rgba(0, 150, 137, 0.8)',
-        borderRadius: '30@ms',
+        backgroundColor: 'rgba(0, 130, 54, 1)',
+        borderRadius: '12@ms',
         padding: '12@ms',
         marginBottom: '8@vs',
     },
@@ -71,6 +71,7 @@ const styles = ScaledSheet.create({
         color: 'white',
         fontWeight: 'bold',
         fontSize: '18@ms',
+        fontFamily: 'July-Bold',
     },
 });
 
