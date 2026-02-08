@@ -1,31 +1,19 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, FlatList, Image, Dimensions } from 'react-native';
+import { View, FlatList, Image, Dimensions, Text } from 'react-native';
 import { ScaledSheet, scale, verticalScale } from 'react-native-size-matters';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 const { width } = Dimensions.get('window');
 
-const SLIDE_DATA = [
-    {
-        id: '1',
-        // Using placeholder images that look somewhat relevant or just generic nature/people
-        image: 'https://images.unsplash.com/photo-1576091160550-217358c7c8c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        title: 'Human Trafficking Awareness'
-    },
-    {
-        id: '2',
-        image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        title: 'Community Support'
-    },
-    {
-        id: '3',
-        image: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        title: 'Safe Migration'
-    },
-];
+interface SliderProps {
+    sliders?: any[];
+}
 
-const Slider = () => {
+const Slider = ({ sliders = [] }: SliderProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const flatListRef = useRef<FlatList>(null);
+    const languageMode = useSelector((state: RootState) => state.language.mode);
 
     const onViewRef = useRef(({ viewableItems }: any) => {
         if (viewableItems.length > 0) {
@@ -36,8 +24,10 @@ const Slider = () => {
     const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
 
     useEffect(() => {
+        if (sliders.length === 0) return;
+
         let interval = setInterval(() => {
-            if (activeIndex === SLIDE_DATA.length - 1) {
+            if (activeIndex === sliders.length - 1) {
                 flatListRef.current?.scrollToIndex({ index: 0, animated: true });
             } else {
                 flatListRef.current?.scrollToIndex({ index: activeIndex + 1, animated: true });
@@ -45,30 +35,40 @@ const Slider = () => {
         }, 4000);
 
         return () => clearInterval(interval);
-    }, [activeIndex]);
+    }, [activeIndex, sliders]);
 
     const renderItem = ({ item }: any) => {
+        const title = languageMode === 'bn' ? item.titleBn : item.title;
+        const subtitle = languageMode === 'bn' ? item.subtitleBn : item.subtitle;
+
         return (
             <View style={styles.slideItem}>
                 <View style={styles.imageContainer}>
                     <Image
-                        source={{ uri: item.image }}
+                        source={{ uri: item.mediaUrl }}
                         style={styles.image}
                         resizeMode="cover"
                     />
-                    <View style={styles.textOverlay} />
+                    <View style={styles.textOverlay}>
+                        {title && <Text style={styles.slideTitle} numberOfLines={1}>{title}</Text>}
+                        {subtitle && <Text style={styles.slideSubtitle} numberOfLines={1}>{subtitle}</Text>}
+                    </View>
                 </View>
             </View>
         );
     };
 
+    if (!sliders || sliders.length === 0) {
+        return null;
+    }
+
     return (
         <View style={styles.container}>
             <FlatList
                 ref={flatListRef}
-                data={SLIDE_DATA}
+                data={sliders}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id.toString()}
                 horizontal
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
@@ -82,7 +82,7 @@ const Slider = () => {
 
             {/* Pagination Dots */}
             <View style={styles.paginationContainer}>
-                {SLIDE_DATA.map((_, index) => (
+                {sliders.map((_, index) => (
                     <View
                         key={index.toString()}
                         style={[
@@ -125,8 +125,22 @@ const styles = ScaledSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        height: '40@vs',
-        backgroundColor: 'rgba(0,0,0,0.3)',
+        paddingVertical: '8@vs',
+        backgroundColor: 'rgba(0,0,0,0.4)', // Slightly darker for better readability
+        justifyContent: 'center',
+        paddingHorizontal: '12@ms',
+    },
+    slideTitle: {
+        color: 'white',
+        fontSize: '14@ms',
+        fontWeight: 'bold',
+        fontFamily: 'July-Bold',
+    },
+    slideSubtitle: {
+        color: '#E5E7EB',
+        fontSize: '12@ms',
+        fontFamily: 'July-Regular',
+        marginTop: '2@vs',
     },
     paginationContainer: {
         flexDirection: 'row',

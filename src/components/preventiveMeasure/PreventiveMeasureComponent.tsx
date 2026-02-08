@@ -46,5 +46,6 @@ const styles = ScaledSheet.create({
         color: 'rgba(51, 65, 85, 1)',
         lineHeight: '20@ms',
         flex: 1,
+        fontFamily: 'July-Regular',
     },
 });

@@ -53,11 +53,13 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         color: '#111827',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     subtitle: {
         fontSize: '13@ms',
         color: '#9CA3AF',
         marginBottom: '24@vs',
+        fontFamily: 'July-Regular',
     },
     infoBox: {
         backgroundColor: '#EFF6FF',
@@ -71,6 +73,7 @@ const styles = ScaledSheet.create({
         color: '#1E40AF',
         fontSize: '12@ms',
         lineHeight: '18@ms',
+        fontFamily: 'July-Regular',
     },
     evidenceRow: {
         flexDirection: 'row',
@@ -91,6 +94,7 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         color: '#374151',
         marginTop: '8@vs',
+        fontFamily: 'July-Bold',
     },
     alertBox: {
         backgroundColor: '#FEFCE8',
@@ -113,12 +117,14 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         fontSize: '12@ms',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     alertBody: {
         color: '#854D0E',
         fontSize: '10@ms',
         lineHeight: '16@ms',
         opacity: 0.8,
+        fontFamily: 'July-Regular',
     },
 });
 

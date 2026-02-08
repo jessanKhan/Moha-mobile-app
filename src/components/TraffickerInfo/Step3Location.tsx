@@ -58,11 +58,13 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         color: '#111827',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     subtitle: {
         fontSize: '13@ms',
         color: '#9CA3AF',
         marginBottom: '24@vs',
+        fontFamily: 'July-Regular',
     },
     inputContainer: {
         gap: '12@vs',
@@ -76,6 +78,7 @@ const styles = ScaledSheet.create({
         borderColor: '#E5E7EB',
         color: '#1F2937',
         fontSize: '15@ms',
+        fontFamily: 'July-Regular',
     },
     textArea: {
         height: 'auto',

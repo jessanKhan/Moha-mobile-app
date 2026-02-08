@@ -77,6 +77,7 @@ const styles = ScaledSheet.create({
     fontSize: '14@ms',
     fontWeight: '600',
     color: 'rgba(255, 255, 255, 1)',
+    fontFamily: 'July-Bold',
   },
   textDescriptionContainer: {
     padding: '20@ms',
@@ -86,6 +87,7 @@ const styles = ScaledSheet.create({
     fontWeight: '400',
     color: 'rgba(69, 85, 108, 1)',
     lineHeight: '22@ms',
+    fontFamily: 'July-Regular',
   },
 });
 

@@ -209,6 +209,7 @@ const styles = ScaledSheet.create({
         fontWeight: '500',
         fontSize: '12@ms',
         marginLeft: '8@ms',
+        fontFamily: 'July-Regular',
     },
     gridContainer: {
         flexDirection: 'row',
@@ -242,11 +243,13 @@ const styles = ScaledSheet.create({
         fontSize: '24@ms',
         fontWeight: 'bold',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     titleText: {
         color: 'rgba(255, 255, 255, 0.9)',
         fontSize: '12@ms',
         fontWeight: '500',
+        fontFamily: 'July-Regular',
     },
     card: {
         backgroundColor: 'white',
@@ -271,6 +274,7 @@ const styles = ScaledSheet.create({
         fontSize: '18@ms',
         fontWeight: 'bold',
         marginBottom: '20@vs',
+        fontFamily: 'July-Bold',
     },
     legendContainer: {
         flexDirection: 'row',
@@ -292,6 +296,7 @@ const styles = ScaledSheet.create({
     legendText: {
         color: '#6B7280',
         fontSize: '12@ms',
+        fontFamily: 'July-Regular',
     },
     pieContainer: {
         alignItems: 'center',

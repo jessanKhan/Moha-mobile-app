@@ -5,6 +5,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft } from 'lucide-react-native';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store';
+import { toggleLanguage } from '../store/slices/languageSlice';
 
 interface HeaderProps {
     title: string;
@@ -23,11 +26,17 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const languageMode = useSelector((state: RootState) => state.language.mode);
 
     const handleBackPress = () => {
         if (navigation.canGoBack()) {
             navigation.goBack();
         }
+    };
+
+    const handleLanguageToggle = () => {
+        dispatch(toggleLanguage());
     };
 
     return (
@@ -73,6 +82,13 @@ const Header: React.FC<HeaderProps> = ({
 
                 {rightComponent && (
                     <View style={styles.rightComponent}>
+                        {variant === 'home' && (
+                            <TouchableOpacity onPress={handleLanguageToggle} style={styles.langToggle}>
+                                <Text style={[styles.langText, languageMode === 'bn' && styles.activeLang]}>বাংলা</Text>
+                                <Text style={styles.langDivider}>|</Text>
+                                <Text style={[styles.langText, languageMode === 'en' && styles.activeLang]}>Eng</Text>
+                            </TouchableOpacity>
+                        )}
                         {rightComponent}
                     </View>
                 )}
@@ -113,17 +129,41 @@ const styles = ScaledSheet.create({
         color: 'white',
         fontSize: '20@ms',
         fontWeight: 'bold',
-        fontFamily: 'font-inter-bold',
+        fontFamily: 'July-Bold',
     },
     subtitle: {
         color: 'rgba(255, 255, 255, 0.8)',
         fontSize: '12@ms',
         marginTop: '4@vs',
-        fontFamily: 'font-inter-regular',
+        fontFamily: 'July-Regular',
     },
     rightComponent: {
         marginLeft: '12@ms',
-    }
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    langToggle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: '8@ms',
+        paddingVertical: '4@vs',
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        borderRadius: '16@ms',
+        marginRight: '8@ms',
+    },
+    langText: {
+        color: 'rgba(255,255,255,0.6)',
+        fontSize: '12@ms',
+        fontFamily: 'July-Bold',
+    },
+    activeLang: {
+        color: '#FFFFFF',
+    },
+    langDivider: {
+        color: 'rgba(255,255,255,0.4)',
+        marginHorizontal: '4@ms',
+        fontSize: '10@ms',
+    },
 });
 
 import { StyleSheet } from 'react-native';

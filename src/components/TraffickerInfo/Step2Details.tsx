@@ -87,11 +87,13 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         color: '#111827',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     subtitle: {
         fontSize: '13@ms',
         color: '#9CA3AF',
         marginBottom: '24@vs',
+        fontFamily: 'July-Regular',
     },
     inputContainer: {
         gap: '12@vs',
@@ -105,6 +107,7 @@ const styles = ScaledSheet.create({
         borderColor: '#E5E7EB',
         color: '#1F2937',
         fontSize: '15@ms',
+        fontFamily: 'July-Regular',
     },
     label: {
         fontSize: '16@ms',
@@ -112,11 +115,13 @@ const styles = ScaledSheet.create({
         color: '#374151',
         marginTop: '24@vs',
         marginBottom: '2@vs',
+        fontFamily: 'July-Bold',
     },
     labelHint: {
         fontSize: '11@ms',
         color: '#9CA3AF',
         marginBottom: '16@vs',
+        fontFamily: 'July-Regular',
     },
     activityContainer: {
         gap: '12@vs',
@@ -141,6 +146,7 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         color: '#4B5563',
         flex: 1,
+        fontFamily: 'July-Bold',
     },
     activityTextActive: {
         color: '#047857',

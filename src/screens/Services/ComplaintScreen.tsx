@@ -130,11 +130,13 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         fontSize: '16@ms',
         marginBottom: '4@vs',
+        fontFamily: 'July-Bold',
     },
     privacyDescription: {
         color: 'rgba(255, 255, 255, 0.9)',
         fontSize: '12@ms',
         lineHeight: '18@ms',
+        fontFamily: 'July-Regular',
     },
     inputCard: {
         backgroundColor: 'white',
@@ -155,6 +157,7 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         fontSize: '16@ms',
         marginBottom: '8@vs',
+        fontFamily: 'July-Bold',
     },
     optionalLabel: {
         color: '#9CA3AF',
@@ -171,6 +174,7 @@ const styles = ScaledSheet.create({
         color: '#1F2937',
         borderWidth: 1,
         borderColor: '#E5E7EB',
+        fontFamily: 'July-Regular',
     },
     textArea: {
         minHeight: '120@vs',
@@ -179,6 +183,7 @@ const styles = ScaledSheet.create({
         color: '#9CA3AF',
         fontSize: '12@ms',
         marginTop: '8@vs',
+        fontFamily: 'July-Regular',
     },
     uploadBox: {
         borderWidth: 1,
@@ -220,6 +225,7 @@ const styles = ScaledSheet.create({
         fontWeight: 'bold',
         fontSize: '18@ms',
         marginLeft: '8@ms',
+        fontFamily: 'July-Bold',
     },
     spacer: {
         height: '16@vs',

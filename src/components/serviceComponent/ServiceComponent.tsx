@@ -50,6 +50,7 @@ const styles = ScaledSheet.create({
     fontSize: '20@ms',
     fontWeight: 'bold',
     color: '#1F2937',
+    fontFamily: 'July-Bold',
   },
 });
 

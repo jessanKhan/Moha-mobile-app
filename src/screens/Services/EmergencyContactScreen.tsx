@@ -133,13 +133,13 @@ const styles = ScaledSheet.create({
   urgencyText: {
     color: 'rgba(255, 77, 77, 1)',
     fontSize: '14@ms',
-    fontFamily: 'Inter-SemiBold',
+    fontFamily: 'July-Bold',
   },
   callText: {
     color: 'rgba(255, 128, 128, 1)',
     fontSize: '12@ms',
     marginTop: '2@vs',
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'July-Regular',
   },
   dropdown: {
     marginTop: '20@vs',

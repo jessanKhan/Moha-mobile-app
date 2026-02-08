@@ -21,101 +21,50 @@ import {
   Search,
 } from 'lucide-react-native';
 
-const SERVICES = [
-  {
-    id: '1',
-    title: 'পরিসংখ্যান',
-    icon: BarChart3,
-    color: '#3B82F6',
-    bgColor: '#EFF6FF',
-    route: 'Statistics',
-  },
-  {
-    id: '2',
-    title: 'নীতি ও আইন',
-    icon: Scale,
-    color: '#10B981',
-    bgColor: '#ECFDF5',
-    route: 'PolicyLaw',
-  },
-  {
-    id: '3',
-    title: 'জরুরি যোগাযোগ',
-    icon: PhoneCall,
-    color: '#EF4444',
-    bgColor: '#FEF2F2',
-    route: 'EmergencyContact',
-  },
-  {
-    id: '4',
-    title: 'উদ্যোগসমূহ',
-    icon: Handshake,
-    color: '#8B5CF6',
-    bgColor: '#F5F3FF',
-    route: 'Initiatives',
-  },
-  {
-    id: '5',
-    title: 'অভিযোগ করুন',
-    icon: FileText,
-    color: '#F97316',
-    bgColor: '#FFF7ED',
-    route: 'Complaint',
-  },
-  {
-    id: '6',
-    title: 'সংবাদ ও মিডিয়া',
-    icon: Newspaper,
-    color: '#D946EF',
-    bgColor: '#FDF4FF',
-    route: 'NewsMedia',
-  },
-  {
-    id: '7',
-    title: 'প্রতিরোধমূলক ব্যবস্থা',
-    icon: ShieldCheck,
-    color: '#14B8A6',
-    bgColor: '#F0FDFA',
-    route: 'PreventiveMeasures',
-  },
-  {
-    id: '8',
-    title: 'দ্রুত লিংক',
-    icon: LinkIcon,
-    color: '#0EA5E9',
-    bgColor: '#F0F9FF',
-    route: 'QuickLink',
-  },
-  {
-    id: '9',
-    title: 'পাচারকারী সম্পর্কে তথ্য',
-    icon: Users,
-    color: '#22C55E',
-    bgColor: '#F0FDF4',
-    route: 'TraffickerInfo',
-  },
-  {
-    id: '10',
-    title: 'সেবা অনুসন্ধান',
-    icon: Search,
-    color: '#06B6D4',
-    bgColor: '#ECFEFF',
-    route: 'ServiceSearch',
-  },
-];
+
 
 import { useNavigation } from '@react-navigation/native';
 import { ScaledSheet } from 'react-native-size-matters';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { useQuery } from '@apollo/client/react';
+import { GET_SLIDERS_QUERY, COMPONENTS_QUERY } from '../../api/queries';
+
+const ICON_MAPPING: { [key: string]: any } = {
+  BarChart3,
+  Scale,
+  PhoneCall,
+  Handshake,
+  FileText,
+  Newspaper,
+  ShieldCheck,
+  Link2: LinkIcon,
+  Users,
+  Search,
+};
+
 
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
+  const languageMode = useSelector((state: RootState) => state.language.mode);
+
+  const { data: sliderData } = useQuery<any>(GET_SLIDERS_QUERY, {
+    variables: { page: 1, limit: 5 },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const { data: componentsData } = useQuery<any>(COMPONENTS_QUERY, {
+    variables: { page: 1, limit: 100 },
+    fetchPolicy: 'cache-and-network',
+  });
+
 
   const renderHeader = () => (
     <View style={styles.headerContent}>
-      <Slider />
+      <Slider sliders={sliderData?.sliders || []} />
       <View style={styles.headerTitleContainer}>
         <Text style={styles.headerTitle}>
-          সেবা সমূহ
+          {languageMode === 'bn' ? 'সেবা সমূহ' : 'Services'}
         </Text>
       </View>
     </View>
@@ -130,8 +79,8 @@ const HomeScreen = () => {
       />
       <Header
         variant="home"
-        title="জাতীয় মানব পাচার দমন সংস্থা"
-        subtitle="মানবপাচার মোকাবিলায় জাতীয় পর্যায়ে সমন্বিত উদ্যোগ"
+        title={languageMode === 'bn' ? "জাতীয় মানব পাচার দমন সংস্থা" : "National Authority for Prevention of Human Trafficking"}
+        subtitle={languageMode === 'bn' ? "মানবপাচার মোকাবিলায় জাতীয় পর্যায়ে সমন্বিত উদ্যোগ" : "Coordinated National Initiative to Combat Human Trafficking"}
         rightComponent={
           <View style={styles.profileContainer}>
             <View style={styles.profilePlaceholder}>
@@ -141,16 +90,17 @@ const HomeScreen = () => {
         }
       />
       <FlatList
-        data={SERVICES}
+        data={componentsData?.components || []}
         renderItem={({ item }) => (
           <ServiceCard
-            title={item.title}
-            icon={item.icon}
-            iconBgColor={item.color}
-            onPress={() => navigation.navigate(item.route)}
+            title={languageMode === 'bn' ? item.labelBn : item.label}
+            icon={ICON_MAPPING[item.iconName] || Search} // Fallback to Search if icon not found
+            iconGradientColors={item.iconGradientColors}
+            onPress={() => navigation.navigate(item.mobileRouteName)}
           />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
+
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
         ListHeaderComponent={renderHeader}
@@ -183,6 +133,7 @@ const styles = ScaledSheet.create({
     fontSize: '20@ms',
     fontWeight: 'bold',
     color: '#1E293B',
+    fontFamily: 'July-Bold',
   },
   profileContainer: {
     height: '40@ms',

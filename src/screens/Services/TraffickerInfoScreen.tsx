@@ -125,11 +125,13 @@ const styles = ScaledSheet.create({
         color: '#4B5563',
         fontWeight: 'bold',
         fontSize: '14@ms',
+        fontFamily: 'July-Bold',
     },
     percentageText: {
         color: '#2563EB',
         fontWeight: 'bold',
         fontSize: '14@ms',
+        fontFamily: 'July-Bold',
     },
     progressBarBackground: {
         height: '8@vs',
@@ -167,6 +169,7 @@ const styles = ScaledSheet.create({
         color: 'white',
         fontWeight: 'bold',
         fontSize: '18@ms',
+        fontFamily: 'July-Bold',
     },
 });
 
