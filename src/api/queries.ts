@@ -15,6 +15,7 @@ export const NEWS_ALL_QUERY = gql`
   }
 `;
 
+
 export const GET_SLIDERS_QUERY = gql`
   query Sliders($page: Float!, $limit: Float!) {
     sliders(page: $page, limit: $limit) {
@@ -24,6 +25,21 @@ export const GET_SLIDERS_QUERY = gql`
       subtitle
       subtitleBn
       mediaUrl
+    }
+  }
+`;
+
+export const COMPONENTS_QUERY = gql`
+  query Components($page: Float!, $limit: Float!) {
+    components(page: $page, limit: $limit) {
+      id
+      label
+      labelBn
+      thumbnailPath
+      mobileRouteName
+      iconGradientColors
+      iconName
+      isMobile
     }
   }
 `;

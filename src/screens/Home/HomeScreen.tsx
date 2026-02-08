@@ -21,95 +21,28 @@ import {
   Search,
 } from 'lucide-react-native';
 
-const SERVICES = [
-  {
-    id: '1',
-    title: { bn: 'পরিসংখ্যান', en: 'Statistics' },
-    icon: BarChart3,
-    bgColor: '#EFF6FF',
-    route: 'Statistics',
-    iconGradientColors: ['#155DFC', '#1447E6'],
-  },
-  {
-    id: '2',
-    title: { bn: 'নীতি ও আইন', en: 'Policy & Law' },
-    icon: Scale,
-    iconGradientColors: ['#009689', '#00786F'],
-    bgColor: '#ECFDF5',
-    route: 'PolicyLaw',
-  },
-  {
-    id: '3',
-    title: { bn: 'জরুরি যোগাযোগ', en: 'Emergency Contact' },
-    icon: PhoneCall,
-    iconGradientColors: ['#FB2C36', '#E7000B'],
-    bgColor: '#FEF2F2',
-    route: 'EmergencyContact',
-  },
-  {
-    id: '4',
-    title: { bn: 'উদ্যোগসমূহ', en: 'Initiatives' },
-    icon: Handshake,
-    iconGradientColors: ['#2B7FFF', '#155DFC'],
-    bgColor: '#F5F3FF',
-    route: 'Initiatives',
-  },
-  {
-    id: '5',
-    title: { bn: 'অভিযোগ করুন', en: 'File Complaint' },
-    icon: FileText,
-    iconGradientColors: ['#FF6900', '#F54900'],
-    bgColor: '#FFF7ED',
-    route: 'Complaint',
-  },
-  {
-    id: '6',
-    title: { bn: 'সংবাদ ও মিডিয়া', en: 'News & Media' },
-    icon: Newspaper,
-    iconGradientColors: ['#9810FA', '#8200DB'],
-    bgColor: '#FDF4FF',
-    route: 'NewsMedia',
-  },
-  {
-    id: '7',
-    title: { bn: 'প্রতিরোধমূলক ব্যবস্থা', en: 'Preventive Measures' },
-    icon: ShieldCheck,
-    iconGradientColors: ['#00A63E', '#008236'],
-    bgColor: '#F0FDFA',
-    route: 'PreventiveMeasures',
-  },
-  {
-    id: '8',
-    title: { bn: 'দ্রুত লিংক', en: 'Quick Links' },
-    icon: LinkIcon,
-    iconGradientColors: ['#00BBA7', '#009689'],
-    bgColor: '#F0F9FF',
-    route: 'QuickLink',
-  },
-  {
-    id: '9',
-    title: { bn: 'পাচারকারী সম্পর্কে তথ্য', en: 'Trafficker Info' },
-    icon: Users,
-    iconGradientColors: ['#00A63E', '#008236'],
-    bgColor: '#F0FDF4',
-    route: 'TraffickerInfo',
-  },
-  {
-    id: '10',
-    title: { bn: 'সেবা অনুসন্ধান', en: 'Service Search' },
-    icon: Search,
-    iconGradientColors: ['#155DFC', '#1447E6'],
-    bgColor: '#ECFEFF',
-    route: 'ServiceSearch',
-  },
-];
+
 
 import { useNavigation } from '@react-navigation/native';
 import { ScaledSheet } from 'react-native-size-matters';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useQuery } from '@apollo/client/react';
-import { GET_SLIDERS_QUERY } from '../../api/queries';
+import { GET_SLIDERS_QUERY, COMPONENTS_QUERY } from '../../api/queries';
+
+const ICON_MAPPING: { [key: string]: any } = {
+  BarChart3,
+  Scale,
+  PhoneCall,
+  Handshake,
+  FileText,
+  Newspaper,
+  ShieldCheck,
+  Link2: LinkIcon,
+  Users,
+  Search,
+};
+
 
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
@@ -119,6 +52,12 @@ const HomeScreen = () => {
     variables: { page: 1, limit: 5 },
     fetchPolicy: 'cache-and-network',
   });
+
+  const { data: componentsData } = useQuery<any>(COMPONENTS_QUERY, {
+    variables: { page: 1, limit: 100 },
+    fetchPolicy: 'cache-and-network',
+  });
+
 
   const renderHeader = () => (
     <View style={styles.headerContent}>
@@ -151,16 +90,17 @@ const HomeScreen = () => {
         }
       />
       <FlatList
-        data={SERVICES}
+        data={componentsData?.components || []}
         renderItem={({ item }) => (
           <ServiceCard
-            title={item.title[languageMode]}
-            icon={item.icon}
+            title={languageMode === 'bn' ? item.labelBn : item.label}
+            icon={ICON_MAPPING[item.iconName] || Search} // Fallback to Search if icon not found
             iconGradientColors={item.iconGradientColors}
-            onPress={() => navigation.navigate(item.route)}
+            onPress={() => navigation.navigate(item.mobileRouteName)}
           />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
+
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
         ListHeaderComponent={renderHeader}
