@@ -6,6 +6,7 @@ import { moderateScale, scale, verticalScale, ScaledSheet } from 'react-native-s
 import HotlineBanner from '../../components/HotlineBanner';
 import { useQuery } from '@apollo/client/react';
 import { NEWS_ALL_QUERY } from '../../api/queries';
+import LinearGradient from 'react-native-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
@@ -190,7 +191,12 @@ const NewsMediaScreen = () => {
                 {/* Upcoming Events */}
                 <View style={styles.eventsSection}>
                     <Text style={styles.sectionTitle}>আসন্ন কর্মসূচি</Text>
-                    <View style={styles.eventsList}>
+                    <LinearGradient
+                        colors={['#F0FDFA', '#EFF6FF']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.eventsList}
+                    >
                         {upcomingEvents.map((event, index) => (
                             <View
                                 key={event.id}
@@ -205,10 +211,10 @@ const NewsMediaScreen = () => {
                                         <Text style={styles.eventDate}>{event.date}</Text>
                                     </View>
                                 </View>
-                                <ChevronRight size={moderateScale(18)} color="#9CA3AF" />
+                                {/* ? <ChevronRight size={moderateScale(18)} color="#9CA3AF" /> */}
                             </View>
                         ))}
-                    </View>
+                    </LinearGradient>
                 </View>
 
                 {/* Hotline Bar */}
@@ -377,11 +383,10 @@ const styles = ScaledSheet.create({
         fontFamily: 'July-Bold',
     },
     eventsList: {
-        backgroundColor: '#E0F2F1',
         borderRadius: '24@ms',
         padding: '24@ms',
-        borderWidth: 1,
-        borderColor: '#B2DFDB',
+        borderWidth: 2,
+        borderColor: '#8beedaff',
     },
     eventItem: {
         flexDirection: 'row',
@@ -391,8 +396,8 @@ const styles = ScaledSheet.create({
     eventBorder: {
         marginBottom: '20@vs',
         paddingBottom: '20@vs',
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(178, 223, 219, 0.5)',
+        borderBottomWidth: 2,
+        borderBottomColor: '#8beedaff',
     },
     eventInfo: {
         flexDirection: 'row',
@@ -400,21 +405,21 @@ const styles = ScaledSheet.create({
         flex: 1,
     },
     eventIconWrapper: {
-        backgroundColor: '#00897B',
+        backgroundColor: '#009689',
         padding: '8@ms',
         borderRadius: '12@ms',
         marginRight: '16@ms',
     },
     eventTitle: {
-        color: '#1F2937',
-        fontWeight: 'bold',
+        color: '#0B4F4A',
+        fontWeight: '600',
         fontSize: '14@ms',
         marginBottom: '4@vs',
-        fontFamily: 'July-Bold',
+        fontFamily: 'July-Regular',
     },
     eventDate: {
-        color: '#00897B',
-        fontWeight: '500',
+        color: '#00786F',
+        fontWeight: '300',
         fontSize: '12@ms',
         fontFamily: 'July-Regular',
     },
