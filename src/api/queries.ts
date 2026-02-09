@@ -43,3 +43,15 @@ export const COMPONENTS_QUERY = gql`
     }
   }
 `;
+
+export const GET_EVENTS_QUERY = gql`
+  query GetEvents($page: Float, $limit: Float, $pageId: Float) {
+    events(page: $page, limit: $limit, pageId: $pageId) {
+      id
+      title
+      titleBn
+      fromDate
+      fromDateBn
+    }
+  }
+`;

@@ -1,11 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 import { View, Text, ScrollView, ImageBackground, TouchableOpacity, Image, FlatList, Dimensions } from 'react-native';
 import Header from '../../components/Header';
 import { Newspaper, Calendar, ChevronRight, Clock, RefreshCcw } from 'lucide-react-native';
 import { moderateScale, scale, verticalScale, ScaledSheet } from 'react-native-size-matters';
 import HotlineBanner from '../../components/HotlineBanner';
 import { useQuery } from '@apollo/client/react';
-import { NEWS_ALL_QUERY } from '../../api/queries';
+import { NEWS_ALL_QUERY, GET_EVENTS_QUERY } from '../../api/queries';
 import LinearGradient from 'react-native-linear-gradient';
 
 const { width } = Dimensions.get('window');
@@ -27,7 +29,20 @@ interface NewsData {
     newsAll: News[];
 }
 
+interface Event {
+    id: number;
+    title: string;
+    titleBn?: string;
+    fromDate: string;
+    fromDateBn?: string;
+}
+
+interface EventsData {
+    events: Event[];
+}
+
 const NewsMediaScreen = () => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
     const [activeIndex, setActiveIndex] = useState(0);
     const flatListRef = useRef<FlatList>(null);
 
@@ -71,14 +86,18 @@ const NewsMediaScreen = () => {
     const { data, loading, error, refetch } = useQuery<NewsData>(NEWS_ALL_QUERY, {
         variables: queryVariables,
     });
+
+    const { data: eventsData, loading: eventsLoading } = useQuery<EventsData>(GET_EVENTS_QUERY, {
+        variables: { page: 1, limit: 10 },
+    });
     if (error) {
         console.log('GraphQL Error Details:', JSON.stringify(error, null, 2));
     }
-    const upcomingEvents = [
-        { id: 1, title: "জাতীয় মানব পাচার প্রতিরোধ দিবস", date: "৩০ জানুয়ারি" },
-        { id: 2, title: "সচেতনতা সেমিনার - ঢাকা বিশ্ববিদ্যালয়", date: "৫ ফেব্রুয়ারি" },
-        { id: 3, title: "আইনজীবী প্রশিক্ষণ কর্মশালা", date: "১২ ফেব্রুয়ারি" }
-    ];
+    // const upcomingEvents = [
+    //     { id: 1, title: "জাতীয় মানব পাচার প্রতিরোধ দিবস", date: "৩০ জানুয়ারি" },
+    //     { id: 2, title: "সচেতনতা সেমিনার - ঢাকা বিশ্ববিদ্যালয়", date: "৫ ফেব্রুয়ারি" },
+    //     { id: 3, title: "আইনজীবী প্রশিক্ষণ কর্মশালা", date: "১২ ফেব্রুয়ারি" }
+    // ];
 
     const renderCarouselItem = ({ item }: any) => (
         <View style={styles.slideItem}>
@@ -97,7 +116,11 @@ const NewsMediaScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Header title="সংবাদ ও মিডিয়া" subtitle='সর্বশেষ খবর এবং আপডেট' showBackButton={true} />
+            <Header
+                title={languageMode === 'en' ? "News & Media" : "সংবাদ ও মিডিয়া"}
+                subtitle={languageMode === 'en' ? "Latest News and Updates" : 'সর্বশেষ খবর এবং আপডেট'}
+                showBackButton={true}
+            />
 
             <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
 
@@ -121,24 +144,28 @@ const NewsMediaScreen = () => {
 
                 {/* News Section Card */}
                 <View style={styles.newsCard}>
-                    <View style={styles.newsHeader}>
+                    <LinearGradient
+                        colors={['#155DFC', '#1447E6']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.newsHeader}
+                    >
                         <View style={styles.flexRow}>
                             <Newspaper size={moderateScale(20)} color="white" />
-                            <Text style={styles.newsHeaderText}>খবর</Text>
+                            <Text style={styles.newsHeaderText}>{languageMode === 'en' ? "News" : "খবর"}</Text>
                         </View>
-                        <TouchableOpacity onPress={() => refetch()} disabled={loading}>
-                            <RefreshCcw size={moderateScale(18)} color="white" style={loading ? { opacity: 0.5 } : {}} />
-                        </TouchableOpacity>
-                    </View>
+                    </LinearGradient>
 
                     <View style={styles.newsList}>
                         {loading ? (
                             <View style={styles.centerContent}>
-                                <Text style={styles.statusText}>লোড হচ্ছে...</Text>
+                                <Text style={styles.statusText}>{languageMode === 'en' ? "Loading..." : "লোড হচ্ছে..."}</Text>
                             </View>
                         ) : error ? (
                             <View style={styles.centerContent}>
-                                <Text style={[styles.statusText, { color: '#EF4444' }]}>উহ! খবর লোড করা সম্ভব হয়নি।</Text>
+                                <Text style={[styles.statusText, { color: '#EF4444' }]}>
+                                    {languageMode === 'en' ? "Oops! Could not load news." : "উহ! খবর লোড করা সম্ভব হয়নি।"}
+                                </Text>
                             </View>
                         ) : data?.newsAll && data.newsAll.length > 0 ? (
                             data.newsAll.map((item, index) => (
@@ -149,20 +176,20 @@ const NewsMediaScreen = () => {
                                     <View style={styles.newsItemContent}>
                                         <View style={styles.newsTextContent}>
                                             <Text style={styles.newsItemTitle} numberOfLines={2}>
-                                                {item.titleBn}
+                                                {languageMode === 'en' ? item.title : item.titleBn}
                                             </Text>
-                                            {/* {(item.subtitleBn) ? (
+                                            {/* {(languageMode === 'en' ? item.subtitle : item.subtitleBn) ? (
                                                 <Text style={styles.newsItemDesc} numberOfLines={2}>
-                                                    {item.subtitleBn}
+                                                    {languageMode === 'en' ? item.subtitle : item.subtitleBn}
                                                 </Text>
                                             ) : null} */}
                                             <Text style={styles.newsItemDesc} numberOfLines={2}>
-                                                {item.subtitleBn}
+                                                {languageMode === 'en' ? item.subtitle : item.subtitleBn}
                                             </Text>
                                             <View style={styles.dateWrapper}>
                                                 <Clock size={moderateScale(12)} color="#9CA3AF" />
                                                 <Text style={styles.dateText}>
-                                                    {item.dateBn || (item.date ? new Date(item.date).toLocaleDateString() : '')}
+                                                    {languageMode === 'en' ? (item.date ? new Date(item.date).toLocaleDateString() : '') : (item.dateBn || (item.date ? new Date(item.date).toLocaleDateString() : ''))}
                                                 </Text>
                                             </View>
                                         </View>
@@ -178,42 +205,60 @@ const NewsMediaScreen = () => {
                             ))
                         ) : (
                             <View style={styles.centerContent}>
-                                <Text style={styles.statusText}>কোনো খবর পাওয়া যায়নি।</Text>
+                                <Text style={styles.statusText}>{languageMode === 'en' ? "No news found." : "কোনো খবর পাওয়া যায়নি।"}</Text>
                             </View>
                         )}
                     </View>
 
-                    <TouchableOpacity activeOpacity={0.8} style={styles.viewMoreBtn}>
-                        <Text style={styles.viewMoreText}>আরো ও দেখুন</Text>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.viewMoreBtnContainer}>
+                        <LinearGradient
+                            colors={['#155DFC', '#1447E6']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={styles.viewMoreBtn}
+                        >
+                            <Text style={styles.viewMoreText}>{languageMode === 'en' ? "View More" : "আরো ও দেখুন"}</Text>
+                        </LinearGradient>
                     </TouchableOpacity>
                 </View>
 
                 {/* Upcoming Events */}
                 <View style={styles.eventsSection}>
-                    <Text style={styles.sectionTitle}>আসন্ন কর্মসূচি</Text>
+                    <Text style={styles.sectionTitle}>{languageMode === 'en' ? "Upcoming Events" : "আসন্ন কর্মসূচি"}</Text>
                     <LinearGradient
                         colors={['#F0FDFA', '#EFF6FF']}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                         style={styles.eventsList}
                     >
-                        {upcomingEvents.map((event, index) => (
-                            <View
-                                key={event.id}
-                                style={[styles.eventItem, index !== upcomingEvents.length - 1 && styles.eventBorder]}
-                            >
-                                <View style={styles.eventInfo}>
-                                    <View style={styles.eventIconWrapper}>
-                                        <Calendar size={moderateScale(20)} color="white" />
-                                    </View>
-                                    <View style={styles.flex1}>
-                                        <Text style={styles.eventTitle}>{event.title}</Text>
-                                        <Text style={styles.eventDate}>{event.date}</Text>
+                        {eventsLoading ? (
+                            <View style={styles.centerContent}>
+                                <Text style={styles.statusText}>{languageMode === 'en' ? "Loading..." : "লোড হচ্ছে..."}</Text>
+                            </View>
+                        ) : eventsData?.events && eventsData.events.length > 0 ? (
+                            eventsData.events.map((event, index) => (
+                                <View
+                                    key={event.id}
+                                    style={[styles.eventItem, index !== eventsData.events.length - 1 && styles.eventBorder]}
+                                >
+                                    <View style={styles.eventInfo}>
+                                        <View style={styles.eventIconWrapper}>
+                                            <Calendar size={moderateScale(20)} color="white" />
+                                        </View>
+                                        <View style={styles.flex1}>
+                                            <Text style={styles.eventTitle}>{languageMode === 'en' ? event.title : (event.titleBn || event.title)}</Text>
+                                            <Text style={styles.eventDate}>
+                                                {languageMode === 'en' ? (event.fromDate ? new Date(event.fromDate).toLocaleDateString() : '') : (event.fromDateBn || (event.fromDateBn ? new Date(event.fromDateBn).toLocaleDateString() : ''))}
+                                            </Text>
+                                        </View>
                                     </View>
                                 </View>
-                                {/* ? <ChevronRight size={moderateScale(18)} color="#9CA3AF" /> */}
+                            ))
+                        ) : (
+                            <View style={styles.centerContent}>
+                                <Text style={styles.statusText}>{languageMode === 'en' ? "No events found." : "কোনো কর্মসূচি পাওয়া যায়নি।"}</Text>
                             </View>
-                        ))}
+                        )}
                     </LinearGradient>
                 </View>
 
@@ -279,7 +324,6 @@ const styles = ScaledSheet.create({
         shadowRadius: 10,
     },
     newsHeader: {
-        backgroundColor: '#2563EB',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -356,12 +400,14 @@ const styles = ScaledSheet.create({
         marginLeft: '4@ms',
         fontFamily: 'July-Regular',
     },
-    viewMoreBtn: {
-        backgroundColor: '#2563EB',
+    viewMoreBtnContainer: {
         marginHorizontal: '20@ms',
         marginBottom: '20@vs',
+        borderRadius: '25@ms',
+        overflow: 'hidden',
+    },
+    viewMoreBtn: {
         paddingVertical: '12@vs',
-        borderRadius: '12@ms',
         alignItems: 'center',
         justifyContent: 'center',
     },
