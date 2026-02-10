@@ -27,7 +27,11 @@ type RootStackParamList = {
     ServiceList: { category: string; title: string };
     Rehabilitation: undefined;
     Repatriation: undefined;
+
     ShelterHome: undefined;
+    SocialIntegration: undefined;
+    Training: undefined;
+    Awareness: undefined;
 };
 
 const ServiceSearchScreen = () => {
@@ -111,42 +115,6 @@ const ServiceSearchScreen = () => {
             icon: Plus,
             colors: ['#009688', '#00796B'], // Teal
         },
-        // 5 Extra Cards
-        {
-            id: 'empowerment',
-            title: 'ক্ষমতায়ন',
-            subtitle: 'নারীর ক্ষমতায়ন ও অধিকার',
-            icon: Activity,
-            colors: ['#EC407A', '#C2185B'], // Pink
-        },
-        {
-            id: 'education',
-            title: 'শিক্ষা সহায়তা',
-            subtitle: 'শিশুদের জন্য শিক্ষা কার্যক্রম',
-            icon: Book,
-            colors: ['#FFCA28', '#FFA000'], // Amber
-        },
-        {
-            id: 'emergency',
-            title: 'জরুরি সেবা',
-            subtitle: '২৪/৭ জরুরি সহায়তা',
-            icon: Phone,
-            colors: ['#F44336', '#B71C1C'], // Red
-        },
-        {
-            id: 'community',
-            title: 'কমিউনিটি সেবা',
-            subtitle: 'স্থানীয় সাহায্য ও সমর্থন',
-            icon: Users,
-            colors: ['#607D8B', '#455A64'], // Blue Grey
-        },
-        {
-            id: 'financial',
-            title: 'আর্থিক সহায়তা',
-            subtitle: 'ক্ষুদ্র ঋণ ও অনুদান',
-            icon: DollarSign,
-            colors: ['#4CAF50', '#2E7D32'], // Green
-        },
     ];
 
     const handleCategoryPress = (category: typeof categories[0]) => {
@@ -159,10 +127,16 @@ const ServiceSearchScreen = () => {
             routeName = 'Repatriation';
         } else if (category.id === 'shelter_home') {
             routeName = 'ShelterHome';
+        } else if (category.id === 'social_integration') {
+            routeName = 'SocialIntegration';
+        } else if (category.id === 'training') {
+            routeName = 'Training';
+        } else if (category.id === 'awareness') {
+            routeName = 'Awareness';
         }
 
         // Use generic ServiceList for others or specific routes if they exist
-        if (['Rehabilitation', 'Repatriation', 'ShelterHome'].includes(routeName)) {
+        if (['Rehabilitation', 'Repatriation', 'ShelterHome', 'SocialIntegration', 'Training', 'Awareness'].includes(routeName)) {
             navigation.navigate(routeName as any);
         } else {
             navigation.navigate('ServiceList', params);
@@ -204,7 +178,7 @@ const ServiceSearchScreen = () => {
 const styles = ScaledSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F7FA', // Slightly gray background for better contrast
+        backgroundColor: 'white',
     },
     scrollContent: {
         flex: 1,

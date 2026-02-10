@@ -102,7 +102,7 @@ const ShelterHomeScreen = () => {
 const styles = ScaledSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8F9FA',
+        backgroundColor: 'white',
     },
     searchContainer: {
         flexDirection: 'row',

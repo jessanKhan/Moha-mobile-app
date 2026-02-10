@@ -20,6 +20,10 @@ import RepatriationScreen from '../screens/Services/RepatriationScreen';
 import ShelterHomeScreen from '../screens/Services/ShelterHomeScreen';
 import AboutTraffickingScreen from '../screens/Services/AboutTraffickingScreen';
 import ServiceDetailScreen from '../screens/Services/ServiceDetailScreen';
+import ServiceListScreen from '../screens/Services/ServiceListScreen';
+import SocialIntegrationScreen from '../screens/Services/SocialIntegrationScreen';
+import TrainingScreen from '../screens/Services/TrainingScreen';
+import AwarenessScreen from '../screens/Services/AwarenessScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -44,6 +48,10 @@ const HomeStackNavigator = () => {
       <HomeStack.Screen name="ShelterHome" component={ShelterHomeScreen} />
       <HomeStack.Screen name="AboutTrafficking" component={AboutTraffickingScreen} />
       <HomeStack.Screen name="ServiceDetails" component={ServiceDetailScreen} />
+      <HomeStack.Screen name="ServiceList" component={ServiceListScreen} />
+      <HomeStack.Screen name="SocialIntegration" component={SocialIntegrationScreen} />
+      <HomeStack.Screen name="Training" component={TrainingScreen} />
+      <HomeStack.Screen name="Awareness" component={AwarenessScreen} />
     </HomeStack.Navigator>
   );
 };
