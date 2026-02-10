@@ -11,15 +11,15 @@ const ProfileScreen = () => {
     <View style={styles.container}>
       {/* Bottom Left Gradient Box */}
       <LinearGradient
-        colors={['#E8FFD4', '#CEE1FC']}
+        colors={['#f0ffe3ff', '#CEE1FC66']} // 66 is ~40% opacity
         style={styles.gradientBox}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+        start={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 0 }}
       />
 
       {/* Top Right Gradient Box */}
       <LinearGradient
-        colors={['#E9D4FF', '#FCCEE8']}
+        colors={['#ffcdd456', '#ffe6f4ff']}
         style={styles.gradientBoxTop}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -71,9 +71,8 @@ const styles = ScaledSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 0,
-    width: width * 0.5,
-    height: width * 0.5,
-    borderTopRightRadius: 0,
+    width: '100%',
+    height: '100%',
   },
   gradientBoxTop: {
     position: 'absolute',
