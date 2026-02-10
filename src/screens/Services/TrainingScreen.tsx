@@ -3,10 +3,11 @@ import { View, Text, ScrollView } from 'react-native';
 import Header from '../../components/Header';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 import { Target, Users, Award, BookOpen, Wrench, Monitor, Briefcase } from 'lucide-react-native';
+import AppBackground from '../../components/AppBackground';
 
 const TrainingScreen = () => {
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header title="প্রশিক্ষণ ও দক্ষতা উন্নয়ন" subtitle="আত্মনির্ভরশীলতায় এক ধাপ এগিয়ে" showBackButton={true} />
             <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
 
@@ -22,7 +23,6 @@ const TrainingScreen = () => {
                         প্রশিক্ষণ হলো মানব পাচারের শিকার ব্যক্তি ও ঝুঁকিপূর্ণ জনগোষ্ঠীর জন্য একটি দক্ষতা-ভিত্তিক সহায়তা প্রক্রিয়া, যার মাধ্যমে তারা পেশাগত ও জীবনদক্ষতা অর্জন করে স্বনির্ভর জীবনে পথে এগিয়ে যেতে পারেন।
                     </Text>
 
-                    {/* Feature Grid */}
                     <View style={styles.featureGrid}>
                         <View style={styles.featureCard}>
                             <View style={[styles.iconCircle, { backgroundColor: '#E0F2FE' }]}>
@@ -53,9 +53,7 @@ const TrainingScreen = () => {
                     <Text style={styles.subHeader}>আমরা কী ধরনের প্রশিক্ষণ প্রদান করি</Text>
                     <Text style={styles.description}>চারটি মূল ক্যাটাগরিতে বিভিন্ন ধরনের প্রশিক্ষণ কোর্স পাবেন</Text>
 
-                    {/* Training Types List */}
                     <View style={styles.typesContainer}>
-
                         <View style={styles.typeCard}>
                             <View style={[styles.typeIcon, { backgroundColor: '#2563EB' }]}>
                                 <Wrench size={moderateScale(24)} color="white" />
@@ -79,10 +77,8 @@ const TrainingScreen = () => {
                             <Text style={styles.typeTitle}>উদ্যোক্তা ও ক্ষুদ্র ব্যাবসা</Text>
                             <Text style={styles.typeDesc}>ক্ষুদ্র ব্যাবসা শুরু, ব্যবসায়িক পরিকল্পনা ও বাজার সংযোগ বিষয়ক প্রশিক্ষণ।</Text>
                         </View>
-
                     </View>
 
-                    {/* Blue Section - Audience */}
                     <View style={styles.blueSection}>
                         <Text style={styles.blueSectionTitle}>আমরা সকলের পাশে আছি</Text>
                         <Text style={styles.blueSectionSubTitle}>কারা এই সেবা পাবেন</Text>
@@ -103,18 +99,13 @@ const TrainingScreen = () => {
                             ))}
                         </View>
                     </View>
-
                 </View>
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
     flex1: {
         flex: 1,
     },
@@ -192,7 +183,7 @@ const styles = ScaledSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 3,
-        alignItems: 'center', // Centered alignment as per design
+        alignItems: 'center',
     },
     typeIcon: {
         width: '56@ms',
@@ -218,13 +209,13 @@ const styles = ScaledSheet.create({
         fontFamily: 'July-Regular',
     },
     blueSection: {
-        backgroundColor: '#164E63', // Dark cyan/blue
+        backgroundColor: '#164E63',
         borderRadius: '20@ms',
         padding: '24@ms',
         marginTop: '30@vs',
     },
     blueSectionTitle: {
-        color: '#CFFAFE', // Light cyan
+        color: '#CFFAFE',
         fontSize: '14@ms',
         fontFamily: 'July-Regular',
         marginBottom: '4@vs',
@@ -250,7 +241,7 @@ const styles = ScaledSheet.create({
         width: '28@ms',
         height: '28@ms',
         borderRadius: '14@ms',
-        backgroundColor: '#F97316', // Orange
+        backgroundColor: '#F97316',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: '12@ms',

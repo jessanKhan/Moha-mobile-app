@@ -1,14 +1,15 @@
 import { View, FlatList } from 'react-native';
 import Header from '../../components/Header';
 import QuickLinksComponent from '../../components/quickLinkComponent/QuickLinksComponent';
-import { moderateScale, ScaledSheet } from 'react-native-size-matters';
+import { ScaledSheet } from 'react-native-size-matters';
 import { preventData } from '../../data/preventlinkData';
 import CustomEmergencyContactComponent from '../../components/customEmergencyContact/CustomEmergencyContactComponent';
 import PreventiveMeasureComponent from '../../components/preventiveMeasure/PreventiveMeasureComponent';
+import AppBackground from '../../components/AppBackground';
 
 const PreventiveMeasuresScreen = () => {
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header
                 title="প্রতিরোধমূলক ব্যবস্থা"
                 showBackButton={true}
@@ -48,17 +49,13 @@ const PreventiveMeasuresScreen = () => {
                     </>
                 )}
             />
-        </View>
+        </AppBackground>
     );
 };
 
 export default PreventiveMeasuresScreen;
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'rgba(249, 250, 251, 1)',
-    },
     listContent: {
         padding: '16@ms',
         paddingBottom: '24@ms',

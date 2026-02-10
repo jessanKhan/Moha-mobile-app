@@ -1,14 +1,13 @@
 import React from 'react';
-import { View, Text, ScrollView, Image, Dimensions } from 'react-native';
+import { View, Text, ScrollView, Image } from 'react-native';
 import Header from '../../components/Header';
-import { ScaledSheet, moderateScale } from 'react-native-size-matters';
+import { ScaledSheet } from 'react-native-size-matters';
 import LinearGradient from 'react-native-linear-gradient';
-
-const { width } = Dimensions.get('window');
+import AppBackground from '../../components/AppBackground';
 
 const SocialIntegrationScreen = () => {
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header title="সামাজিক একীভূতকরণ" subtitle="মানব পাচার প্রতিরোধ ও ভুক্তভোগীদের সুরক্ষা" showBackButton={true} />
             <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
 
@@ -32,7 +31,6 @@ const SocialIntegrationScreen = () => {
                         আমরা বিশ্বাস করি, ভুক্তভোগীদের দোষারোপ নয়—বরং সম্মান, সহানুভূতি ও সহযোগিতাই সমাজকে পুনঃএকত্রীকরণের মূল চাবিকাঠি।
                     </Text>
 
-                    {/* Support Cards */}
                     <View style={styles.cardContainer}>
                         <LinearGradient colors={['#E8F5E9', '#F1F8E9']} style={styles.card}>
                             <View style={[styles.borderLeft, { backgroundColor: '#4CAF50' }]} />
@@ -67,8 +65,6 @@ const SocialIntegrationScreen = () => {
                         </LinearGradient>
                     </View>
 
-
-                    {/* Target Audience Section */}
                     <View style={styles.blueSection}>
                         <Text style={styles.blueSectionTitle}>আমরা সকলের পাশে আছি</Text>
                         <Text style={styles.blueSectionSubTitle}>কারা এই সেবা পাবেন</Text>
@@ -92,15 +88,11 @@ const SocialIntegrationScreen = () => {
 
                 </View>
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
     flex1: {
         flex: 1,
     },
@@ -167,13 +159,13 @@ const styles = ScaledSheet.create({
         fontFamily: 'July-Regular',
     },
     blueSection: {
-        backgroundColor: '#164E63', // Dark cyan/blue
+        backgroundColor: '#164E63',
         borderRadius: '20@ms',
         padding: '24@ms',
         marginTop: '20@vs',
     },
     blueSectionTitle: {
-        color: '#CFFAFE', // Light cyan
+        color: '#CFFAFE',
         fontSize: '14@ms',
         fontFamily: 'July-Regular',
         marginBottom: '4@vs',
@@ -199,7 +191,7 @@ const styles = ScaledSheet.create({
         width: '28@ms',
         height: '28@ms',
         borderRadius: '14@ms',
-        backgroundColor: '#F97316', // Orange
+        backgroundColor: '#F97316',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: '12@ms',

@@ -7,7 +7,8 @@ import Step3Location from '../../components/TraffickerInfo/Step3Location';
 import Step4Evidence from '../../components/TraffickerInfo/Step4Evidence';
 import Step5Identity from '../../components/TraffickerInfo/Step5Identity';
 import Step6Review from '../../components/TraffickerInfo/Step6Review';
-import { ScaledSheet, moderateScale } from 'react-native-size-matters';
+import { ScaledSheet } from 'react-native-size-matters';
+import AppBackground from '../../components/AppBackground';
 
 const TraffickerInfoScreen = () => {
     const [currentStep, setCurrentStep] = useState(1);
@@ -68,7 +69,7 @@ const TraffickerInfoScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header title="পাচারকারী সম্পর্কে তথ্য" subtitle='নিরাপদভাবে ও সহজভাবে পাচারকারী সম্পর্কে তথ্য প্রদান' showBackButton={true} />
 
             <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
@@ -89,20 +90,16 @@ const TraffickerInfoScreen = () => {
                     </Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F8F9FA',
-    },
     flex1: {
         flex: 1,
     },
     progressContainer: {
-        backgroundColor: 'white',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
         marginHorizontal: '16@ms',
         marginTop: '24@vs',
         padding: '16@ms',
@@ -111,7 +108,7 @@ const styles = ScaledSheet.create({
         borderColor: '#F3F4FB',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
+        shadowOpacity: 0.1,
         shadowRadius: 10,
         elevation: 2,
     },

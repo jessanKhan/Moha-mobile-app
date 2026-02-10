@@ -1,15 +1,17 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import Header from '../../components/Header';
 import { Clock3, MapPin } from 'lucide-react-native';
-import { moderateScale, verticalScale } from 'react-native-size-matters';
+import { moderateScale } from 'react-native-size-matters';
 import CustomEmergencyContactComponent from '../../components/customEmergencyContact/CustomEmergencyContactComponent';
 import CustomCommonIcon from '../../components/customCommonIconComponent/CustomCommonIcon';
 import CountryDropdown from '../../components/customDropDown/CustomDropDown';
+import AppBackground from '../../components/AppBackground';
+
 const EmergencyContactScreen = () => {
   return (
-    <View style={styles.container}>
+    <AppBackground>
       <Header
         title="জরুরি যোগাযোগ"
         showBackButton
@@ -27,7 +29,6 @@ const EmergencyContactScreen = () => {
             <Clock3 color="rgba(255, 77, 77, 1)" size={moderateScale(20)} />
           </View>
 
-          {/* Texts */}
           <View style={styles.textWrapper}>
             <Text
               style={styles.urgencyText}
@@ -94,17 +95,13 @@ const EmergencyContactScreen = () => {
           <Text style={styles.legalTitlecart}>নিঃসংকোচে যোগাযোগ করুন।</Text>
         </View>
       </ScrollView>
-    </View>
+    </AppBackground>
   );
 };
 
 export default EmergencyContactScreen;
 
 const styles = ScaledSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
   scrollContent: {
     flex: 1,
     padding: '16@ms',

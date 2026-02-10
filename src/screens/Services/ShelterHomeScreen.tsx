@@ -5,12 +5,12 @@ import {
     ScrollView,
     TextInput,
     TouchableOpacity,
-    StyleSheet,
     Linking,
 } from 'react-native';
 import Header from '../../components/Header';
 import { Search, ListFilter, MapPin, Phone } from 'lucide-react-native';
-import { scale, verticalScale, moderateScale, ScaledSheet } from 'react-native-size-matters';
+import { moderateScale, ScaledSheet } from 'react-native-size-matters';
+import AppBackground from '../../components/AppBackground';
 
 const ShelterHomeScreen = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -42,7 +42,7 @@ const ShelterHomeScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header
                 title="সেল্টার হোম"
                 subtitle="নিরাপদ অস্থায়ী আশ্রয়"
@@ -95,20 +95,15 @@ const ShelterHomeScreen = () => {
                 ))}
                 <View style={styles.footerSpacer} />
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
     searchContainer: {
         flexDirection: 'row',
         padding: '16@ms',
         alignItems: 'center',
-        backgroundColor: 'white',
         borderBottomWidth: 1,
         borderBottomColor: '#F3F4F6',
     },

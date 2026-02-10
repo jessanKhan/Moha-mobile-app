@@ -1,14 +1,15 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { View, Text, ScrollView, ImageBackground, TouchableOpacity, Image, FlatList, Dimensions } from 'react-native';
+import { View, Text, ScrollView, ImageBackground, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import Header from '../../components/Header';
-import { Newspaper, Calendar, ChevronRight, Clock, RefreshCcw } from 'lucide-react-native';
-import { moderateScale, scale, verticalScale, ScaledSheet } from 'react-native-size-matters';
+import { Newspaper, Calendar, Clock } from 'lucide-react-native';
+import { moderateScale, scale, ScaledSheet } from 'react-native-size-matters';
 import HotlineBanner from '../../components/HotlineBanner';
 import { useQuery } from '@apollo/client/react';
 import { NEWS_ALL_QUERY, GET_EVENTS_QUERY } from '../../api/queries';
 import LinearGradient from 'react-native-linear-gradient';
+import AppBackground from '../../components/AppBackground';
 
 const { width } = Dimensions.get('window');
 
@@ -22,7 +23,7 @@ interface News {
     subtitleBn?: string;
     date?: string;
     dateBn?: string;
-    thumbnailUrl?: string; // Optional as per user's edit
+    thumbnailUrl?: string;
 }
 
 interface NewsData {
@@ -83,21 +84,13 @@ const NewsMediaScreen = () => {
 
     const queryVariables = React.useMemo(() => ({ page: 1, limit: 10 }), []);
 
-    const { data, loading, error, refetch } = useQuery<NewsData>(NEWS_ALL_QUERY, {
+    const { data, loading, error } = useQuery<NewsData>(NEWS_ALL_QUERY, {
         variables: queryVariables,
     });
 
     const { data: eventsData, loading: eventsLoading } = useQuery<EventsData>(GET_EVENTS_QUERY, {
         variables: { page: 1, limit: 10 },
     });
-    if (error) {
-        console.log('GraphQL Error Details:', JSON.stringify(error, null, 2));
-    }
-    // const upcomingEvents = [
-    //     { id: 1, title: "জাতীয় মানব পাচার প্রতিরোধ দিবস", date: "৩০ জানুয়ারি" },
-    //     { id: 2, title: "সচেতনতা সেমিনার - ঢাকা বিশ্ববিদ্যালয়", date: "৫ ফেব্রুয়ারি" },
-    //     { id: 3, title: "আইনজীবী প্রশিক্ষণ কর্মশালা", date: "১২ ফেব্রুয়ারি" }
-    // ];
 
     const renderCarouselItem = ({ item }: any) => (
         <View style={styles.slideItem}>
@@ -115,7 +108,7 @@ const NewsMediaScreen = () => {
     );
 
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header
                 title={languageMode === 'en' ? "News & Media" : "সংবাদ ও মিডিয়া"}
                 subtitle={languageMode === 'en' ? "Latest News and Updates" : 'সর্বশেষ খবর এবং আপডেট'}
@@ -124,7 +117,6 @@ const NewsMediaScreen = () => {
 
             <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
 
-                {/* Refactored Carousel (Paging) */}
                 <View style={styles.carouselContainer}>
                     <FlatList
                         ref={flatListRef}
@@ -142,7 +134,6 @@ const NewsMediaScreen = () => {
                     />
                 </View>
 
-                {/* News Section Card */}
                 <View style={styles.newsCard}>
                     <LinearGradient
                         colors={['#155DFC', '#1447E6']}
@@ -178,11 +169,6 @@ const NewsMediaScreen = () => {
                                             <Text style={styles.newsItemTitle} numberOfLines={2}>
                                                 {languageMode === 'en' ? item.title : item.titleBn}
                                             </Text>
-                                            {/* {(languageMode === 'en' ? item.subtitle : item.subtitleBn) ? (
-                                                <Text style={styles.newsItemDesc} numberOfLines={2}>
-                                                    {languageMode === 'en' ? item.subtitle : item.subtitleBn}
-                                                </Text>
-                                            ) : null} */}
                                             <Text style={styles.newsItemDesc} numberOfLines={2}>
                                                 {languageMode === 'en' ? item.subtitle : item.subtitleBn}
                                             </Text>
@@ -193,13 +179,6 @@ const NewsMediaScreen = () => {
                                                 </Text>
                                             </View>
                                         </View>
-                                        {/* {item.thumbnailUrl && (
-                                            <Image
-                                                source={{ uri: item.thumbnailUrl }}
-                                                style={styles.thumbnail}
-                                                resizeMode="cover"
-                                            />
-                                        )} */}
                                     </View>
                                 </TouchableOpacity>
                             ))
@@ -222,7 +201,6 @@ const NewsMediaScreen = () => {
                     </TouchableOpacity>
                 </View>
 
-                {/* Upcoming Events */}
                 <View style={styles.eventsSection}>
                     <Text style={styles.sectionTitle}>{languageMode === 'en' ? "Upcoming Events" : "আসন্ন কর্মসূচি"}</Text>
                     <LinearGradient
@@ -262,21 +240,16 @@ const NewsMediaScreen = () => {
                     </LinearGradient>
                 </View>
 
-                {/* Hotline Bar */}
                 <View style={styles.footerHotline}>
                     <HotlineBanner />
                 </View>
 
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F8F9FA',
-    },
     flex1: {
         flex: 1,
     },
@@ -365,11 +338,6 @@ const styles = ScaledSheet.create({
     },
     newsTextContent: {
         flex: 1,
-    },
-    thumbnail: {
-        width: '80@ms',
-        height: '80@ms',
-        borderRadius: '12@ms',
     },
     borderBottom: {
         borderBottomWidth: 1,

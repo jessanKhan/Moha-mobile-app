@@ -4,10 +4,11 @@ import Header from '../../components/Header';
 import { Lock, Upload, Send } from 'lucide-react-native';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 import HotlineBanner from '../../components/HotlineBanner';
+import AppBackground from '../../components/AppBackground';
 
 const ComplaintScreen = () => {
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header title="অভিযোগ করুন" subtitle='আপনার তথ্য সম্পূর্ণ সুরক্ষিত থাকবে' showBackButton={true} />
             <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
 
@@ -95,15 +96,11 @@ const ComplaintScreen = () => {
                 <HotlineBanner />
                 <View style={styles.spacer} />
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F8F9FA',
-    },
     scrollContent: {
         flex: 1,
         paddingHorizontal: '16@ms',

@@ -10,24 +10,18 @@ import {
     Heart,
     User,
     CornerUpLeft,
-    Users,
     BookOpen,
     Volume2,
     Plus,
-    Activity,
-    Book,
-    Phone,
-    DollarSign,
-    Briefcase
 } from 'lucide-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { moderateScale, ScaledSheet } from 'react-native-size-matters';
+import AppBackground from '../../components/AppBackground';
 
 type RootStackParamList = {
     ServiceList: { category: string; title: string };
     Rehabilitation: undefined;
     Repatriation: undefined;
-
     ShelterHome: undefined;
     SocialIntegration: undefined;
     Training: undefined;
@@ -49,7 +43,7 @@ const ServiceSearchScreen = () => {
             id: 'rehab_center_list',
             title: 'পুনর্বাসন কেন্দ্রের তালিকা',
             subtitle: 'স্বাভাবিক জীবনে ফেরার সহায়তা',
-            icon: Home, // Using Home as per image icon semblance, or maybe Hospital?
+            icon: Home,
             colors: ['#34A853', '#2E7D32'], // Green
         },
         {
@@ -135,7 +129,6 @@ const ServiceSearchScreen = () => {
             routeName = 'Awareness';
         }
 
-        // Use generic ServiceList for others or specific routes if they exist
         if (['Rehabilitation', 'Repatriation', 'ShelterHome', 'SocialIntegration', 'Training', 'Awareness'].includes(routeName)) {
             navigation.navigate(routeName as any);
         } else {
@@ -144,7 +137,7 @@ const ServiceSearchScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header title="সেবা অনুসন্ধান" subtitle='আপনার প্রয়োজন অনুযায়ী সেবা খুঁজুন' showBackButton={true} />
             <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
                 {categories.map((item) => (
@@ -171,15 +164,11 @@ const ServiceSearchScreen = () => {
                     </TouchableOpacity>
                 ))}
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
     scrollContent: {
         flex: 1,
         paddingHorizontal: '16@ms',
@@ -197,7 +186,7 @@ const styles = ScaledSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.15,
         shadowRadius: 3.84,
-        backgroundColor: 'white', // fallback
+        backgroundColor: 'white',
     },
     gradient: {
         flexDirection: 'row',

@@ -2,11 +2,12 @@ import React from 'react';
 import { View, Text, ScrollView, Image } from 'react-native';
 import Header from '../../components/Header';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
-import { Shield, Users, Mic, AlertTriangle, AlertCircle } from 'lucide-react-native';
+import { Shield, Users, Mic, AlertTriangle } from 'lucide-react-native';
+import AppBackground from '../../components/AppBackground';
 
 const AwarenessScreen = () => {
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header title="সতর্ক থাকুন, নিরাপদ থাকুন" subtitle="সচেতনতাই আমাদের শক্তি" showBackButton={true} />
             <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
 
@@ -22,7 +23,6 @@ const AwarenessScreen = () => {
                         মানব পাচারকারীরা প্রলোভন দেখিয়ে, মিথ্যা বা প্রতারণার মাধ্যমে পাচার করে থাকে। সোশ্যাল মিডিয়া, মোবাইল অ্যাপ্লিকেশন এবং অনলাইন প্ল্যাটফর্মগুলো তাদের প্রধান মাধ্যম।
                     </Text>
 
-                    {/* Warning Tips Card */}
                     <View style={styles.warningCard}>
                         <Text style={styles.warningTitle}>সতর্কতার লক্ষণ:</Text>
                         <View style={styles.bulletList}>
@@ -40,7 +40,6 @@ const AwarenessScreen = () => {
                         </View>
                     </View>
 
-                    {/* Blue Advice Box */}
                     <View style={styles.blueBox}>
                         <Text style={styles.blueBoxTitle}>মনে রাখবেন:</Text>
                         <Text style={styles.blueBoxText}>
@@ -58,7 +57,6 @@ const AwarenessScreen = () => {
                         একটি সচেতন সম্প্রদায় মানব পাচার প্রতিরোধে সবচেয়ে শক্তিশালী হাতিয়ার। যখন আমরা প্রত্যেকে এক হই, তথ্য শেয়ার করি এবং একে অপরকে রক্ষা করি, তখন আমরা একটি নিরাপদ পরিবেশ তৈরি করি।
                     </Text>
 
-                    {/* Action Items List */}
                     <View style={styles.actionList}>
                         <View style={styles.actionItem}>
                             <View style={[styles.actionIcon, { backgroundColor: '#DBEAFE' }]}>
@@ -91,8 +89,6 @@ const AwarenessScreen = () => {
                         </View>
                     </View>
 
-
-                    {/* Action Cards (Report, Share etc) */}
                     <Text style={styles.subHeader}>সচেতনতা সৃষ্টি করুন</Text>
                     <Text style={styles.description}>মানব পাচার প্রতিরোধে আমাদের সবার ভূমিকা রয়েছে। সঠিক তথ্য এবং সচেতনতায় পারে জীবন বাঁচাতে।</Text>
 
@@ -127,7 +123,6 @@ const AwarenessScreen = () => {
                         style={styles.bottomImage}
                     />
 
-                    {/* Promise List */}
                     <Text style={styles.subHeader}>প্রতিরোধের পদক্ষেপ</Text>
                     <Text style={styles.description}>মানব পাচার রোধ করার জন্য প্রতিরোধমূলক ব্যবস্থা গ্রহণ অত্যন্ত গুরুত্বপূর্ণ। আমরা সবাইকে একটি নিরাপদ সমাজ গড়তে পারি।</Text>
 
@@ -144,19 +139,13 @@ const AwarenessScreen = () => {
                             </View>
                         ))}
                     </View>
-
-
                 </View>
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
     flex1: {
         flex: 1,
     },
@@ -235,7 +224,7 @@ const styles = ScaledSheet.create({
         flex: 1,
     },
     blueBox: {
-        backgroundColor: '#1E3A8A', // Dark Blue
+        backgroundColor: '#1E3A8A',
         borderRadius: '12@ms',
         padding: '16@ms',
         marginTop: '10@vs',

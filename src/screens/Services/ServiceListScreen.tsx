@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TextInput, TouchableOpacity } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 import Header from '../../components/Header';
 import { Search, ListFilter } from 'lucide-react-native';
 import ServiceCenterCard from '../../components/ServiceCenterCard';
+import AppBackground from '../../components/AppBackground';
 
 const ServiceListScreen = () => {
     const route = useRoute<any>();
-    const navigation = useNavigation();
     const { category, title } = route.params || {};
     const [searchQuery, setSearchQuery] = useState('');
 
-    // Mock data - replace with API call later
     const services = [
         { id: '1', name: 'চট্টগ্রাম শিশু সুরক্ষা কেন্দ্র', address: 'নাসিরাবাদ হাউজিং সোসাইটি, চট্টগ্রাম-৪২০৩', phone: '+৮৮০-২-৯১১২২৩৩', capacity: '৫০' },
         { id: '2', name: 'চট্টগ্রাম শিশু সুরক্ষা কেন্দ্র', address: 'নাসিরাবাদ হাউজিং সোসাইটি, চট্টগ্রাম-৪২০৩', phone: '+৮৮০-২-৯১১২২৩৩', capacity: '৫০' },
@@ -35,7 +34,7 @@ const ServiceListScreen = () => {
     );
 
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header title={title || 'Services'} subtitle="নিরাপদভাবে নিজ দেশে ফেরত যাওয়া" showBackButton={true} />
 
             <View style={styles.searchContainer}>
@@ -66,20 +65,15 @@ const ServiceListScreen = () => {
                     </View>
                 }
             />
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
     searchContainer: {
         flexDirection: 'row',
         padding: '16@ms',
         alignItems: 'center',
-        backgroundColor: 'white',
         paddingBottom: '20@vs'
     },
     searchBarWrapper: {
@@ -114,7 +108,6 @@ const styles = ScaledSheet.create({
     },
     listContainer: {
         padding: '16@ms',
-        backgroundColor: 'white',
         paddingBottom: '40@vs',
         flexGrow: 1,
     },

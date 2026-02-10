@@ -6,10 +6,11 @@ import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 import { Scale } from 'lucide-react-native';
 import CustomEmergencyContactComponent from '../../components/customEmergencyContact/CustomEmergencyContactComponent';
 import Header from '../../components/Header';
+import AppBackground from '../../components/AppBackground';
 
 const PolicyAndLawScreen = () => {
   return (
-    <View style={styles.container}>
+    <AppBackground>
       <Header
         title="নীতি ও আইন"
         subtitle="মানব পাচার প্রতিরোধে প্রযোজ্য আইনসমূহ"
@@ -54,15 +55,11 @@ const PolicyAndLawScreen = () => {
           </View>
         )}
       />
-    </View>
+    </AppBackground>
   );
 };
 
 const styles = ScaledSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F7FA',
-  },
   flatList: {
     flex: 1,
     width: '100%',

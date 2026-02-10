@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, LayoutAnimation, Platform, UIManager } from 'react-native';
 import Header from '../../components/Header';
-import { ChevronDown, ChevronUp, Phone, Scale } from 'lucide-react-native';
+import { ChevronDown, ChevronUp, Scale } from 'lucide-react-native';
 import { policies } from '../../data/policyData';
 import HotlineBanner from '../../components/HotlineBanner';
-
-import { ScaledSheet, moderateScale, scale, verticalScale } from 'react-native-size-matters';
+import { ScaledSheet, moderateScale } from 'react-native-size-matters';
+import AppBackground from '../../components/AppBackground';
 
 if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -53,7 +53,7 @@ const PolicyLawScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header
                 title="নীতি ও আইন"
                 subtitle="আইনি তথ্য এবং নির্দেশনা"
@@ -93,15 +93,11 @@ const PolicyLawScreen = () => {
                 />
 
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F9FAFB',
-    },
     flex1: {
         flex: 1,
     },

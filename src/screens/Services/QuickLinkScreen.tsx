@@ -7,10 +7,11 @@ import CustomEmergencyContactComponent from '../../components/customEmergencyCon
 import QuickLinksComponent from '../../components/quickLinkComponent/QuickLinksComponent';
 import { quickLinksSectionData } from '../../data/linkComponentData';
 import LinkComponent from '../../components/quickLinkComponent/LinkComponent';
+import AppBackground from '../../components/AppBackground';
 
 const QuickLinkScreen = () => {
   return (
-    <View className="flex-1 bg-white dark:bg-black">
+    <AppBackground>
       <Header
         title="দ্রুত লিংক"
         showBackButton={true}
@@ -49,7 +50,7 @@ const QuickLinkScreen = () => {
           />
         )}
       />
-    </View>
+    </AppBackground>
   );
 };
 

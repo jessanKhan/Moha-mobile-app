@@ -1,14 +1,13 @@
 import React from 'react';
-import { View, Text, ScrollView, Image, Dimensions } from 'react-native';
+import { View, Text, ScrollView, Image } from 'react-native';
 import Header from '../../components/Header';
-import { ScaledSheet, moderateScale } from 'react-native-size-matters';
+import { ScaledSheet } from 'react-native-size-matters';
 import LinearGradient from 'react-native-linear-gradient';
-
-const { width } = Dimensions.get('window');
+import AppBackground from '../../components/AppBackground';
 
 const RehabilitationScreen = () => {
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header title="পুনর্বাসন" subtitle="নতুন জীবনের জন্য সহায়তা" showBackButton={true} />
             <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
 
@@ -32,7 +31,6 @@ const RehabilitationScreen = () => {
                         পুনর্বাসন হলো মানব পাচারের শিকার ব্যক্তিদের জন্য একটি দীর্ঘমেয়াদী সহায়তা প্রক্রিয়া, যার মাধ্যমে তারা নিরাপদ আশ্রয়, চিকিৎসা, মানসিক সহায়তা, শিক্ষা ও কর্মসংস্থানের সুযোগ পেয়ে স্বাভাবিক জীবনে ফিরে আসতে পারেন।
                     </Text>
 
-                    {/* Support Cards - Green Theme */}
                     <View style={styles.cardContainer}>
                         <LinearGradient colors={['#F0FDFA', '#EFF6FF']} style={styles.card}>
                             <View style={[styles.borderLeft, { backgroundColor: '#10B981' }]} />
@@ -67,8 +65,6 @@ const RehabilitationScreen = () => {
                         </LinearGradient>
                     </View>
 
-
-                    {/* Target Audience Section - Blue */}
                     <View style={styles.blueSection}>
                         <Text style={styles.blueSectionTitle}>আমরা সকলের পাশে আছি</Text>
                         <Text style={styles.blueSectionSubTitle}>কারা এই পুনর্বাসন সেবা পাবেন</Text>
@@ -89,18 +85,13 @@ const RehabilitationScreen = () => {
                             ))}
                         </View>
                     </View>
-
                 </View>
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
     flex1: {
         flex: 1,
     },
@@ -167,14 +158,13 @@ const styles = ScaledSheet.create({
         fontFamily: 'July-Regular',
     },
     blueSection: {
-        backgroundColor: '#164E63', // Dark cyan/blue (matching the design which looks slightly different from others but consistent enough)
-        // Actually picking a color closer to the screenshot which is dark teal/blue
+        backgroundColor: '#164E63',
         borderRadius: '20@ms',
         padding: '24@ms',
         marginTop: '20@vs',
     },
     blueSectionTitle: {
-        color: '#CFFAFE', // Light cyan
+        color: '#CFFAFE',
         fontSize: '14@ms',
         fontFamily: 'July-Regular',
         marginBottom: '4@vs',
@@ -200,7 +190,7 @@ const styles = ScaledSheet.create({
         width: '28@ms',
         height: '28@ms',
         borderRadius: '14@ms',
-        backgroundColor: '#F97316', // Orange
+        backgroundColor: '#F97316',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: '12@ms',

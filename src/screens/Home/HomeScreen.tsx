@@ -20,15 +20,13 @@ import {
   Users,
   Search,
 } from 'lucide-react-native';
-
-
-
 import { useNavigation } from '@react-navigation/native';
 import { ScaledSheet } from 'react-native-size-matters';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useQuery } from '@apollo/client/react';
 import { GET_SLIDERS_QUERY, COMPONENTS_QUERY } from '../../api/queries';
+import AppBackground from '../../components/AppBackground';
 
 const ICON_MAPPING: { [key: string]: any } = {
   BarChart3,
@@ -42,7 +40,6 @@ const ICON_MAPPING: { [key: string]: any } = {
   Users,
   Search,
 };
-
 
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
@@ -58,7 +55,6 @@ const HomeScreen = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-
   const renderHeader = () => (
     <View style={styles.headerContent}>
       <Slider sliders={sliderData?.sliders || []} />
@@ -71,7 +67,7 @@ const HomeScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <AppBackground>
       <StatusBar
         translucent
         backgroundColor="transparent"
@@ -94,13 +90,12 @@ const HomeScreen = () => {
         renderItem={({ item }) => (
           <ServiceCard
             title={languageMode === 'bn' ? item.labelBn : item.label}
-            icon={ICON_MAPPING[item.iconName] || Search} // Fallback to Search if icon not found
+            icon={ICON_MAPPING[item.iconName] || Search}
             iconGradientColors={item.iconGradientColors}
             onPress={() => navigation.navigate(item.mobileRouteName)}
           />
         )}
         keyExtractor={item => item.id.toString()}
-
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
         ListHeaderComponent={renderHeader}
@@ -112,17 +107,13 @@ const HomeScreen = () => {
         )}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </AppBackground>
   );
 };
 
 const styles = ScaledSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
   headerContent: {
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
   },
   headerTitleContainer: {
     paddingHorizontal: '20@ms',

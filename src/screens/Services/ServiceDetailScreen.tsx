@@ -3,6 +3,7 @@ import { View, Text, ScrollView } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import Header from '../../components/Header';
 import { ScaledSheet } from 'react-native-size-matters';
+import AppBackground from '../../components/AppBackground';
 
 type ServiceDetailRouteParams = {
     ServiceDetails: {
@@ -16,7 +17,7 @@ const ServiceDetailScreen = () => {
     const { title } = route.params;
 
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header
                 title={title}
                 showBackButton={true}
@@ -31,21 +32,17 @@ const ServiceDetailScreen = () => {
                     </Text>
                 </View>
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
     scrollContent: {
         flex: 1,
         padding: '16@ms',
     },
     contentBanner: {
-        backgroundColor: '#F9FAFB',
+        backgroundColor: 'rgba(249, 250, 251, 0.8)',
         padding: '24@ms',
         borderRadius: '16@ms',
         borderWidth: 1,

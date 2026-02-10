@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import Header from '../../components/Header';
-import { Filter, Search, BarChart3, Users, Scale, PhoneCall, Handshake, FileText, Newspaper, ShieldCheck, Link as LinkIcon } from 'lucide-react-native';
+import { Filter, Search, BarChart3, Users, ShieldCheck } from 'lucide-react-native';
 import { LineChart, BarChart, PieChart } from 'react-native-gifted-charts';
 import { Text as SvgText } from 'react-native-svg';
 import { ScaledSheet, scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { barData1, lineData1, lineData2, lineData3, barData2, pieData } from '../../data/statisticsData';
 import LinearGradient from 'react-native-linear-gradient';
+import AppBackground from '../../components/AppBackground';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -43,7 +44,7 @@ const StatisticsScreen = () => {
     );
 
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header
                 title="পরিসংখ্যান"
                 subtitle="মানব পাচার প্রতিরোধ তথ্য ও উপাত্ত"
@@ -179,15 +180,11 @@ const StatisticsScreen = () => {
                     </View>
                 </ChartCard>
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F9FAFB',
-    },
     flex1: {
         flex: 1,
     },

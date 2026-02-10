@@ -1,30 +1,12 @@
 import React from 'react';
-import { Text, View, Dimensions } from 'react-native';
+import { Text, View } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import Header from '../../components/Header';
-import LinearGradient from 'react-native-linear-gradient';
-
-const { width } = Dimensions.get('window');
+import AppBackground from '../../components/AppBackground';
 
 const ProfileScreen = () => {
   return (
-    <View style={styles.container}>
-      {/* Bottom Left Gradient Box */}
-      <LinearGradient
-        colors={['#f0ffe3ff', '#CEE1FC66']} // 66 is ~40% opacity
-        style={styles.gradientBox}
-        start={{ x: 0, y: 1 }}
-        end={{ x: 1, y: 0 }}
-      />
-
-      {/* Top Right Gradient Box */}
-      <LinearGradient
-        colors={['#ffcdd456', '#ffe6f4ff']}
-        style={styles.gradientBoxTop}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      />
-
+    <AppBackground>
       <Header
         variant="default"
         title="প্রোফাইল"
@@ -38,17 +20,11 @@ const ProfileScreen = () => {
           Manage your personal information.
         </Text>
       </View>
-
-    </View>
-
+    </AppBackground>
   );
 };
 
 const styles = ScaledSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
   content: {
     flex: 1,
     alignItems: 'center',
@@ -66,20 +42,6 @@ const styles = ScaledSheet.create({
     color: '#6B7280',
     marginTop: '8@vs',
     fontFamily: 'July-Regular',
-  },
-  gradientBox: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-  },
-  gradientBoxTop: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: width * 0.5,
-    height: width * 0.5,
   },
 });
 
