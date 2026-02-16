@@ -26,6 +26,7 @@ const styles = ScaledSheet.create({
     borderRadius: '14@ms',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: '25@ms',
   },
 });
 

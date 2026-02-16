@@ -34,7 +34,7 @@ const QuickLinksComponent: FC<QuickLinksComponentProps> = ({
                     icon={headerIcon}
                     bgColor="rgba(255, 255, 255, 0.2)"
                     iconColor="#ffffff"
-                    size={moderateScale(25)}
+                    size={moderateScale(20)}
                 />
                 <Text style={styles.helptxt}>{title}</Text>
             </LinearGradient>
