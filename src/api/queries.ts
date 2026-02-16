@@ -55,3 +55,35 @@ export const GET_EVENTS_QUERY = gql`
     }
   }
 `;
+
+export const CATEGORY_BY_COMPONENT_ID = gql`
+  query CategoryByComponentId($componentId: Int!) {
+    categoryByComponentId(componentId: $componentId) {
+      id
+      menuId
+      componentId
+      name
+      nameBn
+      logoUrl
+      color
+      createdAt
+      createdBy
+      updatedAt
+      updatedBy
+    }
+  }
+`;
+
+export const ALL_QUICK_LINKS = gql`
+  query AllQuickLinks($page: Float!, $limit: Float!) {
+    allQuickLinks(page: $page, limit: $limit) {
+      id
+      label
+      labelBn
+      url
+      category
+      createdAt
+      updateAt
+    }
+  }
+`;

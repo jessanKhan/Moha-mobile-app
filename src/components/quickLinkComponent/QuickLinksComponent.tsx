@@ -9,6 +9,7 @@ interface QuickLinksComponentProps {
     title: string;
     gradientColors: string[];
     headerIcon?: LucideIcon;
+    logoUrl?: string;
     data?: any[];
     renderItem?: ({ item, index }: any) => React.ReactElement;
     keyExtractor?: (item: any, index: number) => string;
@@ -18,6 +19,7 @@ const QuickLinksComponent: FC<QuickLinksComponentProps> = ({
     title,
     gradientColors,
     headerIcon,
+    logoUrl,
     data,
     renderItem,
     keyExtractor,
@@ -32,6 +34,7 @@ const QuickLinksComponent: FC<QuickLinksComponentProps> = ({
             >
                 <CustomCommonIcon
                     icon={headerIcon}
+                    imageUrl={logoUrl}
                     bgColor="rgba(255, 255, 255, 0.2)"
                     iconColor="#ffffff"
                     size={moderateScale(20)}

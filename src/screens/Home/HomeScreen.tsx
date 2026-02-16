@@ -92,7 +92,7 @@ const HomeScreen = () => {
             title={languageMode === 'bn' ? item.labelBn : item.label}
             icon={ICON_MAPPING[item.iconName] || Search}
             iconGradientColors={item.iconGradientColors}
-            onPress={() => navigation.navigate(item.mobileRouteName)}
+            onPress={() => navigation.navigate(item.mobileRouteName, { componentId: item.id })}
           />
         )}
         keyExtractor={item => item.id.toString()}

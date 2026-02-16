@@ -1,25 +1,75 @@
-import React from 'react';
-import { View, FlatList } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, FlatList, ActivityIndicator } from 'react-native';
 import Header from '../../components/Header';
 import { ExternalLink } from 'lucide-react-native';
 import { moderateScale } from 'react-native-size-matters';
 import CustomEmergencyContactComponent from '../../components/customEmergencyContact/CustomEmergencyContactComponent';
 import QuickLinksComponent from '../../components/quickLinkComponent/QuickLinksComponent';
-import { quickLinksSectionData } from '../../data/linkComponentData';
 import LinkComponent from '../../components/quickLinkComponent/LinkComponent';
 import AppBackground from '../../components/AppBackground';
+import { useQuery } from '@apollo/client/react';
+import { CATEGORY_BY_COMPONENT_ID, ALL_QUICK_LINKS } from '../../api/queries';
+import { useRoute } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 const QuickLinkScreen = () => {
+  const route = useRoute<any>();
+  const { componentId } = route.params || {};
+  const languageMode = useSelector((state: RootState) => state.language.mode);
+
+  const { data: categoryData, loading: categoryLoading } = useQuery<any>(CATEGORY_BY_COMPONENT_ID, {
+    variables: { componentId: parseInt(componentId) },
+    skip: !componentId,
+  });
+
+  const { data: linksData, loading: linksLoading } = useQuery<any>(ALL_QUICK_LINKS, {
+    variables: { page: 1, limit: 100 },
+  });
+
+  const sections = useMemo(() => {
+    const categories = categoryData?.categoryByComponentId;
+    const allLinks = linksData?.allQuickLinks;
+
+    if (!categories || !allLinks || !Array.isArray(categories)) return [];
+
+    return categories.map((cat: any) => {
+      const normalizedCatName = cat.name?.toLowerCase().trim();
+      const catLinks = allLinks.filter((link: any) =>
+        link.category?.toLowerCase().trim() === normalizedCatName
+      );
+
+      return {
+        id: cat.id.toString(),
+        title: languageMode === 'bn' ? cat.nameBn : cat.name,
+        logoUrl: cat.logoUrl,
+        color: cat.color,
+        items: catLinks,
+      };
+    }).filter(section => section.items.length > 0);
+  }, [categoryData, linksData, languageMode]);
+
+  if (categoryLoading || linksLoading) {
+    return (
+      <AppBackground>
+        <Header title={languageMode === 'bn' ? "দ্রুত লিংক" : "Quick Links"} showBackButton={true} />
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#009689" />
+        </View>
+      </AppBackground>
+    );
+  }
+
   return (
     <AppBackground>
       <Header
-        title="দ্রুত লিংক"
+        title={languageMode === 'bn' ? "দ্রুত লিংক" : "Quick Links"}
         showBackButton={true}
-        subtitle="প্রয়োজনীয় দ্রুত লিংক"
+        subtitle={languageMode === 'bn' ? "প্রয়োজনীয় দ্রুত লিংক" : "Essential Quick Links"}
       />
 
       <FlatList
-        data={quickLinksSectionData}
+        data={sections}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -29,15 +79,15 @@ const QuickLinkScreen = () => {
         renderItem={({ item }) => (
           <QuickLinksComponent
             title={item.title}
-            gradientColors={item.gradientColors}
-            headerIcon={item.icon}
+            gradientColors={item.color ? [item.color, item.color] : ['#009689', '#004D40']}
+            logoUrl={item.logoUrl}
             data={item.items}
-            keyExtractor={linkItem => linkItem.id}
-            renderItem={({ item: linkItem, index }) => (
+            keyExtractor={(linkItem: any) => linkItem.id.toString()}
+            renderItem={({ item: linkItem, index }: { item: any; index: number }) => (
               <LinkComponent
-                text={linkItem.text}
+                text={languageMode === 'bn' ? linkItem.labelBn : linkItem.label}
                 icon={ExternalLink}
-                onPress={() => console.log(linkItem.text)}
+                onPress={() => console.log(linkItem.url)}
                 isFirst={index === 0}
               />
             )}
@@ -45,7 +95,7 @@ const QuickLinkScreen = () => {
         )}
         ListFooterComponent={() => (
           <CustomEmergencyContactComponent
-            title="২৪/৭ জরুরি হটলাইন"
+            title={languageMode === 'bn' ? "২৪/৭ জরুরি হটলাইন" : "24/7 Emergency Hotline"}
             hotLineNumber="৯৯৯"
           />
         )}
