@@ -1,12 +1,68 @@
-import React from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import Header from '../../components/Header';
 import { Lock, Upload, Send } from 'lucide-react-native';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 import HotlineBanner from '../../components/HotlineBanner';
 import AppBackground from '../../components/AppBackground';
+import { useMutation } from '@apollo/client/react';
+import { CREATE_COMPLAIN } from '../../api/mutations';
 
 const ComplaintScreen = () => {
+    const [formData, setFormData] = useState({
+        name: '',
+        phone: '',
+        location: '',
+        description: '',
+    });
+
+    const [createComplain, { loading }] = useMutation(CREATE_COMPLAIN);
+
+    const handleSubmit = async () => {
+        if (!formData.description) {
+            Alert.alert("সতর্কতা", "অনুগ্রহ করে ঘটনার বিবরণ লিখুন।");
+            return;
+        }
+
+        try {
+            const createComplainInput = {
+                name: formData.name || 'Anonymous Reporter',
+                phone: formData.phone,
+                incidentAddress: formData.location,
+                description: formData.description,
+                // Providing default/empty values for other required fields if any
+                isMinor: "NO",
+                gender: "OTHER",
+                suspectInfo: {
+                    name: 'Unknown Suspect'
+                }
+            };
+
+            const { data } = await createComplain({
+                variables: { createComplainInput }
+            });
+
+            if (data) {
+                Alert.alert(
+                    "সফল",
+                    "আপনার অভিযোগ সফলভাবে জমা দেওয়া হয়েছে।",
+                    [{
+                        text: "ঠিক আছে",
+                        onPress: () => setFormData({
+                            name: '',
+                            phone: '',
+                            location: '',
+                            description: '',
+                        })
+                    }]
+                );
+            }
+        } catch (error) {
+            console.error('Submission error:', error);
+            Alert.alert("ত্রুটি", "অভিযোগ জমা দেওয়া সম্ভব হয়নি। আবার চেষ্টা করুন।");
+        }
+    };
+
     return (
         <AppBackground>
             <Header title="অভিযোগ করুন" subtitle='আপনার তথ্য সম্পূর্ণ সুরক্ষিত থাকবে' showBackButton={true} />
@@ -35,6 +91,8 @@ const ComplaintScreen = () => {
                         placeholder="আপনার নাম লিখুন"
                         style={styles.textInput}
                         placeholderTextColor="#9CA3AF"
+                        value={formData.name}
+                        onChangeText={(val) => setFormData({ ...formData, name: val })}
                     />
                     <Text style={styles.inputFooterText}>নাম না দিলেও অভিযোগ গ্রহণ করা হবে</Text>
                 </View>
@@ -47,6 +105,8 @@ const ComplaintScreen = () => {
                         keyboardType="phone-pad"
                         style={styles.textInput}
                         placeholderTextColor="#9CA3AF"
+                        value={formData.phone}
+                        onChangeText={(val) => setFormData({ ...formData, phone: val })}
                     />
                 </View>
 
@@ -57,6 +117,8 @@ const ComplaintScreen = () => {
                         placeholder="এলাকা, থানা, জেলা"
                         style={styles.textInput}
                         placeholderTextColor="#9CA3AF"
+                        value={formData.location}
+                        onChangeText={(val) => setFormData({ ...formData, location: val })}
                     />
                 </View>
 
@@ -70,6 +132,8 @@ const ComplaintScreen = () => {
                         numberOfLines={4}
                         style={[styles.textInput, styles.textArea]}
                         placeholderTextColor="#9CA3AF"
+                        value={formData.description}
+                        onChangeText={(val) => setFormData({ ...formData, description: val })}
                     />
                 </View>
 
@@ -87,9 +151,20 @@ const ComplaintScreen = () => {
                 </View>
 
                 {/* Submit Button */}
-                <TouchableOpacity activeOpacity={0.8} style={styles.submitButton}>
-                    <Send size={moderateScale(20)} color="white" />
-                    <Text style={styles.submitText}>অভিযোগ জমা দিন</Text>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={[styles.submitButton, loading && { opacity: 0.7 }]}
+                    onPress={handleSubmit}
+                    disabled={loading}
+                >
+                    {loading ? (
+                        <ActivityIndicator color="white" />
+                    ) : (
+                        <>
+                            <Send size={moderateScale(20)} color="white" />
+                            <Text style={styles.submitText}>অভিযোগ জমা দিন</Text>
+                        </>
+                    )}
                 </TouchableOpacity>
 
                 {/* Hotline Banner */}
