@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 import Header from '../../components/Header';
 import Step1BasicInfo from '../../components/TraffickerInfo/Step1BasicInfo';
 import Step2Details from '../../components/TraffickerInfo/Step2Details';
@@ -9,8 +11,11 @@ import Step5Identity from '../../components/TraffickerInfo/Step5Identity';
 import Step6Review from '../../components/TraffickerInfo/Step6Review';
 import { ScaledSheet } from 'react-native-size-matters';
 import AppBackground from '../../components/AppBackground';
+import { useMutation } from '@apollo/client/react';
+import { CREATE_CRIMINAL } from '../../api/mutations';
 
 const TraffickerInfoScreen = () => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
     const [currentStep, setCurrentStep] = useState(1);
     const totalSteps = 6;
 
@@ -31,11 +36,46 @@ const TraffickerInfoScreen = () => {
         identityPreference: 'anonymous'
     });
 
-    const nextStep = () => {
+    const [createCriminal, { loading }] = useMutation(CREATE_CRIMINAL);
+
+    const nextStep = async () => {
         if (currentStep < totalSteps) {
             setCurrentStep(currentStep + 1);
         } else {
-            console.log('Submitting data:', formData);
+            try {
+                const createCriminalInput = {
+                    name: formData.name,
+                    nickname: formData.nickname,
+                    age: formData.age,
+                    gender: formData.gender === 'পুরুষ' ? 'MALE' : formData.gender === 'মহিলা' ? 'FEMALE' : 'OTHER',
+                    phone: formData.mobile,
+                    socialMedia: formData.socialLink,
+                    location: formData.eventPlace,
+                    activity: formData.activities,
+                    activityPlace: formData.selectPlace,
+                    activityAddress: formData.address,
+                    activityDescription: formData.description,
+                    revealIdentity: formData.identityPreference === 'contact' ? 'YES' : 'NO'
+                };
+
+                const { data } = await createCriminal({
+                    variables: { createCriminalInput }
+                });
+
+                if (data) {
+                    Alert.alert(
+                        languageMode === 'en' ? "Success" : "সফল",
+                        languageMode === 'en' ? "Your information has been submitted successfully." : "আপনার তথ্য সফলভাবে জমা দেওয়া হয়েছে।",
+                        [{ text: languageMode === 'en' ? "OK" : "ঠিক আছে", onPress: () => setCurrentStep(1) }]
+                    );
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                Alert.alert(
+                    languageMode === 'en' ? "Error" : "ত্রুটি",
+                    languageMode === 'en' ? "Could not submit information. Please try again." : "তথ্য জমা দেওয়া সম্ভব হয়নি। আবার চেষ্টা করুন।"
+                );
+            }
         }
     };
 
@@ -44,7 +84,9 @@ const TraffickerInfoScreen = () => {
         return (
             <View style={styles.progressContainer}>
                 <View style={styles.progressInfo}>
-                    <Text style={styles.stepText}>ধাপ {currentStep} / {totalSteps}</Text>
+                    <Text style={styles.stepText}>
+                        {languageMode === 'en' ? `Step ${currentStep} / ${totalSteps}` : `ধাপ ${currentStep} / ${totalSteps}`}
+                    </Text>
                     <Text style={styles.percentageText}>{percentage}%</Text>
                 </View>
                 <View style={styles.progressBarBackground}>
@@ -70,7 +112,11 @@ const TraffickerInfoScreen = () => {
 
     return (
         <AppBackground>
-            <Header title="পাচারকারী সম্পর্কে তথ্য" subtitle='নিরাপদভাবে ও সহজভাবে পাচারকারী সম্পর্কে তথ্য প্রদান' showBackButton={true} />
+            <Header
+                title={languageMode === 'en' ? "Trafficker Information" : "পাচারকারী সম্পর্কে তথ্য"}
+                subtitle={languageMode === 'en' ? "Provide information about traffickers safely and easily" : 'নিরাপদভাবে ও সহজভাবে পাচারকারী সম্পর্কে তথ্য প্রদান'}
+                showBackButton={true}
+            />
 
             <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
                 {renderProgressBar()}
@@ -84,10 +130,17 @@ const TraffickerInfoScreen = () => {
                     onPress={nextStep}
                     activeOpacity={0.8}
                     style={styles.submitButton}
+                    disabled={loading}
                 >
-                    <Text style={styles.submitButtonText}>
-                        {currentStep === totalSteps ? 'জমা দিন' : 'পরবর্তী ধাপ'}
-                    </Text>
+                    {loading ? (
+                        <ActivityIndicator color="white" />
+                    ) : (
+                        <Text style={styles.submitButtonText}>
+                            {currentStep === totalSteps
+                                ? (languageMode === 'en' ? 'Submit' : 'জমা দিন')
+                                : (languageMode === 'en' ? 'Next Step' : 'পরবর্তী ধাপ')}
+                        </Text>
+                    )}
                 </TouchableOpacity>
             </View>
         </AppBackground>

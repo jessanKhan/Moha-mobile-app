@@ -33,3 +33,26 @@ export const CREATE_COMPLAIN = gql`
     }
   }
 `;
+
+export const CREATE_CRIMINAL = gql`
+  mutation CreateCriminal($createCriminalInput: CreateCriminalInput!) {
+    createCriminal(createCriminalInput: $createCriminalInput) {
+      id
+      name
+      nickname
+      age
+      gender
+      photoUrl
+      phone
+      socialMedia
+      location
+      activity
+      activityArea
+      activityPlace
+      activityAddress
+      activityDescription
+      revealIdentity
+      createdAt
+    }
+  }
+`;

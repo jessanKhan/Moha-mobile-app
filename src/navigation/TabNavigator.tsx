@@ -8,7 +8,7 @@ import ProfileScreen from '../screens/Profile/ProfileScreen';
 import StatisticsScreen from '../screens/Services/StatisticsScreen';
 import PolicyAndLawScreen from '../screens/Services/PolicyAndLawScreen';
 import EmergencyContactScreen from '../screens/Services/EmergencyContactScreen';
-import Initiatives from '../screens/Initiative/Initiatives';
+import Initiatives from '../screens/Services/Initiatives';
 import ComplaintScreen from '../screens/Services/ComplaintScreen';
 import NewsMediaScreen from '../screens/Services/NewsMediaScreen';
 import PreventiveMeasuresScreen from '../screens/Services/PreventiveMeasuresScreen';
