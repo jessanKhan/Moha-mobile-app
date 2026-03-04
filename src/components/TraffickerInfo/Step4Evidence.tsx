@@ -3,45 +3,66 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Image as ImageIcon, Video, Mic, AlertCircle } from 'lucide-react-native';
 import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 
-const Step4Evidence = () => (
-    <View style={styles.container}>
-        <Text style={styles.title}>প্রমাণ</Text>
-        <Text style={styles.subtitle}>ঐচ্ছিক কিন্তু সহায়ক</Text>
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
-        <View style={styles.infoBox}>
-            <Text style={styles.infoText}>
-                যদি আপনার কাছে কোনো ছবি, ভিডিও বা অডিও রেকর্ডিং থাকে যা প্রমাণ হিসেবে কাজ করতে পারে, তাহলে সেগুলো আপলোড করুন। এটি ঐচ্ছিক কিন্তু তদন্তে সহায়ক হবে।
+const Step4Evidence = () => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
+
+    const evidenceOptions = [
+        { labelBn: 'ছবি', labelEn: 'Photo', icon: ImageIcon, color: '#EFF6FF', iconColor: '#3B82F6' },
+        { labelBn: 'ভিডিও', labelEn: 'Video', icon: Video, color: '#F0FDFA', iconColor: '#14B8A6' },
+        { labelBn: 'অডিও', labelEn: 'Audio', icon: Mic, color: '#F5F3FF', iconColor: '#8B5CF6' }
+    ];
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>
+                {languageMode === 'en' ? "Evidence" : "প্রমাণ"}
             </Text>
-        </View>
+            <Text style={styles.subtitle}>
+                {languageMode === 'en' ? "Optional but helpful" : "ঐচ্ছিক কিন্তু সহায়ক"}
+            </Text>
 
-        <View style={styles.evidenceRow}>
-            {[
-                { label: 'ছবি', icon: ImageIcon, color: '#EFF6FF', iconColor: '#3B82F6' },
-                { label: 'ভিডিও', icon: Video, color: '#F0FDFA', iconColor: '#14B8A6' },
-                { label: 'অডিও', icon: Mic, color: '#F5F3FF', iconColor: '#8B5CF6' }
-            ].map((item) => (
-                <TouchableOpacity
-                    key={item.label}
-                    activeOpacity={0.7}
-                    style={[styles.evidenceButton, { backgroundColor: item.color }]}
-                >
-                    <item.icon size={moderateScale(24)} color={item.iconColor} />
-                    <Text style={styles.evidenceLabel}>{item.label}</Text>
-                </TouchableOpacity>
-            ))}
-        </View>
-
-        <View style={styles.alertBox}>
-            <AlertCircle size={moderateScale(20)} color="#EAB308" style={styles.alertIcon} />
-            <View style={styles.alertContent}>
-                <Text style={styles.alertTitle}>ফাইল নিরাপত্তা:</Text>
-                <Text style={styles.alertBody}>
-                    আপনার আপলোড করা সকল ফাইল এনক্রিপ্ট করে সংরক্ষণ করা হবে এবং শুধুমাত্র অনুমোদিত কর্তৃপক্ষ দেখতে পারবে।
+            <View style={styles.infoBox}>
+                <Text style={styles.infoText}>
+                    {languageMode === 'en'
+                        ? "If you have any photos, videos, or audio recordings that can serve as evidence, please upload them. This is optional but will be helpful in the investigation."
+                        : "যদি আপনার কাছে কোনো ছবি, ভিডিও বা অডিও রেকর্ডিং থাকে যা প্রমাণ হিসেবে কাজ করতে পারে, তাহলে সেগুলো আপলোড করুন। এটি ঐচ্ছিক কিন্তু তদন্তে সহায়ক হবে।"}
                 </Text>
             </View>
+
+            <View style={styles.evidenceRow}>
+                {evidenceOptions.map((item) => (
+                    <TouchableOpacity
+                        key={item.labelBn}
+                        activeOpacity={0.7}
+                        style={[styles.evidenceButton, { backgroundColor: item.color }]}
+                    >
+                        <item.icon size={moderateScale(24)} color={item.iconColor} />
+                        <Text style={styles.evidenceLabel}>
+                            {languageMode === 'en' ? item.labelEn : item.labelBn}
+                        </Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+
+            <View style={styles.alertBox}>
+                <AlertCircle size={moderateScale(20)} color="#EAB308" style={styles.alertIcon} />
+                <View style={styles.alertContent}>
+                    <Text style={styles.alertTitle}>
+                        {languageMode === 'en' ? "File Security:" : "ফাইল নিরাপত্তা:"}
+                    </Text>
+                    <Text style={styles.alertBody}>
+                        {languageMode === 'en'
+                            ? "All your uploaded files will be stored encrypted and can only be viewed by authorized authorities."
+                            : "আপনার আপলোড করা সকল ফাইল এনক্রিপ্ট করে সংরক্ষণ করা হবে এবং শুধুমাত্র অনুমোদিত কর্তৃপক্ষ দেখতে পারবে।"}
+                    </Text>
+                </View>
+            </View>
         </View>
-    </View>
-);
+    );
+};
 
 const styles = ScaledSheet.create({
     container: {

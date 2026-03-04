@@ -3,83 +3,130 @@ import { View, Text } from 'react-native';
 import { User, MapPin, FileText } from 'lucide-react-native';
 import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+
 interface Props {
     formData: any;
 }
 
-const Step6Review = ({ formData }: Props) => (
-    <View style={styles.container}>
-        <Text style={styles.title}>পর্যালোচনা ও জমা</Text>
-        <Text style={styles.subtitle}>তথ্য যাচাই করুন</Text>
+const Step6Review = ({ formData }: Props) => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
 
-        <View style={styles.cardContainer}>
-            <View style={styles.reviewCard}>
-                <View style={styles.cardHeader}>
-                    <View style={styles.iconWrapperBlue}>
-                        <User size={moderateScale(20)} color="#2196F3" />
-                    </View>
-                    <Text style={styles.headerTitle}>পাচারকারীর তথ্য</Text>
-                </View>
-                <View style={styles.infoRow}>
-                    <Text style={styles.infoLabel}>নাম:</Text>
-                    <Text style={styles.infoValue}>{formData.name}</Text>
-                </View>
-                <View style={styles.infoRow}>
-                    <Text style={styles.infoLabel}>ডাকনাম:</Text>
-                    <Text style={styles.infoValue}>{formData.nickname}</Text>
-                </View>
-                <View style={styles.infoRow}>
-                    <Text style={styles.infoLabel}>বয়স:</Text>
-                    <Text style={styles.infoValue}>{formData.age}</Text>
-                </View>
-                <View style={[styles.infoRow, { marginBottom: moderateScale(16) }]}>
-                    <Text style={styles.infoLabel}>লিঙ্গ:</Text>
-                    <Text style={styles.infoValue}>{formData.gender}</Text>
-                </View>
+    const getGenderLabel = (gender: string) => {
+        if (languageMode !== 'en') return gender;
+        const mapping: { [key: string]: string } = {
+            'পুরুষ': 'Male',
+            'মহিলা': 'Female',
+            'অন্যান্য': 'Others'
+        };
+        return mapping[gender] || gender;
+    };
 
-                <View style={styles.divider} />
+    const getActivityLabel = (act: string) => {
+        if (languageMode !== 'en') return act;
+        const mapping: { [key: string]: string } = {
+            'কাজের প্রলোভন': 'Job Bait',
+            'বিদেশে পাঠানোর কথা': 'Promise of Overseas Job',
+            'বলপূর্বক চলাচল': 'Forced Movement',
+            'মিথ্যা বিবাহের প্রস্তাব': 'Fake Marriage Proposal',
+            'শিশু পাচার': 'Child Trafficking'
+        };
+        return mapping[act] || act;
+    };
 
-                <Text style={styles.subHeader}>কার্যকলাপ:</Text>
-                <View style={styles.tagRow}>
-                    {formData.activities.map((act: string) => (
-                        <View key={act} style={styles.tag}>
-                            <Text style={styles.tagText}>{act}</Text>
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>
+                {languageMode === 'en' ? "Review & Submit" : "পর্যালোচনা ও জমা"}
+            </Text>
+            <Text style={styles.subtitle}>
+                {languageMode === 'en' ? "Verify information" : "তথ্য যাচাই করুন"}
+            </Text>
+
+            <View style={styles.cardContainer}>
+                <View style={styles.reviewCard}>
+                    <View style={styles.cardHeader}>
+                        <View style={styles.iconWrapperBlue}>
+                            <User size={moderateScale(20)} color="#2196F3" />
                         </View>
-                    ))}
-                </View>
-            </View>
-
-            <View style={styles.reviewCard}>
-                <View style={styles.cardHeader}>
-                    <View style={styles.iconWrapperTeal}>
-                        <MapPin size={moderateScale(20)} color="#00897B" />
+                        <Text style={styles.headerTitle}>
+                            {languageMode === 'en' ? "Trafficker's Info" : "পাচারকারীর তথ্য"}
+                        </Text>
                     </View>
-                    <Text style={styles.headerTitle}>ঘটনার স্থান ও সময়</Text>
-                </View>
-                <Text style={styles.locationMain}>{formData.eventPlace}</Text>
-                <Text style={styles.locationSub}>তারিখ: ১৯/১/২০২৬</Text>
-                <Text style={styles.locationSub}>সময়: ০২:২৪</Text>
-            </View>
-
-            <View style={styles.reviewCard}>
-                <View style={styles.cardHeader}>
-                    <View style={styles.iconWrapperPurple}>
-                        <FileText size={moderateScale(20)} color="#8B5CF6" />
+                    <View style={styles.infoRow}>
+                        <Text style={styles.infoLabel}>{languageMode === 'en' ? "Name:" : "নাম:"}</Text>
+                        <Text style={styles.infoValue}>{formData.name}</Text>
                     </View>
-                    <Text style={styles.headerTitle}>বিবরণ</Text>
-                </View>
-                <Text style={styles.descriptionText}>{formData.description}</Text>
-            </View>
+                    <View style={styles.infoRow}>
+                        <Text style={styles.infoLabel}>{languageMode === 'en' ? "Nickname:" : "ডাকনাম:"}</Text>
+                        <Text style={styles.infoValue}>{formData.nickname}</Text>
+                    </View>
+                    <View style={styles.infoRow}>
+                        <Text style={styles.infoLabel}>{languageMode === 'en' ? "Age:" : "বয়স:"}</Text>
+                        <Text style={styles.infoValue}>{formData.age}</Text>
+                    </View>
+                    <View style={[styles.infoRow, { marginBottom: moderateScale(16) }]}>
+                        <Text style={styles.infoLabel}>{languageMode === 'en' ? "Gender:" : "লিঙ্গ:"}</Text>
+                        <Text style={styles.infoValue}>{getGenderLabel(formData.gender)}</Text>
+                    </View>
 
-            <View style={styles.identityNote}>
-                <Text style={styles.identityTitle}>আপনার পরিচয়</Text>
-                <Text style={styles.identityStatus}>
-                    {formData.identityPreference === 'anonymous' ? 'পরিচয় গোপন রেখে জমা দেওয়া হচ্ছে' : 'যোগাযোগ তথ্য প্রদান করা হচ্ছে'}
-                </Text>
+                    <View style={styles.divider} />
+
+                    <Text style={styles.subHeader}>{languageMode === 'en' ? "Activity:" : "কার্যকলাপ:"}</Text>
+                    <View style={styles.tagRow}>
+                        {formData.activities.map((act: string) => (
+                            <View key={act} style={styles.tag}>
+                                <Text style={styles.tagText}>{getActivityLabel(act)}</Text>
+                            </View>
+                        ))}
+                    </View>
+                </View>
+
+                <View style={styles.reviewCard}>
+                    <View style={styles.cardHeader}>
+                        <View style={styles.iconWrapperTeal}>
+                            <MapPin size={moderateScale(20)} color="#00897B" />
+                        </View>
+                        <Text style={styles.headerTitle}>
+                            {languageMode === 'en' ? "Event Place & Time" : "ঘটনার স্থান ও সময়"}
+                        </Text>
+                    </View>
+                    <Text style={styles.locationMain}>{formData.eventPlace}</Text>
+                    <Text style={styles.locationSub}>
+                        {languageMode === 'en' ? "Date: 19/1/2026" : "তারিখ: ১৯/১/২০২৬"}
+                    </Text>
+                    <Text style={styles.locationSub}>
+                        {languageMode === 'en' ? "Time: 02:24" : "সময়: ০২:২৪"}
+                    </Text>
+                </View>
+
+                <View style={styles.reviewCard}>
+                    <View style={styles.cardHeader}>
+                        <View style={styles.iconWrapperPurple}>
+                            <FileText size={moderateScale(20)} color="#8B5CF6" />
+                        </View>
+                        <Text style={styles.headerTitle}>
+                            {languageMode === 'en' ? "Description" : "বিবরণ"}
+                        </Text>
+                    </View>
+                    <Text style={styles.descriptionText}>{formData.description}</Text>
+                </View>
+
+                <View style={styles.identityNote}>
+                    <Text style={styles.identityTitle}>
+                        {languageMode === 'en' ? "Your Identity" : "আপনার পরিচয়"}
+                    </Text>
+                    <Text style={styles.identityStatus}>
+                        {formData.identityPreference === 'anonymous'
+                            ? (languageMode === 'en' ? 'Submitting anonymously' : 'পরিচয় গোপন রেখে জমা দেওয়া হচ্ছে')
+                            : (languageMode === 'en' ? 'Providing contact information' : 'যোগাযোগ তথ্য প্রদান করা হচ্ছে')}
+                    </Text>
+                </View>
             </View>
         </View>
-    </View>
-);
+    );
+};
 
 const styles = ScaledSheet.create({
     container: {
