@@ -25,11 +25,11 @@ const PolicyLawScreen = () => {
     });
 
     useEffect(() => {
-        console.log("Policy Screen State:", {
+        if (data) console.warn("DEBUG POLICIES DATA:", JSON.stringify((data as any).policies?.length));
+        console.log("Policy Screen UI State:", {
             loading,
             error: error?.message,
-            dataFound: !!data,
-            policiesCount: (data as any)?.policies?.length
+            dataCount: (data as any)?.policies?.length
         });
     }, [data, loading, error]);
     const toggleExpand = (index: number) => {
@@ -88,9 +88,9 @@ const PolicyLawScreen = () => {
                 ) : error ? (
                     <View style={{ marginTop: 20, padding: 10 }}>
                         <Text style={{ textAlign: 'center', color: 'red' }}>Error: {error.message}</Text>
-                        {error.graphQLErrors?.length > 0 && (
+                        {(error as any).graphQLErrors?.length > 0 && (
                             <Text style={{ textAlign: 'center', color: 'red', fontSize: 12 }}>
-                                {error.graphQLErrors[0].message}
+                                {(error as any).graphQLErrors[0].message}
                             </Text>
                         )}
                     </View>
