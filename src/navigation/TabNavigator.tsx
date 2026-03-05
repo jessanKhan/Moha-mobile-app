@@ -6,7 +6,6 @@ import { useColorScheme } from 'react-native';
 import HomeScreen from '../screens/Home/HomeScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import StatisticsScreen from '../screens/Services/StatisticsScreen';
-import PolicyAndLawScreen from '../screens/Services/PolicyAndLawScreen';
 import EmergencyContactScreen from '../screens/Services/EmergencyContactScreen';
 import Initiatives from '../screens/Services/Initiatives';
 import ComplaintScreen from '../screens/Services/ComplaintScreen';
@@ -24,6 +23,7 @@ import ServiceListScreen from '../screens/Services/ServiceListScreen';
 import SocialIntegrationScreen from '../screens/Services/SocialIntegrationScreen';
 import TrainingScreen from '../screens/Services/TrainingScreen';
 import AwarenessScreen from '../screens/Services/AwarenessScreen';
+import PolicyLawScreen from '../screens/Services/PolicyLawScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,7 +34,7 @@ const HomeStackNavigator = () => {
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="HomeScreen" component={HomeScreen} />
       <HomeStack.Screen name="Statistics" component={StatisticsScreen} />
-      <HomeStack.Screen name="PolicyLaw" component={PolicyAndLawScreen} />
+      <HomeStack.Screen name="PolicyLaw" component={PolicyLawScreen} />
       <HomeStack.Screen name="EmergencyContact" component={EmergencyContactScreen} />
       <HomeStack.Screen name="Initiatives" component={Initiatives} />
       <HomeStack.Screen name="Complaint" component={ComplaintScreen} />
@@ -57,6 +57,7 @@ const HomeStackNavigator = () => {
 };
 
 import { verticalScale, moderateScale } from 'react-native-size-matters';
+
 
 const TabNavigator = () => {
   const isDarkMode = useColorScheme() === 'dark';

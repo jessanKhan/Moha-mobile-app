@@ -87,3 +87,18 @@ export const ALL_QUICK_LINKS = gql`
     }
   }
 `;
+
+export const POLICIES_QUERY = gql`
+  query Policies($page: Int!, $limit: Int!) {
+    policies(page: $page, limit: $limit) {
+      id
+      title
+      titleBn
+      attachmentUrl
+      description
+      descriptionBn
+      date
+      isPublished
+    }
+  }
+`;
