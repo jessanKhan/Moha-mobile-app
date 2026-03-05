@@ -11,8 +11,8 @@ import Step5Identity from '../../components/TraffickerInfo/Step5Identity';
 import Step6Review from '../../components/TraffickerInfo/Step6Review';
 import { ScaledSheet } from 'react-native-size-matters';
 import AppBackground from '../../components/AppBackground';
-import { useMutation } from '@apollo/client/react';
-import { CREATE_CRIMINAL } from '../../api/mutations';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { GRAPHQL_URI } from '../../api/apolloClient';
 
 const TraffickerInfoScreen = () => {
     const languageMode = useSelector((state: RootState) => state.language.mode);
@@ -33,41 +33,173 @@ const TraffickerInfoScreen = () => {
         address: '',
         description: 'তথ্য দিতে শুরু করুন',
         hasEvidence: false,
-        identityPreference: 'anonymous'
+        identityPreference: 'anonymous',
+        evidenceFiles: [] as any[],
+        photo: null as any
     });
+    console.log(formData);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    // const [createCriminal, { loading }] = useMutation(CREATE_CRIMINAL); // Replaced with manual fetch for multipart
 
-    const [createCriminal, { loading }] = useMutation(CREATE_CRIMINAL);
+    const handlePhotoPick = async () => {
+        const result = await launchImageLibrary({
+            mediaType: 'photo',
+            selectionLimit: 1,
+        });
+
+        if (result.assets && result.assets.length > 0) {
+            setFormData(prev => ({
+                ...prev,
+                photo: result.assets![0]
+            }));
+        }
+    };
+
+    const handleFilePick = async () => {
+        const result = await launchImageLibrary({
+            mediaType: 'mixed',
+            selectionLimit: 5,
+        });
+
+        if (result.assets) {
+            setFormData(prev => ({
+                ...prev,
+                evidenceFiles: [...prev.evidenceFiles, ...result.assets!]
+            }));
+        }
+    };
 
     const nextStep = async () => {
         if (currentStep < totalSteps) {
             setCurrentStep(currentStep + 1);
         } else {
+            setIsSubmitting(true);
             try {
-                const createCriminalInput = {
-                    name: formData.name,
-                    nickname: formData.nickname,
-                    age: formData.age,
-                    gender: formData.gender === 'পুরুষ' ? 'MALE' : formData.gender === 'মহিলা' ? 'FEMALE' : 'OTHER',
-                    phone: formData.mobile,
-                    socialMedia: formData.socialLink,
-                    location: formData.eventPlace,
-                    activity: formData.activities,
-                    activityPlace: formData.selectPlace,
-                    activityAddress: formData.address,
-                    activityDescription: formData.description,
-                    revealIdentity: formData.identityPreference === 'contact' ? 'YES' : 'NO'
+                const url = GRAPHQL_URI;
+                const formDataUpload = new FormData();
+
+                const operations = {
+                    query: `mutation CreateCriminal(
+                        $name: String,
+                        $nickname: String,
+                        $age: String,
+                        $gender: String,
+                        $phone: String,
+                        $socialMedia: String,
+                        $location: String,
+                        $activity: [String!],
+                        $activityArea: String,
+                        $activityPlace: String,
+                        $activityAddress: String,
+                        $activityTime: String,
+                        $activityDescription: String,
+                        $revealIdentity: YesOrNo!,
+                        $photoUrl: Upload,
+                        $documents: [CreateCriminalDocumentInput!]
+                    ) {
+                        createCriminal(
+                        createCriminalInput: {
+                            name: $name,
+                            nickname: $nickname,
+                            age: $age,
+                            gender: $gender,
+                            phone: $phone,
+                            socialMedia: $socialMedia,
+                            location: $location,
+                            activity: $activity,
+                            activityArea: $activityArea,
+                            activityPlace: $activityPlace,
+                            activityAddress: $activityAddress,
+                            activityTime: $activityTime,
+                            activityDescription: $activityDescription,
+                            revealIdentity: $revealIdentity,
+                            photoUrl: $photoUrl,
+                            documents: $documents
+                        }
+                        ) {
+                        id
+                        name
+                        nickname
+                        }
+                    }`,
+                    variables: {
+                        name: formData.name,
+                        nickname: formData.nickname,
+                        age: formData.age,
+                        gender: formData.gender === 'পুরুষ' ? 'MALE' : formData.gender === 'মহিলা' ? 'FEMALE' : 'OTHER',
+                        phone: formData.mobile,
+                        socialMedia: formData.socialLink,
+                        location: formData.eventPlace,
+                        activity: formData.activities,
+                        activityArea: formData.eventPlace,
+                        activityPlace: formData.selectPlace,
+                        activityAddress: formData.address,
+                        activityTime: new Date().toISOString(),
+                        activityDescription: formData.description,
+                        revealIdentity: formData.identityPreference === 'contact' ? 'YES' : 'NO',
+                        photoUrl: null,
+                        documents: formData.evidenceFiles.map((file, index) => ({
+                            fileName: file.fileName || `file_${index}.jpg`,
+                            description: '',
+                            fileUrl: null
+                        }))
+                    }
                 };
 
-                const { data } = await createCriminal({
-                    variables: { createCriminalInput }
+                formDataUpload.append('operations', JSON.stringify(operations));
+
+                const map: any = {};
+                let fileIndex = 0;
+
+                if (formData.photo) {
+                    map[fileIndex] = ["variables.photoUrl"];
+                    fileIndex++;
+                }
+
+                formData.evidenceFiles.forEach((_, index) => {
+                    map[fileIndex] = [`variables.documents.${index}.fileUrl`];
+                    fileIndex++;
                 });
 
-                if (data) {
+                formDataUpload.append('map', JSON.stringify(map));
+
+                fileIndex = 0;
+                if (formData.photo) {
+                    formDataUpload.append(fileIndex.toString(), {
+                        uri: formData.photo.uri,
+                        type: formData.photo.type || 'image/jpeg',
+                        name: formData.photo.fileName || 'trafficker_photo.jpg',
+                    } as any);
+                    fileIndex++;
+                }
+
+                formData.evidenceFiles.forEach((file, index) => {
+                    formDataUpload.append(fileIndex.toString(), {
+                        uri: file.uri,
+                        type: file.type || 'image/jpeg',
+                        name: file.fileName || `file_${index}.jpg`,
+                    } as any);
+                    fileIndex++;
+                });
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formDataUpload,
+                    headers: {
+                        'Apollo-Require-Preflight': 'true',
+                    },
+                });
+
+                const result = await response.json();
+
+                if (result.data || !result.errors) {
                     Alert.alert(
                         languageMode === 'en' ? "Success" : "সফল",
                         languageMode === 'en' ? "Your information has been submitted successfully." : "আপনার তথ্য সফলভাবে জমা দেওয়া হয়েছে।",
                         [{ text: languageMode === 'en' ? "OK" : "ঠিক আছে", onPress: () => setCurrentStep(1) }]
                     );
+                } else {
+                    throw new Error(result.errors?.[0]?.message || 'GraphQL Error');
                 }
             } catch (error) {
                 console.error('Submission error:', error);
@@ -75,6 +207,8 @@ const TraffickerInfoScreen = () => {
                     languageMode === 'en' ? "Error" : "ত্রুটি",
                     languageMode === 'en' ? "Could not submit information. Please try again." : "তথ্য জমা দেওয়া সম্ভব হয়নি। আবার চেষ্টা করুন।"
                 );
+            } finally {
+                setIsSubmitting(false);
             }
         }
     };
@@ -100,13 +234,13 @@ const TraffickerInfoScreen = () => {
 
     const renderStepContent = () => {
         switch (currentStep) {
-            case 1: return <Step1BasicInfo formData={formData} setFormData={setFormData} />;
+            case 1: return <Step1BasicInfo formData={formData} setFormData={setFormData} onPickPhoto={handlePhotoPick} />;
             case 2: return <Step2Details formData={formData} setFormData={setFormData} />;
             case 3: return <Step3Location formData={formData} setFormData={setFormData} />;
-            case 4: return <Step4Evidence />;
+            case 4: return <Step4Evidence formData={formData} onPickFile={handleFilePick} setFormData={setFormData} />;
             case 5: return <Step5Identity formData={formData} setFormData={setFormData} />;
             case 6: return <Step6Review formData={formData} />;
-            default: return <Step1BasicInfo formData={formData} setFormData={setFormData} />;
+            default: return <Step1BasicInfo formData={formData} setFormData={setFormData} onPickPhoto={handlePhotoPick} />;
         }
     };
 
@@ -130,9 +264,9 @@ const TraffickerInfoScreen = () => {
                     onPress={nextStep}
                     activeOpacity={0.8}
                     style={styles.submitButton}
-                    disabled={loading}
+                    disabled={isSubmitting}
                 >
-                    {loading ? (
+                    {isSubmitting ? (
                         <ActivityIndicator color="white" />
                     ) : (
                         <Text style={styles.submitButtonText}>

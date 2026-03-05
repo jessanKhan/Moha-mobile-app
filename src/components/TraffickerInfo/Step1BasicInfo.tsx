@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { Upload } from 'lucide-react-native';
+import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Upload, X } from 'lucide-react-native';
 import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -8,9 +8,10 @@ import { RootState } from '../../store';
 interface Props {
     formData: any;
     setFormData: (data: any) => void;
+    onPickPhoto: () => void;
 }
 
-const Step1BasicInfo = ({ formData, setFormData }: Props) => {
+const Step1BasicInfo = ({ formData, setFormData, onPickPhoto }: Props) => {
     const languageMode = useSelector((state: RootState) => state.language.mode);
 
     const genderOptions = [
@@ -31,16 +32,37 @@ const Step1BasicInfo = ({ formData, setFormData }: Props) => {
             <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.uploadCard}
+                onPress={onPickPhoto}
             >
-                <View style={styles.iconWrapper}>
-                    <Upload size={moderateScale(32)} color="#9CA3AF" />
-                </View>
-                <Text style={styles.uploadText}>
-                    {languageMode === 'en' ? "Upload Photo" : "ছবি আপলোড"}
-                </Text>
-                <Text style={styles.uploadOptional}>
-                    {languageMode === 'en' ? "(Optional)" : "(ঐচ্ছিক)"}
-                </Text>
+                {formData.photo ? (
+                    <View style={styles.imagePreviewContainer}>
+                        <Image
+                            source={{ uri: formData.photo.uri }}
+                            style={styles.imagePreview}
+                        />
+                        <TouchableOpacity
+                            style={styles.removePhotoButton}
+                            onPress={(e) => {
+                                e.stopPropagation();
+                                setFormData({ ...formData, photo: null });
+                            }}
+                        >
+                            <X size={moderateScale(16)} color="white" />
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <>
+                        <View style={styles.iconWrapper}>
+                            <Upload size={moderateScale(32)} color="#9CA3AF" />
+                        </View>
+                        <Text style={styles.uploadText}>
+                            {languageMode === 'en' ? "Upload Photo" : "ছবি আপলোড"}
+                        </Text>
+                        <Text style={styles.uploadOptional}>
+                            {languageMode === 'en' ? "(Optional)" : "(ঐচ্ছিক)"}
+                        </Text>
+                    </>
+                )}
             </TouchableOpacity>
 
             <View style={styles.inputContainer}>
@@ -145,6 +167,26 @@ const styles = ScaledSheet.create({
         color: '#9CA3AF',
         marginTop: '2@vs',
         fontFamily: 'July-Regular',
+    },
+    imagePreviewContainer: {
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        borderRadius: '24@ms',
+        overflow: 'hidden',
+    },
+    imagePreview: {
+        width: '100%',
+        height: '100%',
+        borderRadius: '24@ms',
+    },
+    removePhotoButton: {
+        position: 'absolute',
+        top: '10@vs',
+        right: '10@ms',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        padding: '8@ms',
+        borderRadius: '20@ms',
     },
     inputContainer: {
         gap: '12@vs',
