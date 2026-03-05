@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { showToast } from '../../store/slices/toastSlice';
 import Header from '../../components/Header';
 import Step1BasicInfo from '../../components/TraffickerInfo/Step1BasicInfo';
 import Step2Details from '../../components/TraffickerInfo/Step2Details';
@@ -15,23 +17,25 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { GRAPHQL_URI } from '../../api/apolloClient';
 
 const TraffickerInfoScreen = () => {
+    const navigation = useNavigation<any>();
+    const dispatch = useDispatch();
     const languageMode = useSelector((state: RootState) => state.language.mode);
     const [currentStep, setCurrentStep] = useState(1);
     const totalSteps = 6;
 
     const [formData, setFormData] = useState({
-        name: 'হাসান আহমেদ',
-        nickname: 'হাসান',
-        age: '৪৫',
+        name: '',
+        nickname: '',
+        age: '',
         gender: 'পুরুষ',
         mobile: '',
         socialLink: '',
         lastSeen: '',
-        activities: ['কাজের প্রলোভন'],
-        eventPlace: 'ঢাকা, বাংলাদেশ',
+        activities: [] as string[],
+        eventPlace: '',
         selectPlace: '',
         address: '',
-        description: 'তথ্য দিতে শুরু করুন',
+        description: '',
         hasEvidence: false,
         identityPreference: 'anonymous',
         evidenceFiles: [] as any[],
@@ -191,13 +195,34 @@ const TraffickerInfoScreen = () => {
                 });
 
                 const result = await response.json();
+                console.log('Submission Result:', result);
 
-                if (result.data || !result.errors) {
-                    Alert.alert(
-                        languageMode === 'en' ? "Success" : "সফল",
-                        languageMode === 'en' ? "Your information has been submitted successfully." : "আপনার তথ্য সফলভাবে জমা দেওয়া হয়েছে।",
-                        [{ text: languageMode === 'en' ? "OK" : "ঠিক আছে", onPress: () => setCurrentStep(1) }]
-                    );
+                if (result.data?.createCriminal) {
+                    dispatch(showToast({
+                        message: languageMode === 'en' ? 'Submitted successfully!' : 'সফলভাবে জমা দেওয়া হয়েছে!',
+                        type: 'success'
+                    }));
+
+                    setFormData({
+                        name: '',
+                        nickname: '',
+                        age: '',
+                        gender: 'পুরুষ',
+                        mobile: '',
+                        socialLink: '',
+                        lastSeen: '',
+                        activities: [] as string[],
+                        eventPlace: '',
+                        selectPlace: '',
+                        address: '',
+                        description: '',
+                        hasEvidence: false,
+                        identityPreference: 'anonymous',
+                        evidenceFiles: [] as any[],
+                        photo: null as any
+                    });
+                    setCurrentStep(1);
+                    navigation.navigate('HomeScreen');
                 } else {
                     throw new Error(result.errors?.[0]?.message || 'GraphQL Error');
                 }
