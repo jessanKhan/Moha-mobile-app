@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, LayoutAnimation, Platform, UIManager, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, LayoutAnimation, Platform, UIManager, ActivityIndicator, Image } from 'react-native';
 import Header from '../../components/Header';
 import { ChevronDown, ChevronUp, Scale, Gavel } from 'lucide-react-native';
 import HotlineBanner from '../../components/HotlineBanner';
@@ -41,9 +41,16 @@ const PolicyLawScreen = () => {
         return html?.replace(/<[^>]*>?/gm, '') || '';
     };
 
+    const BG_COLORS = ['#00786Fff', '#18c24bff', '#ceac24ff', '#611764ff', '#3b1cd8ff', '#30b9c0ff', '##E7000Bff', '#2766b8ff'];
+
+    const getRandomBg = (id: number) => {
+        return BG_COLORS[id % BG_COLORS.length];
+    };
+
     const AccordionItem = ({ item, index, expanded, onPress }: any) => {
         const title = languageMode === 'bn' ? item.titleBn : item.title;
         const description = languageMode === 'bn' ? item.descriptionBn : item.description;
+        const randomBg = getRandomBg(item.id);
 
         return (
             <View style={styles.accordionContainer}>
@@ -53,8 +60,16 @@ const PolicyLawScreen = () => {
                     style={styles.accordionHeader}
                 >
                     <View style={styles.headerContent}>
-                        <View style={[styles.iconContainer, { backgroundColor: '#1559F7' }]}>
-                            <Gavel size={moderateScale(24)} color="white" />
+                        <View style={[styles.iconContainer, { backgroundColor: randomBg }]}>
+                            {item.attachmentUrl ? (
+                                <Image
+                                    source={{ uri: item.attachmentUrl }}
+                                    style={styles.attachmentImage}
+                                    resizeMode="cover"
+                                />
+                            ) : (
+                                <Gavel size={moderateScale(24)} color="#4B5563" />
+                            )}
                         </View>
                         <Text style={styles.itemTitle}>
                             {title}
@@ -184,6 +199,11 @@ const styles = ScaledSheet.create({
         fontSize: '15@ms',
         flex: 1,
         fontFamily: 'July-Bold',
+    },
+    attachmentImage: {
+        width: '60%',
+        height: '60%',
+        borderRadius: '10@ms',
     },
     expandedContent: {
         paddingHorizontal: '16@ms',
