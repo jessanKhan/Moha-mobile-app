@@ -86,7 +86,7 @@ const HomeScreen = () => {
         }
       />
       <FlatList
-        data={componentsData?.components || []}
+        data={(componentsData?.components || []).filter((item: any) => item.isMobile === 'YES')}
         renderItem={({ item }) => (
           <ServiceCard
             title={languageMode === 'bn' ? item.labelBn : item.label}

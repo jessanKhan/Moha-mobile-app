@@ -41,7 +41,7 @@ const PolicyLawScreen = () => {
         return html?.replace(/<[^>]*>?/gm, '') || '';
     };
 
-    const BG_COLORS = ['#00786Fff', '#18c24bff', '#ceac24ff', '#611764ff', '#3b1cd8ff', '#30b9c0ff', '##E7000Bff', '#2766b8ff'];
+    const BG_COLORS = ['#00786Fff', '#18c24bff', '#ceac24ff', '#611764ff', '#3b1cd8ff', '#30b9c0ff', '#E7000Bff', '#2766b8ff'];
 
     const getRandomBg = (id: number) => {
         return BG_COLORS[id % BG_COLORS.length];

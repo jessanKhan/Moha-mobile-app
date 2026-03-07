@@ -27,7 +27,7 @@ const QuickLinksComponent: FC<QuickLinksComponentProps> = ({
     return (
         <View style={styles.container}>
             <LinearGradient
-                colors={gradientColors}
+                colors={(gradientColors && gradientColors.length >= 2) ? gradientColors : ['#009689', '#004D40']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.linearGradient}

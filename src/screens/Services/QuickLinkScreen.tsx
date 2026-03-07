@@ -79,7 +79,7 @@ const QuickLinkScreen = () => {
         renderItem={({ item }) => (
           <QuickLinksComponent
             title={item.title}
-            gradientColors={item.color ? [item.color, item.color] : ['#009689', '#004D40']}
+            gradientColors={(item.color && item.color.startsWith('#')) ? [item.color, item.color] : ['#009689', '#004D40']}
             logoUrl={item.logoUrl}
             data={item.items}
             keyExtractor={(linkItem: any) => linkItem.id.toString()}

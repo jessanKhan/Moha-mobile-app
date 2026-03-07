@@ -27,7 +27,7 @@ const InitiativesComponent: FC<InitiativeCardProps> = ({
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={colors as (string | number)[]}
+        colors={(colors && colors.length >= 2) ? colors as (string | number)[] : ['#009689', '#00786F']}
         style={styles.linearGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}

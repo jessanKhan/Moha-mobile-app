@@ -41,7 +41,7 @@ const Initiatives = () => {
               title={languageMode === 'en' ? (item.title || '') : (item.titleBn || '')}
               description={languageMode === 'en' ? (item.description || '') : (item.descriptionBn || '')}
               imageUrl={item.attachmentUrl}
-              colors={item.color ? [item.color, item.color] : ['#009689', '#00786F']}
+              colors={(item.color && item.color.startsWith('#')) ? [item.color, item.color] : ['#009689', '#00786F']}
               iconBgColor={item.color || '#ffffff'}
             />
           )}

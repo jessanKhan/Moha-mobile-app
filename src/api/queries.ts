@@ -36,9 +36,15 @@ export const COMPONENTS_QUERY = gql`
       label
       labelBn
       thumbnailPath
+      viewAllLink
+      color
+      iconName
       mobileRouteName
       iconGradientColors
-      iconName
+      createdAt
+      createdBy
+      updatedAt
+      updatedBy
       isMobile
     }
   }
