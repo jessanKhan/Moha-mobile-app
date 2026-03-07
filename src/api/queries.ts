@@ -102,3 +102,26 @@ export const POLICIES_QUERY = gql`
     }
   }
 `;
+
+export const INITIATIVES_QUERY = gql`
+  query Initiatives($page: Float!, $limit: Float!) {
+    initiatives(page: $page, limit: $limit) {
+      id
+      title
+      titleBn
+      subtitle
+      subtitleBn
+      description
+      descriptionBn
+      order
+      color
+      iconName
+      attachmentUrl
+      isPublished
+      createdAt
+      createdBy
+      updatedAt
+      updatedBy
+    }
+  }
+`;

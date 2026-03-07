@@ -11,6 +11,7 @@ type InitiativeCardProps = {
   title?: string;
   description?: string;
   icon?: LucideIcon;
+  imageUrl?: string;
   colors: (string | number)[];
   iconBgColor?: string;
 };
@@ -19,6 +20,7 @@ const InitiativesComponent: FC<InitiativeCardProps> = ({
   title,
   description,
   icon,
+  imageUrl,
   colors,
   iconBgColor,
 }) => {
@@ -33,6 +35,7 @@ const InitiativesComponent: FC<InitiativeCardProps> = ({
         <View style={styles.iconAndTextContainer}>
           <CustomCommonIcon
             icon={icon}
+            imageUrl={imageUrl}
             bgColor="rgba(255, 255, 255, 0.2)"
             iconColor={iconBgColor || '#ffffff'}
             size={25}

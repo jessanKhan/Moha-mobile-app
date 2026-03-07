@@ -1,34 +1,55 @@
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, ActivityIndicator, View } from 'react-native';
 import React from 'react';
-import { initiativeData } from '../../data/initiativesData';
 import InitiativesComponent from '../../components/initiativesComponent/InitiativesComponent';
 import Header from '../../components/Header';
 import AppBackground from '../../components/AppBackground';
+import { useQuery } from '@apollo/client/react';
+import { INITIATIVES_QUERY } from '../../api/queries';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 const Initiatives = () => {
+  const languageMode = useSelector((state: RootState) => state.language.mode);
+
+  const { data, loading } = useQuery<any>(INITIATIVES_QUERY, {
+    variables: { page: 1.0, limit: 10.0 },
+  });
+
+  const initiatives = data?.initiatives || [];
+
   return (
     <AppBackground>
       <Header
-        title="উদ্যোগসমূহ"
-        subtitle="মানব পাচার প্রতিরোধে উদ্যোগ"
+        title={languageMode === 'en' ? 'Initiatives' : 'উদ্যোগসমূহ'}
+        subtitle={
+          languageMode === 'en'
+            ? 'Human trafficking prevention initiatives'
+            : 'মানব পাচার প্রতিরোধে উদ্যোগ'
+        }
         showBackButton
       />
-      <FlatList
-        data={initiativeData}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <InitiativesComponent
-            title={item.title}
-            description={item.description}
-            icon={item.icon}
-            colors={item.gradientColors}
-            iconBgColor={item.iconBgColor}
-          />
-        )}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-        style={styles.flatList}
-      />
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#ffffff" />
+        </View>
+      ) : (
+        <FlatList
+          data={initiatives}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => (
+            <InitiativesComponent
+              title={languageMode === 'en' ? (item.title || '') : (item.titleBn || '')}
+              description={languageMode === 'en' ? (item.description || '') : (item.descriptionBn || '')}
+              imageUrl={item.attachmentUrl}
+              colors={item.color ? [item.color, item.color] : ['#009689', '#00786F']}
+              iconBgColor={item.color || '#ffffff'}
+            />
+          )}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          style={styles.flatList}
+        />
+      )}
     </AppBackground>
   );
 };
@@ -44,5 +65,10 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 16,
     gap: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
