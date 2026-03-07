@@ -131,3 +131,19 @@ export const INITIATIVES_QUERY = gql`
     }
   }
 `;
+export const CONTENTS_BY_COMPONENT_ID = gql`
+  query ContentsByComponentId($componentId: Float!) {
+    contentsByComponentId(componentId: $componentId) {
+      id
+      pageId
+      componentId
+      title
+      titleBn
+      description
+      descriptionBn
+      color
+      iconName
+      iconUrl
+    }
+  }
+`;

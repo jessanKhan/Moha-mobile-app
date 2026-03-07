@@ -84,6 +84,7 @@ const styles = ScaledSheet.create({
         fontWeight: '700',
         lineHeight: '24@ms',
         fontFamily: 'July-Bold',
+        paddingVertical: '10@ms',
     },
     linkContainer: {
         padding: '16@ms',
