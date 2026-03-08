@@ -47,41 +47,6 @@ const NewsMediaScreen = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const flatListRef = useRef<FlatList>(null);
 
-    const carouselItems = [
-        {
-            id: '1',
-            title: "নিরাপদ সমাজ গড়তে একসাথে",
-            subtitle: "মানব পাচার প্রতিরোধে সচেতন থাকুন",
-            image: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=800&auto=format&fit=crop"
-        },
-        {
-            id: '2',
-            title: "নিরাপদ সমাজ গড়তে একসাথে",
-            subtitle: "মানব পাচার প্রতিরোধে সচেতন থাকুন",
-            image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop"
-        }
-    ];
-
-    const onViewRef = useRef(({ viewableItems }: any) => {
-        if (viewableItems.length > 0) {
-            setActiveIndex(viewableItems[0].index);
-        }
-    });
-
-    const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
-
-    useEffect(() => {
-        let interval = setInterval(() => {
-            if (activeIndex === carouselItems.length - 1) {
-                flatListRef.current?.scrollToIndex({ index: 0, animated: true });
-            } else {
-                flatListRef.current?.scrollToIndex({ index: activeIndex + 1, animated: true });
-            }
-        }, 4000);
-
-        return () => clearInterval(interval);
-    }, [activeIndex]);
-
     const queryVariables = React.useMemo(() => ({ page: 1, limit: 10 }), []);
 
     const { data, loading, error } = useQuery<NewsData>(NEWS_ALL_QUERY, {
@@ -92,16 +57,42 @@ const NewsMediaScreen = () => {
         variables: { page: 1, limit: 10 },
     });
 
-    const renderCarouselItem = ({ item }: any) => (
+    const onViewRef = useRef(({ viewableItems }: any) => {
+        if (viewableItems.length > 0) {
+            setActiveIndex(viewableItems[0].index);
+        }
+    });
+
+    const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
+
+    useEffect(() => {
+        const itemsCount = data?.newsAll?.length || 0;
+        if (itemsCount <= 1) return;
+
+        let interval = setInterval(() => {
+            if (activeIndex === itemsCount - 1) {
+                flatListRef.current?.scrollToIndex({ index: 0, animated: true });
+            } else {
+                flatListRef.current?.scrollToIndex({ index: activeIndex + 1, animated: true });
+            }
+        }, 4000);
+
+        return () => clearInterval(interval);
+    }, [activeIndex, data?.newsAll]);
+
+
+
+    const renderCarouselItem = ({ item }: { item: News }) => (
         <View style={styles.slideItem}>
             <ImageBackground
-                source={{ uri: item.image }}
+                source={{ uri: item.thumbnailUrl }}
                 style={styles.slideImage}
                 imageStyle={{ borderRadius: scale(20) }}
             >
                 <View style={styles.slideOverlay}>
-                    <Text style={styles.slideTitle}>{item.title}</Text>
-                    <Text style={styles.slideSubtitle}>{item.subtitle}</Text>
+                    <Text style={styles.slideTitle}>
+                        {languageMode === 'en' ? (item.title || '') : (item.titleBn || '')}
+                    </Text>
                 </View>
             </ImageBackground>
         </View>
@@ -120,9 +111,9 @@ const NewsMediaScreen = () => {
                 <View style={styles.carouselContainer}>
                     <FlatList
                         ref={flatListRef}
-                        data={carouselItems}
+                        data={data?.newsAll || []}
                         renderItem={renderCarouselItem}
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item) => item.id.toString()}
                         horizontal
                         pagingEnabled
                         showsHorizontalScrollIndicator={false}
@@ -268,7 +259,7 @@ const styles = ScaledSheet.create({
     slideOverlay: {
         backgroundColor: 'rgba(0,0,0,0.3)',
         padding: '16@ms',
-        borderRadius: '20@ms',
+        borderRadius: '26@ms',
         justifyContent: 'flex-end',
         height: '100%',
     },

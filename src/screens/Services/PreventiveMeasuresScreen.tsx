@@ -11,6 +11,9 @@ import { CONTENTS_BY_COMPONENT_ID } from '../../api/queries';
 import { useRoute } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { BookOpen, Eye, HandFist, Plane } from 'lucide-react-native';
+
+const RANDOM_ICONS = [BookOpen, Eye, HandFist, Plane];
 
 const PreventiveMeasuresScreen = () => {
     const route = useRoute<any>();
@@ -71,10 +74,15 @@ const PreventiveMeasuresScreen = () => {
                             ? [item.color, item.color]
                             : GRADIENT_PALETTE[index % GRADIENT_PALETTE.length];
 
+                        // Icon fallback logic
+                        const hasIcon = (item.iconName && item.iconName.trim() !== '') || (item.iconUrl && item.iconUrl.trim() !== '');
+                        const randomIcon = hasIcon ? undefined : RANDOM_ICONS[index % RANDOM_ICONS.length];
+
                         return (
                             <QuickLinksComponent
                                 title={languageMode === 'en' ? (item.title || '') : (item.titleBn || '')}
                                 gradientColors={palette}
+                                headerIcon={randomIcon}
                                 logoUrl={item.iconUrl}
                                 data={items}
                                 keyExtractor={(linkItem, idx) => idx.toString()}
