@@ -163,3 +163,33 @@ export const SERVICES_QUERY = gql`
     }
   }
 `;
+
+export const COUNTRIES_QUERY = gql`
+  query Countries {
+    countries {
+      id
+      name
+      nameBn
+      code
+    }
+  }
+`;
+
+export const HOTLINES_BY_COUNTRY_QUERY = gql`
+  query HotlinesByCountry($page: Int, $limit: Int, $country: String!) {
+    hotlinesByCountry(page: $page, limit: $limit, country: $country) {
+      id
+      country
+      countryBn
+      title
+      titleBn
+      number
+      numberBn
+      link
+      logoUrl
+      color
+      order
+      isPublished
+    }
+  }
+`;
