@@ -24,7 +24,8 @@ import { RootState } from '../../store';
 import { ActivityIndicator } from 'react-native';
 
 type RootStackParamList = {
-    ServiceList: { category: string; title: string };
+    ServiceList: { serviceId: string | number; title: string; subtitle?: string };
+    ServiceAid: { serviceId: string | number; title: string; subtitle?: string };
     Rehabilitation: undefined;
     Repatriation: undefined;
     ShelterHome: undefined;
@@ -53,10 +54,14 @@ interface Service {
     titleBn: string;
     subtitle: string;
     subtitleBn: string;
+    description: string;
+    descriptionBn: string;
+    isCenter: string;
     order: number;
     color: string;
     iconName: string;
     attachmentUrl: string;
+    isPublished: string;
 }
 
 interface ServicesData {
@@ -88,35 +93,29 @@ const ServiceSearchScreen = () => {
         const titleBn = item.titleBn || '';
         const title = languageMode === 'en' ? titleEn : titleBn;
 
-        // Map some titles to specific screens if needed, otherwise use ServiceList
-        let routeName: any = 'ServiceList';
-        const lowerTitle = titleEn.toLowerCase();
+        const subtitleEn = item.subtitle || '';
+        const subtitleBn = item.subtitleBn || '';
+        const subtitle = languageMode === 'en' ? subtitleEn : subtitleBn;
 
-        if (lowerTitle.includes('rehabilitation')) {
-            routeName = 'Rehabilitation';
-        } else if (lowerTitle.includes('repatriation')) {
-            routeName = 'Repatriation';
-        } else if (lowerTitle.includes('shelter')) {
-            routeName = 'ShelterHome';
-        } else if (lowerTitle.includes('social')) {
-            routeName = 'SocialIntegration';
-        } else if (lowerTitle.includes('training')) {
-            routeName = 'Training';
-        } else if (lowerTitle.includes('awareness')) {
-            routeName = 'Awareness';
-        }
-
-        if (routeName === 'ServiceList') {
-            navigation.navigate('ServiceList', { category: item.id.toString(), title });
+        if (item.isCenter === "YES") {
+            navigation.navigate('ServiceList', { 
+                serviceId: item.id, 
+                title, 
+                subtitle 
+            });
         } else {
-            navigation.navigate(routeName);
+            navigation.navigate('ServiceAid', { 
+                serviceId: item.id, 
+                title, 
+                subtitle 
+            });
         }
     };
 
     return (
         <AppBackground>
             <Header
-                title={languageMode === 'en' ? "Service Search" : "সেবা অনুসন্ধান"}
+                title={languageMode === 'en' ? "Service Search" : " "}
                 subtitle={languageMode === 'en' ? "Find services according to your needs" : 'আপনার প্রয়োজন অনুযায়ী সেবা খুঁজুন'}
                 showBackButton={true}
             />

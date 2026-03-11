@@ -24,6 +24,7 @@ import SocialIntegrationScreen from '../screens/Services/SocialIntegrationScreen
 import TrainingScreen from '../screens/Services/TrainingScreen';
 import AwarenessScreen from '../screens/Services/AwarenessScreen';
 import PolicyLawScreen from '../screens/Services/PolicyLawScreen';
+import ServiceAidScreen from '../screens/Services/ServiceAidScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -49,6 +50,7 @@ const HomeStackNavigator = () => {
       <HomeStack.Screen name="AboutTrafficking" component={AboutTraffickingScreen} />
       <HomeStack.Screen name="ServiceDetails" component={ServiceDetailScreen} />
       <HomeStack.Screen name="ServiceList" component={ServiceListScreen} />
+      <HomeStack.Screen name="ServiceAid" component={ServiceAidScreen} />
       <HomeStack.Screen name="SocialIntegration" component={SocialIntegrationScreen} />
       <HomeStack.Screen name="Training" component={TrainingScreen} />
       <HomeStack.Screen name="Awareness" component={AwarenessScreen} />

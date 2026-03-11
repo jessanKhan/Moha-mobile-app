@@ -156,10 +156,14 @@ export const SERVICES_QUERY = gql`
       titleBn
       subtitle
       subtitleBn
+      description
+      descriptionBn
+      isCenter
       order
       color
       iconName
       attachmentUrl
+      isPublished
     }
   }
 `;
@@ -190,6 +194,86 @@ export const HOTLINES_BY_COUNTRY_QUERY = gql`
       color
       order
       isPublished
+    }
+  }
+`;
+export const CENTERS_BY_SERVICE_ID = gql`
+  query CentersByServiceId($serviceId: Float!) {
+    centersByServiceId(serviceId: $serviceId) {
+      id
+      serviceId
+      urgency
+      priority
+      name
+      nameBn
+      district
+      districtBn
+      address
+      addressBn
+      phone
+      phoneBn
+      capacity
+      capacityBn
+      attachmentUrl
+      isPublished
+    }
+  }
+`;
+
+export const AIDS_BY_SERVICE_ID = gql`
+  query AidsByServiceId($serviceId: Float!) {
+    aidsByServiceId(serviceId: $serviceId) {
+      id
+      serviceId
+      title
+      titleBn
+      subtitle
+      subtitleBn
+      description
+      descriptionBn
+      iconName
+      attachmentUrl
+      order
+      isPublished
+      topics {
+        id
+        aidId
+        title
+        titleBn
+        subtitle
+        subtitleBn
+        description
+        descriptionBn
+        iconName
+        attachmentUrl
+        order
+      }
+      cards {
+        id
+        aidId
+        title
+        titleBn
+        subtitle
+        subtitleBn
+        description
+        descriptionBn
+        iconName
+        attachmentUrl
+        order
+      }
+      promos {
+        id
+        aidId
+        title
+        titleBn
+        subtitle
+        subtitleBn
+        description
+        descriptionBn
+        iconName
+        attachmentUrl
+        order
+      }
     }
   }
 `;

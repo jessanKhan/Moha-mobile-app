@@ -1,41 +1,70 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 import Header from '../../components/Header';
 import { Search, ListFilter } from 'lucide-react-native';
 import ServiceCenterCard from '../../components/ServiceCenterCard';
 import AppBackground from '../../components/AppBackground';
+import { useQuery } from '@apollo/client/react';
+import { CENTERS_BY_SERVICE_ID } from '../../api/queries';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+
+interface Center {
+    id: number;
+    name: string;
+    nameBn: string;
+    address: string;
+    addressBn: string;
+    phone: string;
+    phoneBn: string;
+    capacity: string;
+    capacityBn: string;
+}
+
+interface CentersData {
+    centersByServiceId: Center[];
+}
 
 const ServiceListScreen = () => {
     const route = useRoute<any>();
-    const { category, title } = route.params || {};
+    const { serviceId, title, subtitle } = route.params || {};
     const [searchQuery, setSearchQuery] = useState('');
+    const languageMode = useSelector((state: RootState) => state.language.mode);
 
-    const services = [
-        { id: '1', name: 'চট্টগ্রাম শিশু সুরক্ষা কেন্দ্র', address: 'নাসিরাবাদ হাউজিং সোসাইটি, চট্টগ্রাম-৪২০৩', phone: '+৮৮০-২-৯১১২২৩৩', capacity: '৫০' },
-        { id: '2', name: 'চট্টগ্রাম শিশু সুরক্ষা কেন্দ্র', address: 'নাসিরাবাদ হাউজিং সোসাইটি, চট্টগ্রাম-৪২০৩', phone: '+৮৮০-২-৯১১২২৩৩', capacity: '৫০' },
-        { id: '3', name: 'চট্টগ্রাম শিশু সুরক্ষা কেন্দ্র', address: 'নাসিরাবাদ হাউজিং সোসাইটি, চট্টগ্রাম-৪২০৩', phone: '+৮৮০-২-৯১১২২৩৩', capacity: '৫০' },
-        { id: '4', name: 'চট্টগ্রাম শিশু সুরক্ষা কেন্দ্র', address: 'নাসিরাবাদ হাউজিং সোসাইটি, চট্টগ্রাম-৪২০৩', phone: '+৮৮০-২-৯১১২২৩৩', capacity: '৫০' },
-        { id: '5', name: 'চট্টগ্রাম শিশু সুরক্ষা কেন্দ্র', address: 'নাসিরাবাদ হাউজিং সোসাইটি, চট্টগ্রাম-৪২০৩', phone: '+৮৮০-২-৯১১২২৩৩', capacity: '৫০' },
-    ];
+    const { data, loading, error } = useQuery<CentersData>(CENTERS_BY_SERVICE_ID, {
+        variables: { serviceId: parseFloat(serviceId) },
+        skip: !serviceId,
+    });
 
-    const filteredServices = services.filter(service =>
-        service.name.includes(searchQuery) || service.address.includes(searchQuery)
-    );
+    const centers = data?.centersByServiceId || [];
+
+    const filteredServices = centers.filter((service: any) => {
+        const name = languageMode === 'en' ? service.name : service.nameBn;
+        const address = languageMode === 'en' ? service.address : service.addressBn;
+        return (
+            (name?.toLowerCase()?.includes(searchQuery.toLowerCase())) ||
+            (address?.toLowerCase()?.includes(searchQuery.toLowerCase()))
+        );
+    });
 
     const renderItem = ({ item }: any) => (
         <ServiceCenterCard
-            name={item.name}
-            address={item.address}
-            phone={item.phone}
-            capacity={item.capacity}
+            name={languageMode === 'en' ? item.name : item.nameBn}
+            address={languageMode === 'en' ? item.address : item.addressBn}
+            phone={languageMode === 'en' ? item.phone : item.phoneBn}
+            capacity={languageMode === 'en' ? item.capacity : item.capacityBn}
         />
     );
 
     return (
         <AppBackground>
-            <Header title={title || 'Services'} subtitle="নিরাপদভাবে নিজ দেশে ফেরত যাওয়া" showBackButton={true} />
+            <Header 
+                title={title || 'Services'} 
+                subtitle={subtitle || 'নিরাপদভাবে নিজ দেশে ফেরত যাওয়া'} 
+                showBackButton={true} 
+            />
 
             <View style={styles.searchContainer}>
                 <View style={styles.searchBarWrapper}>
@@ -56,13 +85,21 @@ const ServiceListScreen = () => {
             <FlatList
                 data={filteredServices}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id.toString()}
                 contentContainerStyle={styles.listContainer}
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={
-                    <View style={styles.emptyContainer}>
-                        <Text style={styles.emptyText}>No services found for this category.</Text>
-                    </View>
+                    loading ? (
+                        <ActivityIndicator size="large" color="#ffffff" style={{ marginTop: 20 }} />
+                    ) : error ? (
+                        <View style={styles.emptyContainer}>
+                            <Text style={styles.emptyText}>{languageMode === 'en' ? 'Error loading data' : 'ডাটা লোড করতে সমস্যা হয়েছে'}</Text>
+                        </View>
+                    ) : (
+                        <View style={styles.emptyContainer}>
+                            <Text style={styles.emptyText}>{languageMode === 'en' ? 'No centers found' : 'কোন কেন্দ্র পাওয়া যায়নি'}</Text>
+                        </View>
+                    )
                 }
             />
         </AppBackground>
