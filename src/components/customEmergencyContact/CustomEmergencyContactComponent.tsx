@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View, Linking } from 'react-native';
 import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 import LinearGradient from 'react-native-linear-gradient';
 import { Phone } from 'lucide-react-native';
@@ -43,7 +43,13 @@ const CustomEmergencyContactComponent: FC<
         {/* Button */}
         <TouchableOpacity
           style={styles.hotlineBtn}
-          onPress={onPress}
+          onPress={() => {
+            if (onPress) {
+                onPress();
+            } else if (hotLineNumber) {
+                Linking.openURL(`tel:${hotLineNumber}`);
+            }
+          }}
           activeOpacity={0.7}
         >
           <Text style={styles.hotlineBtntxt} numberOfLines={1}>

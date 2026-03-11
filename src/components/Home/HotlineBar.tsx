@@ -1,9 +1,17 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Linking } from 'react-native';
 import { Phone } from 'lucide-react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 
 const HotlineBar = () => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
+
+    const handleCallPress = () => {
+        Linking.openURL('tel:999');
+    };
+
     return (
         <View
             style={styles.container}
@@ -13,16 +21,17 @@ const HotlineBar = () => {
                     <Phone size={moderateScale(24)} color="white" fill="white" />
                 </View>
                 <View>
-                    <Text style={styles.label}>২৪/৭ জরুরি হটলাইন</Text>
-                    <Text style={styles.number}>৯৯৯</Text>
+                    <Text style={styles.label}>{languageMode === 'en' ? '24/7 Emergency Hotline' : '২৪/৭ জরুরি হটলাইন'}</Text>
+                    <Text style={styles.number}>{languageMode === 'en' ? '999' : '৯৯৯'}</Text>
                 </View>
             </View>
 
             <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.button}
+                onPress={handleCallPress}
             >
-                <Text style={styles.buttonText}>কল করুন</Text>
+                <Text style={styles.buttonText}>{languageMode === 'en' ? 'Call' : 'কল করুন'}</Text>
             </TouchableOpacity>
         </View>
     );

@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Linking } from 'react-native';
 import { Phone } from 'lucide-react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 
 interface HotlineBannerProps {
@@ -10,6 +12,16 @@ interface HotlineBannerProps {
 }
 
 const HotlineBanner = ({ title = "২৪/৭ জরুরি হটলাইন", number = "৯৯৯", onPress }: HotlineBannerProps) => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
+
+    const handleCall = () => {
+        if (onPress) {
+            onPress();
+        } else if (number) {
+            Linking.openURL(`tel:${number}`);
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.content}>
@@ -24,9 +36,9 @@ const HotlineBanner = ({ title = "২৪/৭ জরুরি হটলাইন"
             <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.button}
-                onPress={onPress}
+                onPress={handleCall}
             >
-                <Text style={styles.buttonText}>কল করুন</Text>
+                <Text style={styles.buttonText}>{languageMode === 'en' ? 'Call' : 'কল করুন'}</Text>
             </TouchableOpacity>
         </View>
     );

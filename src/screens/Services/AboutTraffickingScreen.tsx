@@ -20,8 +20,12 @@ import { moderateScale, ScaledSheet, verticalScale } from 'react-native-size-mat
 import Header from '../../components/Header';
 import LinearGradient from 'react-native-linear-gradient';
 import AppBackground from '../../components/AppBackground';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 const AboutTraffickingScreen = () => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
+
     const handleCall = () => {
         Linking.openURL('tel:999');
     };
@@ -135,12 +139,12 @@ const AboutTraffickingScreen = () => {
                                 <Phone size={moderateScale(24)} color="white" />
                             </View>
                             <View>
-                                <Text style={styles.hotlineLabel}>২৪/৭ জরুরি হটলাইন</Text>
-                                <Text style={styles.hotlineNumber}>৯৯৯</Text>
+                                <Text style={styles.hotlineLabel}>{languageMode === 'en' ? '24/7 Emergency Hotline' : '২৪/৭ জরুরি হটলাইন'}</Text>
+                                <Text style={styles.hotlineNumber}>{languageMode === 'en' ? '999' : '৯৯৯'}</Text>
                             </View>
                         </View>
                         <TouchableOpacity style={styles.callButton} onPress={handleCall}>
-                            <Text style={styles.callButtonText}>কল করুন</Text>
+                            <Text style={styles.callButtonText}>{languageMode === 'en' ? 'Call' : 'কল করুন'}</Text>
                         </TouchableOpacity>
                     </View>
 
