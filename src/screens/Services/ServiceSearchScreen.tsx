@@ -17,6 +17,11 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 import AppBackground from '../../components/AppBackground';
+import { useQuery } from '@apollo/client/react';
+import { SERVICES_QUERY } from '../../api/queries';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { ActivityIndicator } from 'react-native';
 
 type RootStackParamList = {
     ServiceList: { category: string; title: string };
@@ -28,141 +33,147 @@ type RootStackParamList = {
     Awareness: undefined;
 };
 
+const ICON_MAPPING: { [key: string]: any } = {
+    'Home': Home,
+    'Shield': Shield,
+    'MapPin': MapPin,
+    'Heart': Heart,
+    'User': User,
+    'CornerUpLeft': CornerUpLeft,
+    'BookOpen': BookOpen,
+    'Volume2': Volume2,
+    'Plus': Plus,
+};
+
+const FALLBACK_ICONS = [Home, Shield, MapPin, Heart, User, CornerUpLeft, BookOpen, Volume2, Plus];
+
+interface Service {
+    id: number;
+    title: string;
+    titleBn: string;
+    subtitle: string;
+    subtitleBn: string;
+    order: number;
+    color: string;
+    iconName: string;
+    attachmentUrl: string;
+}
+
+interface ServicesData {
+    services: Service[];
+}
+
 const ServiceSearchScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const languageMode = useSelector((state: RootState) => state.language.mode);
 
-    const categories = [
-        {
-            id: 'shelter_list',
-            title: 'আশ্রয় কেন্দ্রের তালিকা',
-            subtitle: 'নিরাপদ অস্থায়ী আশ্রয়ের তথ্য',
-            icon: Home,
-            colors: ['#4285F4', '#1976D2'], // Blue
-        },
-        {
-            id: 'rehab_center_list',
-            title: 'পুনর্বাসন কেন্দ্রের তালিকা',
-            subtitle: 'স্বাভাবিক জীবনে ফেরার সহায়তা',
-            icon: Home,
-            colors: ['#34A853', '#2E7D32'], // Green
-        },
-        {
-            id: 'shelter_home',
-            title: 'সেল্টার হোম',
-            subtitle: 'নারী ও শিশুদের সুরক্ষিত আবাসন',
-            icon: MapPin,
-            colors: ['#9C27B0', '#7B1FA2'], // Purple
-        },
-        {
-            id: 'legal_aid',
-            title: 'লিগ্যাল এইড',
-            subtitle: 'বিনামূল্যে আইনি সহায়তা',
-            icon: Shield,
-            colors: ['#E65100', '#BF360C'], // Orange/Terra Cotta
-        },
-        {
-            id: 'psychosocial',
-            title: 'মনোসামাজিক সহায়তা',
-            subtitle: 'মানসিক স্বাস্থ্য ও কাউন্সেলিং',
-            icon: Heart,
-            colors: ['#795548', '#5D4037'], // Brown
-        },
-        {
-            id: 'rehabilitation',
-            title: 'পুনর্বাসন',
-            subtitle: 'মানব পাচারের শিকার ব্যক্তিদের নিরাপদ পুনরুদ্ধার',
-            icon: User,
-            colors: ['#43A047', '#2E7D32'], // Green
-        },
-        {
-            id: 'repatriation',
-            title: 'প্রত্যাবর্তন',
-            subtitle: 'নিরাপদে নিজ পরিবারে ফেরা',
-            icon: CornerUpLeft,
-            colors: ['#EA4335', '#C62828'], // Red
-        },
-        {
-            id: 'social_integration',
-            title: 'সোশ্যাল ইন্টিগ্রেশন',
-            subtitle: 'সামাজে পুনঃএকত্রীকরণ',
-            icon: Shield,
-            colors: ['#2196F3', '#1565C0'], // Blue
-        },
-        {
-            id: 'training',
-            title: 'প্রশিক্ষণ',
-            subtitle: 'দক্ষতা ও জীবিকা উন্নয়ন',
-            icon: BookOpen,
-            colors: ['#0F9D58', '#00695C'], // Teal/Green
-        },
-        {
-            id: 'awareness',
-            title: 'সচেতনতা',
-            subtitle: 'অধিকার ও তথ্যভিত্তিক শিক্ষা',
-            icon: Volume2,
-            colors: ['#8E24AA', '#6A1B9A'], // Purple
-        },
-        {
-            id: 'medical',
-            title: 'চিকিৎসা সেবা',
-            subtitle: 'প্রাথমিক ও বিশেষায়িত চিকিৎসা',
-            icon: Plus,
-            colors: ['#009688', '#00796B'], // Teal
-        },
+    const { data, loading, error } = useQuery<ServicesData>(SERVICES_QUERY, {
+        variables: { page: 1.0, limit: 20.0 },
+    });
+
+    const GRADIENT_PALETTE = [
+        ['#4285F4', '#1976D2'], // Blue
+        ['#34A853', '#2E7D32'], // Green
+        ['#9C27B0', '#7B1FA2'], // Purple
+        ['#E65100', '#BF360C'], // Orange
+        ['#795548', '#5D4037'], // Brown
+        ['#EA4335', '#C62828'], // Red
+        ['#009688', '#00796B'], // Teal
     ];
 
-    const handleCategoryPress = (category: typeof categories[0]) => {
-        let routeName = 'ServiceList'; // Default
-        const params: any = { category: category.id, title: category.title };
+    const services = data?.services || [];
 
-        if (category.id === 'rehabilitation') {
+    const handleCategoryPress = (item: any) => {
+        const titleEn = item.title || '';
+        const titleBn = item.titleBn || '';
+        const title = languageMode === 'en' ? titleEn : titleBn;
+
+        // Map some titles to specific screens if needed, otherwise use ServiceList
+        let routeName: any = 'ServiceList';
+        const lowerTitle = titleEn.toLowerCase();
+
+        if (lowerTitle.includes('rehabilitation')) {
             routeName = 'Rehabilitation';
-        } else if (category.id === 'repatriation') {
+        } else if (lowerTitle.includes('repatriation')) {
             routeName = 'Repatriation';
-        } else if (category.id === 'shelter_home') {
+        } else if (lowerTitle.includes('shelter')) {
             routeName = 'ShelterHome';
-        } else if (category.id === 'social_integration') {
+        } else if (lowerTitle.includes('social')) {
             routeName = 'SocialIntegration';
-        } else if (category.id === 'training') {
+        } else if (lowerTitle.includes('training')) {
             routeName = 'Training';
-        } else if (category.id === 'awareness') {
+        } else if (lowerTitle.includes('awareness')) {
             routeName = 'Awareness';
         }
 
-        if (['Rehabilitation', 'Repatriation', 'ShelterHome', 'SocialIntegration', 'Training', 'Awareness'].includes(routeName)) {
-            navigation.navigate(routeName as any);
+        if (routeName === 'ServiceList') {
+            navigation.navigate('ServiceList', { category: item.id.toString(), title });
         } else {
-            navigation.navigate('ServiceList', params);
+            navigation.navigate(routeName);
         }
     };
 
     return (
         <AppBackground>
-            <Header title="সেবা অনুসন্ধান" subtitle='আপনার প্রয়োজন অনুযায়ী সেবা খুঁজুন' showBackButton={true} />
+            <Header
+                title={languageMode === 'en' ? "Service Search" : "সেবা অনুসন্ধান"}
+                subtitle={languageMode === 'en' ? "Find services according to your needs" : 'আপনার প্রয়োজন অনুযায়ী সেবা খুঁজুন'}
+                showBackButton={true}
+            />
             <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
-                {categories.map((item) => (
-                    <TouchableOpacity
-                        key={item.id}
-                        onPress={() => handleCategoryPress(item)}
-                        activeOpacity={0.9}
-                        style={styles.cardContainer}
-                    >
-                        <LinearGradient
-                            colors={item.colors}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                            style={styles.gradient}
-                        >
-                            <View style={styles.iconWrapper}>
-                                <item.icon color="white" size={moderateScale(28)} />
-                            </View>
-                            <View style={styles.textWrapper}>
-                                <Text style={styles.title}>{item.title}</Text>
-                                <Text style={styles.subtitle}>{item.subtitle}</Text>
-                            </View>
-                        </LinearGradient>
-                    </TouchableOpacity>
-                ))}
+                {loading ? (
+                    <View style={styles.centerContainer}>
+                        <ActivityIndicator size="large" color="#ffffff" />
+                    </View>
+                ) : error ? (
+                    <View style={styles.centerContainer}>
+                        <Text style={styles.errorText}>
+                            {languageMode === 'en' ? "Failed to load services" : "সেবা লোড করতে ব্যর্থ হয়েছে"}
+                        </Text>
+                    </View>
+                ) : services.length > 0 ? (
+                    services.map((item: any, index: number) => {
+                        const colors = (item.color && item.color.startsWith('#'))
+                            ? [item.color, item.color]
+                            : GRADIENT_PALETTE[index % GRADIENT_PALETTE.length];
+
+                        const IconComponent = ICON_MAPPING[item.iconName] || FALLBACK_ICONS[index % FALLBACK_ICONS.length];
+
+                        return (
+                            <TouchableOpacity
+                                key={item.id}
+                                onPress={() => handleCategoryPress(item)}
+                                activeOpacity={0.9}
+                                style={styles.cardContainer}
+                            >
+                                <LinearGradient
+                                    colors={colors}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={styles.gradient}
+                                >
+                                    <View style={styles.iconWrapper}>
+                                        <IconComponent color="white" size={moderateScale(28)} />
+                                    </View>
+                                    <View style={styles.textWrapper}>
+                                        <Text style={styles.title}>
+                                            {languageMode === 'en' ? item.title : item.titleBn}
+                                        </Text>
+                                        <Text style={styles.subtitle}>
+                                            {languageMode === 'en' ? item.subtitle : item.subtitleBn}
+                                        </Text>
+                                    </View>
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        );
+                    })
+                ) : (
+                    <View style={styles.centerContainer}>
+                        <Text style={styles.errorText}>
+                            {languageMode === 'en' ? "No services found" : "কোনো সেবা পাওয়া যায়নি"}
+                        </Text>
+                    </View>
+                )}
             </ScrollView>
         </AppBackground>
     );
@@ -219,6 +230,17 @@ const styles = ScaledSheet.create({
         fontSize: '13@ms',
         fontFamily: 'July-Regular',
         lineHeight: '18@ms',
+    },
+    centerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: '50@vs',
+    },
+    errorText: {
+        color: 'white',
+        fontSize: '14@ms',
+        fontFamily: 'July-Regular',
     },
 });
 

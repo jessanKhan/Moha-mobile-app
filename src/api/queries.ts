@@ -147,3 +147,19 @@ export const CONTENTS_BY_COMPONENT_ID = gql`
     }
   }
 `;
+
+export const SERVICES_QUERY = gql`
+  query Services($page: Float!, $limit: Float!) {
+    services(page: $page, limit: $limit) {
+      id
+      title
+      titleBn
+      subtitle
+      subtitleBn
+      order
+      color
+      iconName
+      attachmentUrl
+    }
+  }
+`;
