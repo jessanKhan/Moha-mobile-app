@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import Header from '../../components/Header';
-import { Filter, Search, BarChart3, Users, ShieldCheck } from 'lucide-react-native';
+import { Filter, Search, BarChart3, Users, ShieldCheck, ChevronDown } from 'lucide-react-native';
 import { LineChart, BarChart, PieChart } from 'react-native-gifted-charts';
 import { Text as SvgText } from 'react-native-svg';
 import { ScaledSheet, scale, verticalScale, moderateScale } from 'react-native-size-matters';
@@ -129,13 +129,67 @@ const StatisticsScreen = () => {
 
     const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7f50", "#a4de6c", "#14B8A6", "#3B82F6", "#F59E0B"];
 
+    // Generic Dropdown Component
+    const SelectDropdown = ({ label, options, selectedValue, onSelect, placeholder, isObjKeys = false }: any) => {
+        const [isOpen, setIsOpen] = useState(false);
 
-    const renderRightComponent = () => (
-        <TouchableOpacity activeOpacity={0.8} style={styles.filterBtn}>
-            <Filter size={moderateScale(16)} color="white" />
-            <Text style={styles.filterText}>ফিল্টার</Text>
-        </TouchableOpacity>
-    );
+        const handleSelect = (val: string) => {
+            onSelect(val);
+            setIsOpen(false);
+        };
+
+        const getDisplayLabel = (val: string) => {
+            if (!val) return placeholder;
+            if (isObjKeys) {
+                const opt = options.find((o: any) => o.key === val);
+                return opt ? (opt.bn || opt.en) : val;
+            }
+            if (val === 'bar') return 'BAR CHART';
+            if (val === 'line') return 'LINE CHART';
+            if (val === 'pie') return 'PIE CHART';
+            return val;
+        };
+
+        return (
+            <View style={styles.dropdownContainer}>
+                {label && <Text style={styles.filterTitle}>{label}</Text>}
+                <TouchableOpacity
+                    style={styles.dropdownButton}
+                    activeOpacity={0.8}
+                    onPress={() => setIsOpen(!isOpen)}
+                >
+                    <Text style={[styles.dropdownButtonText, !selectedValue && { color: '#9CA3AF' }]}>
+                        {getDisplayLabel(selectedValue)}
+                    </Text>
+                    <ChevronDown size={moderateScale(20)} color="#64748B" />
+                </TouchableOpacity>
+
+                {isOpen && (
+                    <View style={styles.dropdownList}>
+                        <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
+                            {options.map((opt: any) => {
+                                const val = isObjKeys ? opt.key : opt;
+                                const display = isObjKeys ? (opt.bn || opt.en) : getDisplayLabel(opt);
+                                return (
+                                    <TouchableOpacity
+                                        key={val}
+                                        style={[styles.dropdownItem, selectedValue === val && { backgroundColor: '#F3F4F6' }]}
+                                        onPress={() => handleSelect(val)}
+                                    >
+                                        <Text style={[styles.dropdownItemText, selectedValue === val && { color: '#1D4ED8', fontFamily: 'July-Bold' }]}>
+                                            {display}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </ScrollView>
+                    </View>
+                )}
+            </View>
+        );
+    };
+
+
 
     const SummaryCard = ({ icon: Icon, count, title, colors }: any) => (
         <LinearGradient
@@ -201,33 +255,23 @@ const StatisticsScreen = () => {
                 {loading && <ActivityIndicator size="large" color="#155DFC" style={{ marginVertical: scale(20) }} />}
                 {!loading && table && (
                     <>
-                        {/* Filters Dropdown Pickers - You'll likely want to create custom Pickers for React Native */}
+                        {/* Filters Dropdown Pickers */}
                         <View style={styles.filterSection}>
-                            <Text style={styles.filterTitle}>প্রতিবেদন নির্বাচন করুন</Text>
-                            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: scale(15) }}>
-                                {reportNames.map((name) => (
-                                    <TouchableOpacity
-                                        key={name}
-                                        style={[styles.chip, selectedName === name && styles.chipActive]}
-                                        onPress={() => setSelectedName(name)}
-                                    >
-                                        <Text style={[styles.chipText, selectedName === name && styles.chipTextActive]}>{name}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </ScrollView>
+                            <SelectDropdown
+                                label="প্রতিবেদন নির্বাচন করুন"
+                                placeholder="প্রতিবেদন নির্বাচন করুন"
+                                options={reportNames}
+                                selectedValue={selectedName}
+                                onSelect={setSelectedName}
+                            />
 
-                            {availableYears.length > 0 && <Text style={styles.filterTitle}>বছর নির্বাচন করুন</Text>}
-                            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: scale(15) }}>
-                                {availableYears.map((yr) => (
-                                    <TouchableOpacity
-                                        key={yr}
-                                        style={[styles.chip, selectedYear === yr && styles.chipActive]}
-                                        onPress={() => setSelectedYear(yr)}
-                                    >
-                                        <Text style={[styles.chipText, selectedYear === yr && styles.chipTextActive]}>{yr}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </ScrollView>
+                            <SelectDropdown
+                                label="বছর নির্বাচন করুন"
+                                placeholder="বছর নির্বাচন করুন"
+                                options={availableYears}
+                                selectedValue={selectedYear}
+                                onSelect={setSelectedYear}
+                            />
                         </View>
 
                         <ChartCard title={table.nameBn || table.name}>
@@ -261,44 +305,31 @@ const StatisticsScreen = () => {
 
                         {/* Chart Preview Type Selectors */}
                         <View style={styles.filterSection}>
-                            <Text style={styles.filterTitle}>চার্টের ধরন</Text>
-                            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: scale(15) }}>
-                                {["bar", "line", "pie"].map((type) => (
-                                    <TouchableOpacity
-                                        key={type}
-                                        style={[styles.chip, chartType === type && styles.chipActive]}
-                                        onPress={() => setChartType(type as any)}
-                                    >
-                                        <Text style={[styles.chipText, chartType === type && styles.chipTextActive]}>{type.toUpperCase()}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </ScrollView>
+                            <SelectDropdown
+                                label="চার্টের ধরন"
+                                placeholder="চার্টের ধরন"
+                                options={["bar", "line", "pie"]}
+                                selectedValue={chartType}
+                                onSelect={(val: any) => setChartType(val)}
+                            />
 
-                            <Text style={styles.filterTitle}>X-axis</Text>
-                            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: scale(15) }}>
-                                {categoricalColumns.map((col: any) => (
-                                    <TouchableOpacity
-                                        key={col.key}
-                                        style={[styles.chip, xKey === col.key && styles.chipActive]}
-                                        onPress={() => setXKey(col.key)}
-                                    >
-                                        <Text style={[styles.chipText, xKey === col.key && styles.chipTextActive]}>{col.bn || col.en}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </ScrollView>
+                            <SelectDropdown
+                                label="X-axis"
+                                placeholder="X-axis"
+                                options={categoricalColumns}
+                                selectedValue={xKey}
+                                onSelect={setXKey}
+                                isObjKeys={true}
+                            />
 
-                            <Text style={styles.filterTitle}>Y-axis</Text>
-                            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: scale(15) }}>
-                                {numericColumns.map((col: any) => (
-                                    <TouchableOpacity
-                                        key={col.key}
-                                        style={[styles.chip, yKey === col.key && styles.chipActive]}
-                                        onPress={() => setYKey(col.key)}
-                                    >
-                                        <Text style={[styles.chipText, yKey === col.key && styles.chipTextActive]}>{col.bn || col.en}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </ScrollView>
+                            <SelectDropdown
+                                label="Y-axis"
+                                placeholder="Y-axis"
+                                options={numericColumns}
+                                selectedValue={yKey}
+                                onSelect={setYKey}
+                                isObjKeys={true}
+                            />
                         </View>
 
                         {/* Dynamic Chart */}
@@ -497,36 +528,57 @@ const styles = ScaledSheet.create({
     filterSection: {
         marginHorizontal: '16@ms',
         marginBottom: '10@vs',
+        zIndex: 1, // needed for custom absolute dropdown overlays
     },
     filterTitle: {
         color: '#314158',
         fontSize: '14@ms',
         fontWeight: '600',
         marginBottom: '8@vs',
+        marginTop: '10@vs',
         fontFamily: 'July-Medium',
     },
-    chip: {
+    dropdownContainer: {
+        position: 'relative',
+        zIndex: 10,
+    },
+    dropdownButton: {
+        backgroundColor: '#F9FAFB',
+        borderRadius: '12@ms',
+        paddingVertical: '14@vs',
         paddingHorizontal: '16@ms',
-        paddingVertical: '8@vs',
-        borderRadius: '20@ms',
-        backgroundColor: '#F3F4F6',
-        marginRight: '8@ms',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         borderWidth: 1,
         borderColor: '#E5E7EB',
+        width: '100%',
     },
-    chipActive: {
-        backgroundColor: '#E0F2FE',
-        borderColor: '#3B82F6',
-    },
-    chipText: {
-        color: '#4B5563',
-        fontSize: '12@ms',
+    dropdownButtonText: {
+        fontSize: '14@ms',
+        color: '#314158',
         fontFamily: 'July-Regular',
+        flex: 1,
     },
-    chipTextActive: {
-        color: '#1D4ED8',
-        fontFamily: 'July-Bold',
-        fontWeight: '600',
+    dropdownList: {
+        backgroundColor: '#F9FAFB',
+        borderRadius: '12@ms',
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        marginTop: '4@vs',
+        maxHeight: '200@vs',
+        overflow: 'hidden',
+    },
+    dropdownItem: {
+        paddingVertical: '12@vs',
+        paddingHorizontal: '16@ms',
+        borderBottomWidth: 1,
+        borderBottomColor: '#F3F4F6',
+    },
+    dropdownItemText: {
+        fontSize: '14@ms',
+        color: '#314158',
+        fontFamily: 'July-Regular',
     },
 });
 
