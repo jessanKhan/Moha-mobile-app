@@ -9,6 +9,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import AppBackground from '../../components/AppBackground';
 import { useQuery } from '@apollo/client/react';
 import { REPORT_TABLES_QUERY } from '../../api/queries';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -19,6 +21,7 @@ const isNumeric = (str: string) => {
 };
 
 const StatisticsScreen = () => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
     const { data, loading, error } = useQuery<any>(REPORT_TABLES_QUERY);
 
     // States for filtering
@@ -142,11 +145,11 @@ const StatisticsScreen = () => {
             if (!val) return placeholder;
             if (isObjKeys) {
                 const opt = options.find((o: any) => o.key === val);
-                return opt ? (opt.bn || opt.en) : val;
+                return opt ? (languageMode === 'en' ? (opt.en || opt.bn) : (opt.bn || opt.en)) : val;
             }
-            if (val === 'bar') return 'BAR CHART';
-            if (val === 'line') return 'LINE CHART';
-            if (val === 'pie') return 'PIE CHART';
+            if (val === 'bar') return languageMode === 'en' ? 'BAR CHART' : 'বার চার্ট';
+            if (val === 'line') return languageMode === 'en' ? 'LINE CHART' : 'লাইন চার্ট';
+            if (val === 'pie') return languageMode === 'en' ? 'PIE CHART' : 'পাই চার্ট';
             return val;
         };
 
@@ -169,7 +172,9 @@ const StatisticsScreen = () => {
                         <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
                             {options.map((opt: any) => {
                                 const val = isObjKeys ? opt.key : opt;
-                                const display = isObjKeys ? (opt.bn || opt.en) : getDisplayLabel(opt);
+                                const display = isObjKeys 
+                                    ? (languageMode === 'en' ? (opt.en || opt.bn) : (opt.bn || opt.en)) 
+                                    : getDisplayLabel(opt);
                                 return (
                                     <TouchableOpacity
                                         key={val}
@@ -218,8 +223,8 @@ const StatisticsScreen = () => {
     return (
         <AppBackground>
             <Header
-                title="পরিসংখ্যান"
-                subtitle="মানব পাচার প্রতিরোধ তথ্য ও উপাত্ত"
+                title={languageMode === 'en' ? "Statistics" : "পরিসংখ্যান"}
+                subtitle={languageMode === 'en' ? "Human trafficking prevention data and statistics" : "মানব পাচার প্রতিরোধ তথ্য ও উপাত্ত"}
                 showBackButton={true}
             // rightComponent={renderRightComponent()}
             />
@@ -228,26 +233,26 @@ const StatisticsScreen = () => {
                 <View style={styles.gridContainer}>
                     <SummaryCard
                         icon={BarChart3}
-                        count="১,২৪৫"
-                        title="মোট রিপোর্টকৃত অভিযোগ"
+                        count={languageMode === 'en' ? "1,245" : "১,২৪৫"}
+                        title={languageMode === 'en' ? "Total Complaints" : "মোট রিপোর্টকৃত অভিযোগ"}
                         colors={['#155DFC', '#1447E6']}
                     />
                     <SummaryCard
                         icon={Users}
-                        count="৮৭৩"
-                        title="উদ্ধারপ্রাপ্ত ভুক্তভোগী"
+                        count={languageMode === 'en' ? "873" : "৮৭৩"}
+                        title={languageMode === 'en' ? "Rescued Victims" : "উদ্ধারপ্রাপ্ত ভুক্তভোগী"}
                         colors={['#009689', '#00786F']}
                     />
                     <SummaryCard
                         icon={Search}
-                        count="১৫৬"
-                        title="চলমান তদন্ত সংখ্যা"
+                        count={languageMode === 'en' ? "156" : "১৫৬"}
+                        title={languageMode === 'en' ? "Ongoing Investigations" : "চলমান তদন্ত সংখ্যা"}
                         colors={['#FA6700', '#C53B00']}
                     />
                     <SummaryCard
                         icon={ShieldCheck}
-                        count="৩৪২"
-                        title="সচেতনতামূলক কার্যক্রম"
+                        count={languageMode === 'en' ? "342" : "৩৪২"}
+                        title={languageMode === 'en' ? "Awareness Activities" : "সচেতনতামূলক কার্যক্রম"}
                         colors={['#00A63E', '#008236']}
                     />
                 </View>
@@ -258,23 +263,23 @@ const StatisticsScreen = () => {
                         {/* Filters Dropdown Pickers */}
                         <View style={styles.filterSection}>
                             <SelectDropdown
-                                label="প্রতিবেদন নির্বাচন করুন"
-                                placeholder="প্রতিবেদন নির্বাচন করুন"
+                                label={languageMode === 'en' ? "Select Report" : "প্রতিবেদন নির্বাচন করুন"}
+                                placeholder={languageMode === 'en' ? "Select Report" : "প্রতিবেদন নির্বাচন করুন"}
                                 options={reportNames}
                                 selectedValue={selectedName}
                                 onSelect={setSelectedName}
                             />
 
                             <SelectDropdown
-                                label="বছর নির্বাচন করুন"
-                                placeholder="বছর নির্বাচন করুন"
+                                label={languageMode === 'en' ? "Select Year" : "বছর নির্বাচন করুন"}
+                                placeholder={languageMode === 'en' ? "Select Year" : "বছর নির্বাচন করুন"}
                                 options={availableYears}
                                 selectedValue={selectedYear}
                                 onSelect={setSelectedYear}
                             />
                         </View>
 
-                        <ChartCard title={table.nameBn || table.name}>
+                        <ChartCard title={languageMode === 'en' ? table.name : (table.nameBn || table.name)}>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                                 <View>
                                     {/* Header Row */}
@@ -282,7 +287,7 @@ const StatisticsScreen = () => {
                                         {table.columns.filter((col: any) => selectedColumns.includes(col.key)).map((col: any) => (
                                             <View key={col.key} style={{ width: scale(120), paddingHorizontal: scale(5) }}>
                                                 <Text style={{ fontSize: moderateScale(11), fontWeight: 'bold', color: '#1F2937', fontFamily: 'July-Bold' }}>
-                                                    {col.bn || col.en}
+                                                    {languageMode === 'en' ? (col.en || col.bn) : (col.bn || col.en)}
                                                 </Text>
                                             </View>
                                         ))}
@@ -293,7 +298,7 @@ const StatisticsScreen = () => {
                                             {table.columns.filter((col: any) => selectedColumns.includes(col.key)).map((col: any) => (
                                                 <View key={col.key} style={{ width: scale(120), paddingHorizontal: scale(5) }}>
                                                     <Text style={{ fontSize: moderateScale(11), color: '#6B7280', fontFamily: 'July-Regular' }}>
-                                                        {row.data[col.key]?.bn || row.data[col.key]?.en || '-'}
+                                                        {languageMode === 'en' ? (row.data[col.key]?.en || row.data[col.key]?.bn || '-') : (row.data[col.key]?.bn || row.data[col.key]?.en || '-')}
                                                     </Text>
                                                 </View>
                                             ))}
@@ -306,8 +311,8 @@ const StatisticsScreen = () => {
                         {/* Chart Preview Type Selectors */}
                         <View style={styles.filterSection}>
                             <SelectDropdown
-                                label="চার্টের ধরন"
-                                placeholder="চার্টের ধরন"
+                                label={languageMode === 'en' ? "Chart Type" : "চার্টের ধরন"}
+                                placeholder={languageMode === 'en' ? "Chart Type" : "চার্টের ধরন"}
                                 options={["bar", "line", "pie"]}
                                 selectedValue={chartType}
                                 onSelect={(val: any) => setChartType(val)}
@@ -334,7 +339,7 @@ const StatisticsScreen = () => {
 
                         {/* Dynamic Chart */}
                         {xKey && yKey && (
-                            <ChartCard title="Chart Preview">
+                            <ChartCard title={languageMode === 'en' ? "Chart Preview" : "চার্ট প্রিভিউ"}>
                                 {chartType === 'bar' && (
                                     <BarChart
                                         barWidth={scale(35)}
@@ -343,7 +348,7 @@ const StatisticsScreen = () => {
                                         frontColor="#14B8A6"
                                         data={table.rows.map((row: any) => ({
                                             value: Number(row.data[yKey]?.en || 0),
-                                            label: (row.data[xKey]?.bn || row.data[xKey]?.en || "-").substring(0, 5) + "..."
+                                            label: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-")).substring(0, 5) + "..."
                                         }))}
                                         yAxisThickness={0}
                                         xAxisThickness={1}
@@ -358,7 +363,7 @@ const StatisticsScreen = () => {
                                     <LineChart
                                         data={table.rows.map((row: any) => ({
                                             value: Number(row.data[yKey]?.en || 0),
-                                            label: (row.data[xKey]?.bn || row.data[xKey]?.en || "-").substring(0, 5) + "..."
+                                            label: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-")).substring(0, 5) + "..."
                                         }))}
                                         height={verticalScale(180)}
                                         width={screenWidth - scale(60)}
@@ -380,7 +385,7 @@ const StatisticsScreen = () => {
                                         <PieChart
                                             data={table.rows.map((row: any, index: number) => ({
                                                 value: Number(row.data[yKey]?.en || 0),
-                                                text: (row.data[xKey]?.bn || row.data[xKey]?.en || "-").substring(0, 5),
+                                                text: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-")).substring(0, 5),
                                                 color: COLORS[index % COLORS.length]
                                             }))}
                                             donut={false}

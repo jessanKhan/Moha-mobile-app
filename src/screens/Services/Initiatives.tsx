@@ -8,6 +8,17 @@ import { INITIATIVES_QUERY } from '../../api/queries';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 
+const stripHtmlTags = (html: string) => {
+  if (!html) return '';
+  return html
+    .replace(/<p[^>]*>/g, '') // remove opening <p>
+    .replace(/<\/p>/g, '\n\n') // replace closing </p> with double line break
+    .replace(/<br\s*\/?>/g, '\n') // replace <br> with line break
+    .replace(/<[^>]+>/g, '') // remove all other tags
+    .replace(/&nbsp;/g, ' ') // replace html spaces
+    .trim();
+};
+
 const Initiatives = () => {
   const languageMode = useSelector((state: RootState) => state.language.mode);
 
@@ -39,7 +50,7 @@ const Initiatives = () => {
           renderItem={({ item }) => (
             <InitiativesComponent
               title={languageMode === 'en' ? (item.title || '') : (item.titleBn || '')}
-              description={languageMode === 'en' ? (item.description || '') : (item.descriptionBn || '')}
+              description={stripHtmlTags(languageMode === 'en' ? (item.description || '') : (item.descriptionBn || ''))}
               imageUrl={item.attachmentUrl}
               colors={(item.color && item.color.startsWith('#')) ? [item.color, item.color] : ['#009689', '#00786F']}
               iconBgColor={item.color || '#ffffff'}

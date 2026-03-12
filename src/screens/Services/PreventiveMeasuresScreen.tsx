@@ -100,7 +100,7 @@ const PreventiveMeasuresScreen = () => {
                             <View style={styles.spacer} />
                             <CustomEmergencyContactComponent
                                 title={languageMode === 'en' ? '24/7 Emergency Hotline' : '২৪/৭ জরুরি হটলাইন'}
-                                hotLineNumber="৯৯৯"
+                                hotLineNumber={languageMode === 'en' ? '999' : '৯৯৯'}
                             />
                         </>
                     )}
