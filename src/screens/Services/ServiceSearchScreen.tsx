@@ -98,16 +98,16 @@ const ServiceSearchScreen = () => {
         const subtitle = languageMode === 'en' ? subtitleEn : subtitleBn;
 
         if (item.isCenter === "YES") {
-            navigation.navigate('ServiceList', { 
-                serviceId: item.id, 
-                title, 
-                subtitle 
+            navigation.navigate('ServiceList', {
+                serviceId: item.id,
+                title,
+                subtitle
             });
         } else {
-            navigation.navigate('ServiceAid', { 
-                serviceId: item.id, 
-                title, 
-                subtitle 
+            navigation.navigate('ServiceAid', {
+                serviceId: item.id,
+                title,
+                subtitle
             });
         }
     };

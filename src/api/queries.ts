@@ -277,3 +277,34 @@ export const AIDS_BY_SERVICE_ID = gql`
     }
   }
 `;
+
+export const REPORT_TABLES_QUERY = gql`
+  query ReportTables {
+    reportTables {
+      id
+      name
+      nameBn
+      slug
+      month
+      year
+      division
+      district
+      upazilla
+      columns
+      createdAt
+      updatedAt
+      rows {
+        id
+        tableId
+        data
+        year
+        month
+        division
+        district
+        upazilla
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
