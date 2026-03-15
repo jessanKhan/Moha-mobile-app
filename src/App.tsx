@@ -11,6 +11,7 @@ import { store, RootState } from './store';
 import { useDispatch, useSelector } from 'react-redux';
 import { hideToast } from './store/slices/toastSlice';
 import CustomToast from './components/CustomToast';
+import NetworkStatusHandler from './components/NetworkStatusHandler';
 
 function AppContent() {
   const dispatch = useDispatch();
@@ -20,9 +21,11 @@ function AppContent() {
 
   return (
     <View style={{ flex: 1 }}>
-      <NavigationContainer>
-        <AppNavigator />
-      </NavigationContainer>
+      <NetworkStatusHandler>
+        <NavigationContainer>
+          <AppNavigator />
+        </NavigationContainer>
+      </NetworkStatusHandler>
       {visible && (
         <CustomToast
           message={message}
