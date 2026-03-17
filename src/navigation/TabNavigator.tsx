@@ -6,9 +6,8 @@ import { useColorScheme } from 'react-native';
 import HomeScreen from '../screens/Home/HomeScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import StatisticsScreen from '../screens/Services/StatisticsScreen';
-import PolicyAndLawScreen from '../screens/Services/PolicyAndLawScreen';
 import EmergencyContactScreen from '../screens/Services/EmergencyContactScreen';
-import Initiatives from '../screens/Initiative/Initiatives';
+import Initiatives from '../screens/Services/Initiatives';
 import ComplaintScreen from '../screens/Services/ComplaintScreen';
 import NewsMediaScreen from '../screens/Services/NewsMediaScreen';
 import PreventiveMeasuresScreen from '../screens/Services/PreventiveMeasuresScreen';
@@ -20,6 +19,12 @@ import RepatriationScreen from '../screens/Services/RepatriationScreen';
 import ShelterHomeScreen from '../screens/Services/ShelterHomeScreen';
 import AboutTraffickingScreen from '../screens/Services/AboutTraffickingScreen';
 import ServiceDetailScreen from '../screens/Services/ServiceDetailScreen';
+import ServiceListScreen from '../screens/Services/ServiceListScreen';
+import SocialIntegrationScreen from '../screens/Services/SocialIntegrationScreen';
+import TrainingScreen from '../screens/Services/TrainingScreen';
+import AwarenessScreen from '../screens/Services/AwarenessScreen';
+import PolicyLawScreen from '../screens/Services/PolicyLawScreen';
+import ServiceAidScreen from '../screens/Services/ServiceAidScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -30,7 +35,7 @@ const HomeStackNavigator = () => {
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="HomeScreen" component={HomeScreen} />
       <HomeStack.Screen name="Statistics" component={StatisticsScreen} />
-      <HomeStack.Screen name="PolicyLaw" component={PolicyAndLawScreen} />
+      <HomeStack.Screen name="PolicyLaw" component={PolicyLawScreen} />
       <HomeStack.Screen name="EmergencyContact" component={EmergencyContactScreen} />
       <HomeStack.Screen name="Initiatives" component={Initiatives} />
       <HomeStack.Screen name="Complaint" component={ComplaintScreen} />
@@ -44,11 +49,17 @@ const HomeStackNavigator = () => {
       <HomeStack.Screen name="ShelterHome" component={ShelterHomeScreen} />
       <HomeStack.Screen name="AboutTrafficking" component={AboutTraffickingScreen} />
       <HomeStack.Screen name="ServiceDetails" component={ServiceDetailScreen} />
+      <HomeStack.Screen name="ServiceList" component={ServiceListScreen} />
+      <HomeStack.Screen name="ServiceAid" component={ServiceAidScreen} />
+      <HomeStack.Screen name="SocialIntegration" component={SocialIntegrationScreen} />
+      <HomeStack.Screen name="Training" component={TrainingScreen} />
+      <HomeStack.Screen name="Awareness" component={AwarenessScreen} />
     </HomeStack.Navigator>
   );
 };
 
 import { verticalScale, moderateScale } from 'react-native-size-matters';
+
 
 const TabNavigator = () => {
   const isDarkMode = useColorScheme() === 'dark';

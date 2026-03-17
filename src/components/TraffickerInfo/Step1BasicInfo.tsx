@@ -1,76 +1,120 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { Upload } from 'lucide-react-native';
+import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Upload, X } from 'lucide-react-native';
 import { moderateScale, ScaledSheet } from 'react-native-size-matters';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 interface Props {
     formData: any;
     setFormData: (data: any) => void;
+    onPickPhoto: () => void;
 }
 
-const Step1BasicInfo = ({ formData, setFormData }: Props) => (
-    <View style={styles.container}>
-        <Text style={styles.title}>পাচারকারীর প্রাথমিক তথ্য</Text>
-        <Text style={styles.subtitle}>যতটুকু জানেন ততটুকু দিন</Text>
+const Step1BasicInfo = ({ formData, setFormData, onPickPhoto }: Props) => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
 
-        <TouchableOpacity
-            activeOpacity={0.8}
-            style={styles.uploadCard}
-        >
-            <View style={styles.iconWrapper}>
-                <Upload size={moderateScale(32)} color="#9CA3AF" />
+    const genderOptions = [
+        { labelBn: 'পুরুষ', labelEn: 'Male', val: 'পুরুষ' },
+        { labelBn: 'মহিলা', labelEn: 'Female', val: 'মহিলা' },
+        { labelBn: 'অন্যান্য', labelEn: 'Others', val: 'অন্যান্য' },
+    ];
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>
+                {languageMode === 'en' ? "Trafficker's Basic Information" : "পাচারকারীর প্রাথমিক তথ্য"}
+            </Text>
+            <Text style={styles.subtitle}>
+                {languageMode === 'en' ? "Give as much as you know" : "যতটুকু জানেন ততটুকু দিন"}
+            </Text>
+
+            <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.uploadCard}
+                onPress={onPickPhoto}
+            >
+                {formData.photo ? (
+                    <View style={styles.imagePreviewContainer}>
+                        <Image
+                            source={{ uri: formData.photo.uri }}
+                            style={styles.imagePreview}
+                        />
+                        <TouchableOpacity
+                            style={styles.removePhotoButton}
+                            onPress={(e) => {
+                                e.stopPropagation();
+                                setFormData({ ...formData, photo: null });
+                            }}
+                        >
+                            <X size={moderateScale(16)} color="white" />
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <>
+                        <View style={styles.iconWrapper}>
+                            <Upload size={moderateScale(32)} color="#9CA3AF" />
+                        </View>
+                        <Text style={styles.uploadText}>
+                            {languageMode === 'en' ? "Upload Photo" : "ছবি আপলোড"}
+                        </Text>
+                        <Text style={styles.uploadOptional}>
+                            {languageMode === 'en' ? "(Optional)" : "(ঐচ্ছিক)"}
+                        </Text>
+                    </>
+                )}
+            </TouchableOpacity>
+
+            <View style={styles.inputContainer}>
+                <TextInput
+                    placeholder={languageMode === 'en' ? "Trafficker's Name (if known)" : "পাচারকারীর নাম (যদি জানা থাকে)"}
+                    style={styles.input}
+                    placeholderTextColor="#9CA3AF"
+                    value={formData.name}
+                    onChangeText={(val) => setFormData({ ...formData, name: val })}
+                />
+                <TextInput
+                    placeholder={languageMode === 'en' ? "Nickname / Known Name" : "ডাকনাম / পরিচিত নাম"}
+                    style={styles.input}
+                    placeholderTextColor="#9CA3AF"
+                    value={formData.nickname}
+                    onChangeText={(val) => setFormData({ ...formData, nickname: val })}
+                />
+                <TextInput
+                    placeholder={languageMode === 'en' ? "Estimated Age" : "আনুমানিক বয়স"}
+                    keyboardType="numeric"
+                    style={styles.input}
+                    placeholderTextColor="#9CA3AF"
+                    value={formData.age}
+                    onChangeText={(val) => setFormData({ ...formData, age: val })}
+                />
             </View>
-            <Text style={styles.uploadText}>ছবি আপলোড</Text>
-            <Text style={styles.uploadOptional}>(ঐচ্ছিক)</Text>
-        </TouchableOpacity>
 
-        <View style={styles.inputContainer}>
-            <TextInput
-                placeholder="পাচারকারীর নাম (যদি জানা থাকে)"
-                style={styles.input}
-                placeholderTextColor="#9CA3AF"
-                value={formData.name}
-                onChangeText={(val) => setFormData({ ...formData, name: val })}
-            />
-            <TextInput
-                placeholder="ডাকনাম / পরিচিত নাম"
-                style={styles.input}
-                placeholderTextColor="#9CA3AF"
-                value={formData.nickname}
-                onChangeText={(val) => setFormData({ ...formData, nickname: val })}
-            />
-            <TextInput
-                placeholder="আনুমানিক বয়স"
-                keyboardType="numeric"
-                style={styles.input}
-                placeholderTextColor="#9CA3AF"
-                value={formData.age}
-                onChangeText={(val) => setFormData({ ...formData, age: val })}
-            />
+            <Text style={styles.label}>
+                {languageMode === 'en' ? "Gender" : "লিঙ্গ"}
+            </Text>
+            <View style={styles.genderRow}>
+                {genderOptions.map((item) => (
+                    <TouchableOpacity
+                        key={item.val}
+                        onPress={() => setFormData({ ...formData, gender: item.val })}
+                        style={[
+                            styles.genderButton,
+                            formData.gender === item.val && styles.genderButtonActive
+                        ]}
+                    >
+                        <Text style={[
+                            styles.genderButtonText,
+                            formData.gender === item.val && styles.genderButtonTextActive
+                        ]}>
+                            {languageMode === 'en' ? item.labelEn : item.labelBn}
+                        </Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
         </View>
-
-        <Text style={styles.label}>লিঙ্গ</Text>
-        <View style={styles.genderRow}>
-            {['পুরুষ', 'মহিলা', 'অন্যান্য'].map((item) => (
-                <TouchableOpacity
-                    key={item}
-                    onPress={() => setFormData({ ...formData, gender: item })}
-                    style={[
-                        styles.genderButton,
-                        formData.gender === item && styles.genderButtonActive
-                    ]}
-                >
-                    <Text style={[
-                        styles.genderButtonText,
-                        formData.gender === item && styles.genderButtonTextActive
-                    ]}>
-                        {item}
-                    </Text>
-                </TouchableOpacity>
-            ))}
-        </View>
-    </View>
-);
+    );
+};
 
 const styles = ScaledSheet.create({
     container: {
@@ -123,6 +167,26 @@ const styles = ScaledSheet.create({
         color: '#9CA3AF',
         marginTop: '2@vs',
         fontFamily: 'July-Regular',
+    },
+    imagePreviewContainer: {
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        borderRadius: '24@ms',
+        overflow: 'hidden',
+    },
+    imagePreview: {
+        width: '100%',
+        height: '100%',
+        borderRadius: '24@ms',
+    },
+    removePhotoButton: {
+        position: 'absolute',
+        top: '10@vs',
+        right: '10@ms',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        padding: '8@ms',
+        borderRadius: '20@ms',
     },
     inputContainer: {
         gap: '12@vs',

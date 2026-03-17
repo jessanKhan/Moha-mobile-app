@@ -1,38 +1,65 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
     View,
     Text,
     TouchableOpacity,
     ScrollView,
+    ActivityIndicator,
 } from 'react-native';
 import { moderateScale, scale, verticalScale, ScaledSheet } from 'react-native-size-matters';
 import { ChevronDown } from 'lucide-react-native';
+import { useQuery } from '@apollo/client/react';
+import { COUNTRIES_QUERY } from '../../api/queries';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
-type Country = {
-    label: string;
-    value: string;
-};
+interface Country {
+    id: number;
+    name: string;
+    nameBn: string;
+    code: string;
+}
 
-const COUNTRIES: Country[] = [
-    { label: 'বাংলাদেশ', value: 'BD' },
-    { label: 'India', value: 'IN' },
-    { label: 'Pakistan', value: 'PK' },
-    { label: 'Nepal', value: 'NP' },
-];
+interface CountriesData {
+    countries: Country[];
+}
 
 interface Props {
     onSelect?: (country: Country) => void;
 }
 
 const CountryDropdown: FC<Props> = ({ onSelect }) => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
+    const { data, loading } = useQuery<CountriesData>(COUNTRIES_QUERY);
     const [open, setOpen] = useState(false);
-    const [selected, setSelected] = useState<Country>(COUNTRIES[0]);
+    const [selected, setSelected] = useState<any>(null);
 
-    const handleSelect = (item: Country) => {
+    const countries = data?.countries || [];
+
+    useEffect(() => {
+        if (countries.length > 0 && !selected) {
+            setSelected(countries[0]);
+        }
+    }, [countries, selected]);
+
+    const handleSelect = (item: any) => {
         setSelected(item);
         setOpen(false);
         onSelect?.(item);
     };
+
+    const getLabel = (item: any) => {
+        if (!item) return '';
+        return languageMode === 'en' ? item.name : item.nameBn;
+    };
+
+    if (loading && !data) {
+        return (
+            <View style={styles.button}>
+                <ActivityIndicator size="small" color="#64748B" />
+            </View>
+        );
+    }
 
     return (
         <View>
@@ -42,7 +69,7 @@ const CountryDropdown: FC<Props> = ({ onSelect }) => {
                 activeOpacity={0.8}
                 onPress={() => setOpen(!open)}
             >
-                <Text style={styles.buttonText}>{selected.label}</Text>
+                <Text style={styles.buttonText}>{getLabel(selected)}</Text>
                 <ChevronDown size={moderateScale(20)} color="#64748B" />
             </TouchableOpacity>
 
@@ -51,16 +78,15 @@ const CountryDropdown: FC<Props> = ({ onSelect }) => {
                 <View style={[styles.dropdown]}>
                     <ScrollView
                         nestedScrollEnabled={true}
-                        scrollEnabled={false}
                         showsVerticalScrollIndicator={false}
                     >
-                        {COUNTRIES.map(item => (
+                        {countries.map((item: any) => (
                             <TouchableOpacity
-                                key={item.value}
+                                key={item.id}
                                 style={styles.item}
                                 onPress={() => handleSelect(item)}
                             >
-                                <Text style={styles.itemText}>{item.label}</Text>
+                                <Text style={styles.itemText}>{getLabel(item)}</Text>
                             </TouchableOpacity>
                         ))}
                     </ScrollView>

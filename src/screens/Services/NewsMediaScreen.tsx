@@ -1,11 +1,15 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, ScrollView, ImageBackground, TouchableOpacity, Image, FlatList, Dimensions } from 'react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { View, Text, ScrollView, ImageBackground, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import Header from '../../components/Header';
-import { Newspaper, Calendar, ChevronRight, Clock, RefreshCcw } from 'lucide-react-native';
-import { moderateScale, scale, verticalScale, ScaledSheet } from 'react-native-size-matters';
+import { Newspaper, Calendar, Clock } from 'lucide-react-native';
+import { moderateScale, scale, ScaledSheet } from 'react-native-size-matters';
 import HotlineBanner from '../../components/HotlineBanner';
 import { useQuery } from '@apollo/client/react';
-import { NEWS_ALL_QUERY } from '../../api/queries';
+import { NEWS_ALL_QUERY, GET_EVENTS_QUERY } from '../../api/queries';
+import LinearGradient from 'react-native-linear-gradient';
+import AppBackground from '../../components/AppBackground';
 
 const { width } = Dimensions.get('window');
 
@@ -19,31 +23,39 @@ interface News {
     subtitleBn?: string;
     date?: string;
     dateBn?: string;
-    thumbnailUrl?: string; // Optional as per user's edit
+    thumbnailUrl?: string;
 }
 
 interface NewsData {
     newsAll: News[];
 }
 
+interface Event {
+    id: number;
+    title: string;
+    titleBn?: string;
+    fromDate: string;
+    fromDateBn?: string;
+}
+
+interface EventsData {
+    events: Event[];
+}
+
 const NewsMediaScreen = () => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
     const [activeIndex, setActiveIndex] = useState(0);
     const flatListRef = useRef<FlatList>(null);
 
-    const carouselItems = [
-        {
-            id: '1',
-            title: "নিরাপদ সমাজ গড়তে একসাথে",
-            subtitle: "মানব পাচার প্রতিরোধে সচেতন থাকুন",
-            image: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=800&auto=format&fit=crop"
-        },
-        {
-            id: '2',
-            title: "নিরাপদ সমাজ গড়তে একসাথে",
-            subtitle: "মানব পাচার প্রতিরোধে সচেতন থাকুন",
-            image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop"
-        }
-    ];
+    const queryVariables = React.useMemo(() => ({ page: 1, limit: 10 }), []);
+
+    const { data, loading, error } = useQuery<NewsData>(NEWS_ALL_QUERY, {
+        variables: queryVariables,
+    });
+
+    const { data: eventsData, loading: eventsLoading } = useQuery<EventsData>(GET_EVENTS_QUERY, {
+        variables: { page: 1, limit: 10 },
+    });
 
     const onViewRef = useRef(({ viewableItems }: any) => {
         if (viewableItems.length > 0) {
@@ -54,8 +66,11 @@ const NewsMediaScreen = () => {
     const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
 
     useEffect(() => {
+        const itemsCount = data?.newsAll?.length || 0;
+        if (itemsCount <= 1) return;
+
         let interval = setInterval(() => {
-            if (activeIndex === carouselItems.length - 1) {
+            if (activeIndex === itemsCount - 1) {
                 flatListRef.current?.scrollToIndex({ index: 0, animated: true });
             } else {
                 flatListRef.current?.scrollToIndex({ index: activeIndex + 1, animated: true });
@@ -63,50 +78,42 @@ const NewsMediaScreen = () => {
         }, 4000);
 
         return () => clearInterval(interval);
-    }, [activeIndex]);
+    }, [activeIndex, data?.newsAll]);
 
-    const queryVariables = React.useMemo(() => ({ page: 1, limit: 10 }), []);
 
-    const { data, loading, error, refetch } = useQuery<NewsData>(NEWS_ALL_QUERY, {
-        variables: queryVariables,
-    });
-    if (error) {
-        console.log('GraphQL Error Details:', JSON.stringify(error, null, 2));
-    }
-    const upcomingEvents = [
-        { id: 1, title: "জাতীয় মানব পাচার প্রতিরোধ দিবস", date: "৩০ জানুয়ারি" },
-        { id: 2, title: "সচেতনতা সেমিনার - ঢাকা বিশ্ববিদ্যালয়", date: "৫ ফেব্রুয়ারি" },
-        { id: 3, title: "আইনজীবী প্রশিক্ষণ কর্মশালা", date: "১২ ফেব্রুয়ারি" }
-    ];
 
-    const renderCarouselItem = ({ item }: any) => (
+    const renderCarouselItem = ({ item }: { item: News }) => (
         <View style={styles.slideItem}>
             <ImageBackground
-                source={{ uri: item.image }}
+                source={{ uri: item.thumbnailUrl }}
                 style={styles.slideImage}
                 imageStyle={{ borderRadius: scale(20) }}
             >
                 <View style={styles.slideOverlay}>
-                    <Text style={styles.slideTitle}>{item.title}</Text>
-                    <Text style={styles.slideSubtitle}>{item.subtitle}</Text>
+                    <Text style={styles.slideTitle}>
+                        {languageMode === 'en' ? (item.title || '') : (item.titleBn || '')}
+                    </Text>
                 </View>
             </ImageBackground>
         </View>
     );
 
     return (
-        <View style={styles.container}>
-            <Header title="সংবাদ ও মিডিয়া" subtitle='সর্বশেষ খবর এবং আপডেট' showBackButton={true} />
+        <AppBackground>
+            <Header
+                title={languageMode === 'en' ? "News & Media" : "সংবাদ ও মিডিয়া"}
+                subtitle={languageMode === 'en' ? "Latest News and Updates" : 'সর্বশেষ খবর এবং আপডেট'}
+                showBackButton={true}
+            />
 
             <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
 
-                {/* Refactored Carousel (Paging) */}
                 <View style={styles.carouselContainer}>
                     <FlatList
                         ref={flatListRef}
-                        data={carouselItems}
+                        data={data?.newsAll || []}
                         renderItem={renderCarouselItem}
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item) => item.id.toString()}
                         horizontal
                         pagingEnabled
                         showsHorizontalScrollIndicator={false}
@@ -118,26 +125,29 @@ const NewsMediaScreen = () => {
                     />
                 </View>
 
-                {/* News Section Card */}
                 <View style={styles.newsCard}>
-                    <View style={styles.newsHeader}>
+                    <LinearGradient
+                        colors={['#155DFC', '#1447E6']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.newsHeader}
+                    >
                         <View style={styles.flexRow}>
                             <Newspaper size={moderateScale(20)} color="white" />
-                            <Text style={styles.newsHeaderText}>খবর</Text>
+                            <Text style={styles.newsHeaderText}>{languageMode === 'en' ? "News" : "খবর"}</Text>
                         </View>
-                        <TouchableOpacity onPress={() => refetch()} disabled={loading}>
-                            <RefreshCcw size={moderateScale(18)} color="white" style={loading ? { opacity: 0.5 } : {}} />
-                        </TouchableOpacity>
-                    </View>
+                    </LinearGradient>
 
                     <View style={styles.newsList}>
                         {loading ? (
                             <View style={styles.centerContent}>
-                                <Text style={styles.statusText}>লোড হচ্ছে...</Text>
+                                <Text style={styles.statusText}>{languageMode === 'en' ? "Loading..." : "লোড হচ্ছে..."}</Text>
                             </View>
                         ) : error ? (
                             <View style={styles.centerContent}>
-                                <Text style={[styles.statusText, { color: '#EF4444' }]}>উহ! খবর লোড করা সম্ভব হয়নি।</Text>
+                                <Text style={[styles.statusText, { color: '#EF4444' }]}>
+                                    {languageMode === 'en' ? "Oops! Could not load news." : "উহ! খবর লোড করা সম্ভব হয়নি।"}
+                                </Text>
                             </View>
                         ) : data?.newsAll && data.newsAll.length > 0 ? (
                             data.newsAll.map((item, index) => (
@@ -148,84 +158,89 @@ const NewsMediaScreen = () => {
                                     <View style={styles.newsItemContent}>
                                         <View style={styles.newsTextContent}>
                                             <Text style={styles.newsItemTitle} numberOfLines={2}>
-                                                {item.titleBn}
+                                                {languageMode === 'en' ? item.title : item.titleBn}
                                             </Text>
-                                            {/* {(item.subtitleBn) ? (
-                                                <Text style={styles.newsItemDesc} numberOfLines={2}>
-                                                    {item.subtitleBn}
-                                                </Text>
-                                            ) : null} */}
                                             <Text style={styles.newsItemDesc} numberOfLines={2}>
-                                                {item.subtitleBn}
+                                                {languageMode === 'en' ? item.subtitle : item.subtitleBn}
                                             </Text>
                                             <View style={styles.dateWrapper}>
                                                 <Clock size={moderateScale(12)} color="#9CA3AF" />
                                                 <Text style={styles.dateText}>
-                                                    {item.dateBn || (item.date ? new Date(item.date).toLocaleDateString() : '')}
+                                                    {languageMode === 'en' ? (item.date ? new Date(item.date).toLocaleDateString() : '') : (item.dateBn || (item.date ? new Date(item.date).toLocaleDateString() : ''))}
                                                 </Text>
                                             </View>
                                         </View>
-                                        {/* {item.thumbnailUrl && (
-                                            <Image
-                                                source={{ uri: item.thumbnailUrl }}
-                                                style={styles.thumbnail}
-                                                resizeMode="cover"
-                                            />
-                                        )} */}
                                     </View>
                                 </TouchableOpacity>
                             ))
                         ) : (
                             <View style={styles.centerContent}>
-                                <Text style={styles.statusText}>কোনো খবর পাওয়া যায়নি।</Text>
+                                <Text style={styles.statusText}>{languageMode === 'en' ? "No news found." : "কোনো খবর পাওয়া যায়নি।"}</Text>
                             </View>
                         )}
                     </View>
 
-                    <TouchableOpacity activeOpacity={0.8} style={styles.viewMoreBtn}>
-                        <Text style={styles.viewMoreText}>আরো ও দেখুন</Text>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.viewMoreBtnContainer}>
+                        <LinearGradient
+                            colors={['#155DFC', '#1447E6']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={styles.viewMoreBtn}
+                        >
+                            <Text style={styles.viewMoreText}>{languageMode === 'en' ? "View More" : "আরো ও দেখুন"}</Text>
+                        </LinearGradient>
                     </TouchableOpacity>
                 </View>
 
-                {/* Upcoming Events */}
                 <View style={styles.eventsSection}>
-                    <Text style={styles.sectionTitle}>আসন্ন কর্মসূচি</Text>
-                    <View style={styles.eventsList}>
-                        {upcomingEvents.map((event, index) => (
-                            <View
-                                key={event.id}
-                                style={[styles.eventItem, index !== upcomingEvents.length - 1 && styles.eventBorder]}
-                            >
-                                <View style={styles.eventInfo}>
-                                    <View style={styles.eventIconWrapper}>
-                                        <Calendar size={moderateScale(20)} color="white" />
-                                    </View>
-                                    <View style={styles.flex1}>
-                                        <Text style={styles.eventTitle}>{event.title}</Text>
-                                        <Text style={styles.eventDate}>{event.date}</Text>
+                    <Text style={styles.sectionTitle}>{languageMode === 'en' ? "Upcoming Events" : "আসন্ন কর্মসূচি"}</Text>
+                    <LinearGradient
+                        colors={['#F0FDFA', '#EFF6FF']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.eventsList}
+                    >
+                        {eventsLoading ? (
+                            <View style={styles.centerContent}>
+                                <Text style={styles.statusText}>{languageMode === 'en' ? "Loading..." : "লোড হচ্ছে..."}</Text>
+                            </View>
+                        ) : eventsData?.events && eventsData.events.length > 0 ? (
+                            eventsData.events.map((event, index) => (
+                                <View
+                                    key={event.id}
+                                    style={[styles.eventItem, index !== eventsData.events.length - 1 && styles.eventBorder]}
+                                >
+                                    <View style={styles.eventInfo}>
+                                        <View style={styles.eventIconWrapper}>
+                                            <Calendar size={moderateScale(20)} color="white" />
+                                        </View>
+                                        <View style={styles.flex1}>
+                                            <Text style={styles.eventTitle}>{languageMode === 'en' ? event.title : (event.titleBn || event.title)}</Text>
+                                            <Text style={styles.eventDate}>
+                                                {languageMode === 'en' ? (event.fromDate ? new Date(event.fromDate).toLocaleDateString() : '') : (event.fromDateBn || (event.fromDateBn ? new Date(event.fromDateBn).toLocaleDateString() : ''))}
+                                            </Text>
+                                        </View>
                                     </View>
                                 </View>
-                                <ChevronRight size={moderateScale(18)} color="#9CA3AF" />
+                            ))
+                        ) : (
+                            <View style={styles.centerContent}>
+                                <Text style={styles.statusText}>{languageMode === 'en' ? "No events found." : "কোনো কর্মসূচি পাওয়া যায়নি।"}</Text>
                             </View>
-                        ))}
-                    </View>
+                        )}
+                    </LinearGradient>
                 </View>
 
-                {/* Hotline Bar */}
                 <View style={styles.footerHotline}>
                     <HotlineBanner />
                 </View>
 
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F8F9FA',
-    },
     flex1: {
         flex: 1,
     },
@@ -244,7 +259,7 @@ const styles = ScaledSheet.create({
     slideOverlay: {
         backgroundColor: 'rgba(0,0,0,0.3)',
         padding: '16@ms',
-        borderRadius: '20@ms',
+        borderRadius: '26@ms',
         justifyContent: 'flex-end',
         height: '100%',
     },
@@ -273,7 +288,6 @@ const styles = ScaledSheet.create({
         shadowRadius: 10,
     },
     newsHeader: {
-        backgroundColor: '#2563EB',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -316,11 +330,6 @@ const styles = ScaledSheet.create({
     newsTextContent: {
         flex: 1,
     },
-    thumbnail: {
-        width: '80@ms',
-        height: '80@ms',
-        borderRadius: '12@ms',
-    },
     borderBottom: {
         borderBottomWidth: 1,
         borderBottomColor: '#F3F4F6',
@@ -350,12 +359,14 @@ const styles = ScaledSheet.create({
         marginLeft: '4@ms',
         fontFamily: 'July-Regular',
     },
-    viewMoreBtn: {
-        backgroundColor: '#2563EB',
+    viewMoreBtnContainer: {
         marginHorizontal: '20@ms',
         marginBottom: '20@vs',
+        borderRadius: '25@ms',
+        overflow: 'hidden',
+    },
+    viewMoreBtn: {
         paddingVertical: '12@vs',
-        borderRadius: '12@ms',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -377,11 +388,10 @@ const styles = ScaledSheet.create({
         fontFamily: 'July-Bold',
     },
     eventsList: {
-        backgroundColor: '#E0F2F1',
         borderRadius: '24@ms',
         padding: '24@ms',
-        borderWidth: 1,
-        borderColor: '#B2DFDB',
+        borderWidth: 2,
+        borderColor: '#8beedaff',
     },
     eventItem: {
         flexDirection: 'row',
@@ -391,8 +401,8 @@ const styles = ScaledSheet.create({
     eventBorder: {
         marginBottom: '20@vs',
         paddingBottom: '20@vs',
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(178, 223, 219, 0.5)',
+        borderBottomWidth: 2,
+        borderBottomColor: '#8beedaff',
     },
     eventInfo: {
         flexDirection: 'row',
@@ -400,21 +410,21 @@ const styles = ScaledSheet.create({
         flex: 1,
     },
     eventIconWrapper: {
-        backgroundColor: '#00897B',
+        backgroundColor: '#009689',
         padding: '8@ms',
         borderRadius: '12@ms',
         marginRight: '16@ms',
     },
     eventTitle: {
-        color: '#1F2937',
-        fontWeight: 'bold',
+        color: '#0B4F4A',
+        fontWeight: '600',
         fontSize: '14@ms',
         marginBottom: '4@vs',
-        fontFamily: 'July-Bold',
+        fontFamily: 'July-Regular',
     },
     eventDate: {
-        color: '#00897B',
-        fontWeight: '500',
+        color: '#00786F',
+        fontWeight: '300',
         fontSize: '12@ms',
         fontFamily: 'July-Regular',
     },

@@ -9,6 +9,7 @@ interface QuickLinksComponentProps {
     title: string;
     gradientColors: string[];
     headerIcon?: LucideIcon;
+    logoUrl?: string;
     data?: any[];
     renderItem?: ({ item, index }: any) => React.ReactElement;
     keyExtractor?: (item: any, index: number) => string;
@@ -18,6 +19,7 @@ const QuickLinksComponent: FC<QuickLinksComponentProps> = ({
     title,
     gradientColors,
     headerIcon,
+    logoUrl,
     data,
     renderItem,
     keyExtractor,
@@ -25,16 +27,17 @@ const QuickLinksComponent: FC<QuickLinksComponentProps> = ({
     return (
         <View style={styles.container}>
             <LinearGradient
-                colors={gradientColors}
+                colors={(gradientColors && gradientColors.length >= 2) ? gradientColors : ['#009689', '#004D40']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.linearGradient}
             >
                 <CustomCommonIcon
                     icon={headerIcon}
+                    imageUrl={logoUrl}
                     bgColor="rgba(255, 255, 255, 0.2)"
                     iconColor="#ffffff"
-                    size={moderateScale(25)}
+                    size={moderateScale(20)}
                 />
                 <Text style={styles.helptxt}>{title}</Text>
             </LinearGradient>
@@ -81,6 +84,7 @@ const styles = ScaledSheet.create({
         fontWeight: '700',
         lineHeight: '24@ms',
         fontFamily: 'July-Bold',
+        paddingVertical: '10@ms',
     },
     linkContainer: {
         padding: '16@ms',

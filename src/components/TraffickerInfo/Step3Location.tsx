@@ -2,51 +2,62 @@ import React from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+
 interface Props {
     formData: any;
     setFormData: (data: any) => void;
 }
 
-const Step3Location = ({ formData, setFormData }: Props) => (
-    <View style={styles.container}>
-        <Text style={styles.title}>স্থান ও সময়</Text>
-        <Text style={styles.subtitle}>ঘটনার বিবরণ দিন</Text>
+const Step3Location = ({ formData, setFormData }: Props) => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
 
-        <View style={styles.inputContainer}>
-            <TextInput
-                placeholder="ঘটনার স্থান"
-                style={styles.input}
-                placeholderTextColor="#9CA3AF"
-                value={formData.eventPlace}
-                onChangeText={(val) => setFormData({ ...formData, eventPlace: val })}
-            />
-            <TextInput
-                placeholder="স্থান নির্বাচন করুন"
-                style={styles.input}
-                placeholderTextColor="#9CA3AF"
-                value={formData.selectPlace}
-                onChangeText={(val) => setFormData({ ...formData, selectPlace: val })}
-            />
-            <TextInput
-                placeholder="ঠিকানা লিখুন"
-                style={styles.input}
-                placeholderTextColor="#9CA3AF"
-                value={formData.address}
-                onChangeText={(val) => setFormData({ ...formData, address: val })}
-            />
-            <TextInput
-                placeholder="ঘটনার সংক্ষিপ্ত বিবরণ"
-                multiline
-                numberOfLines={4}
-                textAlignVertical="top"
-                style={[styles.input, styles.textArea]}
-                placeholderTextColor="#9CA3AF"
-                value={formData.description}
-                onChangeText={(val) => setFormData({ ...formData, description: val })}
-            />
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>
+                {languageMode === 'en' ? "Place & Time" : "স্থান ও সময়"}
+            </Text>
+            <Text style={styles.subtitle}>
+                {languageMode === 'en' ? "Provide incident details" : "ঘটনার বিবরণ দিন"}
+            </Text>
+
+            <View style={styles.inputContainer}>
+                <TextInput
+                    placeholder={languageMode === 'en' ? "Incident Place" : "ঘটনার স্থান"}
+                    style={styles.input}
+                    placeholderTextColor="#9CA3AF"
+                    value={formData.eventPlace}
+                    onChangeText={(val) => setFormData({ ...formData, eventPlace: val })}
+                />
+                <TextInput
+                    placeholder={languageMode === 'en' ? "Select Place" : "স্থান নির্বাচন করুন"}
+                    style={styles.input}
+                    placeholderTextColor="#9CA3AF"
+                    value={formData.selectPlace}
+                    onChangeText={(val) => setFormData({ ...formData, selectPlace: val })}
+                />
+                <TextInput
+                    placeholder={languageMode === 'en' ? "Write Address" : "ঠিকানা লিখুন"}
+                    style={styles.input}
+                    placeholderTextColor="#9CA3AF"
+                    value={formData.address}
+                    onChangeText={(val) => setFormData({ ...formData, address: val })}
+                />
+                <TextInput
+                    placeholder={languageMode === 'en' ? "Brief description of incident" : "ঘটনার সংক্ষিপ্ত বিবরণ"}
+                    multiline
+                    numberOfLines={4}
+                    textAlignVertical="top"
+                    style={[styles.input, styles.textArea]}
+                    placeholderTextColor="#9CA3AF"
+                    value={formData.description}
+                    onChangeText={(val) => setFormData({ ...formData, description: val })}
+                />
+            </View>
         </View>
-    </View>
-);
+    );
+};
 
 const styles = ScaledSheet.create({
     container: {

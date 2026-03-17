@@ -3,7 +3,6 @@ import {
     View,
     Text,
     ScrollView,
-    StyleSheet,
     TouchableOpacity,
     Linking,
     StatusBar,
@@ -17,11 +16,16 @@ import {
     CircleCheck,
     Phone,
 } from 'lucide-react-native';
-import { scale, verticalScale, moderateScale, ScaledSheet } from 'react-native-size-matters';
+import { moderateScale, ScaledSheet, verticalScale } from 'react-native-size-matters';
 import Header from '../../components/Header';
 import LinearGradient from 'react-native-linear-gradient';
+import AppBackground from '../../components/AppBackground';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 const AboutTraffickingScreen = () => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
+
     const handleCall = () => {
         Linking.openURL('tel:999');
     };
@@ -54,8 +58,8 @@ const AboutTraffickingScreen = () => {
     ];
 
     return (
-        <View style={styles.mainContainer}>
-            <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+        <AppBackground>
+            <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
             <Header
                 title="মানবপাচার সম্পর্কে জানুন"
                 subtitle="জানলেই বাঁচানো সম্ভব"
@@ -135,12 +139,12 @@ const AboutTraffickingScreen = () => {
                                 <Phone size={moderateScale(24)} color="white" />
                             </View>
                             <View>
-                                <Text style={styles.hotlineLabel}>২৪/৭ জরুরি হটলাইন</Text>
-                                <Text style={styles.hotlineNumber}>৯৯৯</Text>
+                                <Text style={styles.hotlineLabel}>{languageMode === 'en' ? '24/7 Emergency Hotline' : '২৪/৭ জরুরি হটলাইন'}</Text>
+                                <Text style={styles.hotlineNumber}>{languageMode === 'en' ? '999' : '৯৯৯'}</Text>
                             </View>
                         </View>
                         <TouchableOpacity style={styles.callButton} onPress={handleCall}>
-                            <Text style={styles.callButtonText}>কল করুন</Text>
+                            <Text style={styles.callButtonText}>{languageMode === 'en' ? 'Call' : 'কল করুন'}</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -153,15 +157,11 @@ const AboutTraffickingScreen = () => {
                     <View style={{ height: verticalScale(20) }} />
                 </View>
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    mainContainer: {
-        flex: 1,
-        backgroundColor: '#F8F9FA',
-    },
     scrollContainer: {
         flex: 1,
     },
@@ -303,7 +303,7 @@ const styles = ScaledSheet.create({
     phoneIconWrapper: {
         backgroundColor: '#EF4444',
         padding: '12@ms',
-        borderRadius: 'full',
+        borderRadius: moderateScale(24),
         marginRight: '16@ms',
     },
     hotlineLabel: {

@@ -34,7 +34,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
             style={styles.card}
         >
             <View style={styles.iconWrapper}>
-                {iconGradientColors ? (
+                {iconGradientColors && iconGradientColors.length >= 2 ? (
                     <LinearGradient
                         colors={iconGradientColors}
                         start={{ x: 0, y: 0 }}

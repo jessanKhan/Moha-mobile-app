@@ -11,6 +11,7 @@ type InitiativeCardProps = {
   title?: string;
   description?: string;
   icon?: LucideIcon;
+  imageUrl?: string;
   colors: (string | number)[];
   iconBgColor?: string;
 };
@@ -19,13 +20,14 @@ const InitiativesComponent: FC<InitiativeCardProps> = ({
   title,
   description,
   icon,
+  imageUrl,
   colors,
   iconBgColor,
 }) => {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={colors as (string | number)[]}
+        colors={(colors && colors.length >= 2) ? colors as (string | number)[] : ['#009689', '#00786F']}
         style={styles.linearGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
@@ -33,6 +35,7 @@ const InitiativesComponent: FC<InitiativeCardProps> = ({
         <View style={styles.iconAndTextContainer}>
           <CustomCommonIcon
             icon={icon}
+            imageUrl={imageUrl}
             bgColor="rgba(255, 255, 255, 0.2)"
             iconColor={iconBgColor || '#ffffff'}
             size={25}

@@ -1,0 +1,17 @@
+{
+  "data": {
+    "services": [
+      {
+        "id": 5,
+        "title": "List of shelters",
+        "titleBn": "আশ্রয় কেন্দ্রের তালিকা",
+        "subtitle": "Information on safe temporary shelter",
+        "subtitleBn": "নিরাপদ অস্থায়ী আশ্রয়ের তথ্য",
+        "description": "",
+        "descriptionBn": "",
+        "isCenter": "YES",
+        "color": "#0d19bf"
+      }
+    ]
+  }
+}

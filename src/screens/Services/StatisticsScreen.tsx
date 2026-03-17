@@ -1,22 +1,200 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState, useMemo, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import Header from '../../components/Header';
-import { Filter, Search, BarChart3, Users, Scale, PhoneCall, Handshake, FileText, Newspaper, ShieldCheck, Link as LinkIcon } from 'lucide-react-native';
+import { Filter, Search, BarChart3, Users, ShieldCheck, ChevronDown } from 'lucide-react-native';
 import { LineChart, BarChart, PieChart } from 'react-native-gifted-charts';
 import { Text as SvgText } from 'react-native-svg';
 import { ScaledSheet, scale, verticalScale, moderateScale } from 'react-native-size-matters';
-import { barData1, lineData1, lineData2, lineData3, barData2, pieData } from '../../data/statisticsData';
 import LinearGradient from 'react-native-linear-gradient';
+import AppBackground from '../../components/AppBackground';
+import { useQuery } from '@apollo/client/react';
+import { REPORT_TABLES_QUERY } from '../../api/queries';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 const screenWidth = Dimensions.get('window').width;
 
+// Helper to check if a string is numeric
+const isNumeric = (str: string) => {
+    if (typeof str !== 'string') return false;
+    return !isNaN(str as any) && !isNaN(parseFloat(str));
+};
+
 const StatisticsScreen = () => {
-    const renderRightComponent = () => (
-        <TouchableOpacity activeOpacity={0.8} style={styles.filterBtn}>
-            <Filter size={moderateScale(16)} color="white" />
-            <Text style={styles.filterText}>ফিল্টার</Text>
-        </TouchableOpacity>
+    const languageMode = useSelector((state: RootState) => state.language.mode);
+    const { data, loading, error } = useQuery<any>(REPORT_TABLES_QUERY);
+
+    // States for filtering
+    const [selectedName, setSelectedName] = useState<string | null>(null);
+    const [selectedYear, setSelectedYear] = useState<string | null>(null);
+    const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
+
+    // Chart states
+    const [chartType, setChartType] = useState<"bar" | "line" | "pie">("bar");
+    const [xKey, setXKey] = useState<string | null>(null);
+    const [yKey, setYKey] = useState<string | null>(null);
+
+    const reportTables = data?.reportTables || [];
+
+    // Unique report names
+    const reportNames = useMemo(() => {
+        return [...new Set(reportTables?.map((r: any) => r.name) || [])] as string[];
+    }, [reportTables]);
+
+    // Set initial selected name if available
+    useEffect(() => {
+        if (!selectedName && reportNames.length > 0) {
+            setSelectedName(reportNames[0]);
+        }
+    }, [reportNames, selectedName]);
+
+    // Filter years based on selected name
+    const availableYears = useMemo(() => {
+        if (!selectedName) return [];
+
+        const years = reportTables
+            ?.filter((r: any) => r.name === selectedName)
+            .map((r: any) => r.year);
+
+        return [...new Set(years)].sort((a: any, b: any) => Number(b) - Number(a)) as string[]; // latest first
+    }, [reportTables, selectedName]);
+
+    // Set initial selected year if available
+    useEffect(() => {
+        if (!selectedYear && availableYears.length > 0) {
+            setSelectedYear(availableYears[0]);
+        } else if (selectedYear && !availableYears.includes(selectedYear)) {
+            // Reset year if it's not valid for the newly selected report
+            setSelectedYear(availableYears.length > 0 ? availableYears[0] : null);
+        }
+    }, [availableYears, selectedYear]);
+
+    // Get filtered table
+    const table = useMemo(() => {
+        return reportTables?.find(
+            (r: any) => r.name === selectedName && r.year === selectedYear
+        );
+    }, [reportTables, selectedName, selectedYear]);
+
+    // Auto select all columns
+    useEffect(() => {
+        if (table?.columns) {
+            setSelectedColumns(table.columns.map((c: any) => c.key));
+        }
+    }, [table]);
+
+    // Separate numeric & categorical columns
+    const numericColumns = useMemo(
+        () => {
+            if (!table?.columns) return [];
+            return table.columns.filter((col: any) =>
+                table.rows.some((row: any) => {
+                    const val = row.data[col.key]?.en || row.data[col.key]?.bn;
+                    return isNumeric(val);
+                })
+            );
+        },
+        [table]
     );
+
+    const categoricalColumns = useMemo(
+        () => {
+            if (!table?.columns) return [];
+            return table.columns.filter((col: any) =>
+                table.rows.some((row: any) => {
+                    const val = row.data[col.key]?.en || row.data[col.key]?.bn;
+                    return !isNumeric(val) || val === undefined;
+                })
+            );
+        },
+        [table]
+    );
+
+    // Set default keys if available
+    useEffect(() => {
+        if (categoricalColumns.length > 0 && !xKey) {
+            setXKey(categoricalColumns[0].key);
+        }
+        if (numericColumns.length > 0 && !yKey) {
+            setYKey(numericColumns[0].key);
+        }
+    }, [categoricalColumns, numericColumns, xKey, yKey]);
+
+    // Reset keys if table changes and keys are no longer valid
+    useEffect(() => {
+        // Optionally you can check if xKey presents in table.columns
+        // But setting it empty if table changed can be safer
+        if (table) {
+            setXKey(null);
+            setYKey(null);
+        }
+    }, [table?.id]);
+
+    const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7f50", "#a4de6c", "#14B8A6", "#3B82F6", "#F59E0B"];
+
+    // Generic Dropdown Component
+    const SelectDropdown = ({ label, options, selectedValue, onSelect, placeholder, isObjKeys = false }: any) => {
+        const [isOpen, setIsOpen] = useState(false);
+
+        const handleSelect = (val: string) => {
+            onSelect(val);
+            setIsOpen(false);
+        };
+
+        const getDisplayLabel = (val: string) => {
+            if (!val) return placeholder;
+            if (isObjKeys) {
+                const opt = options.find((o: any) => o.key === val);
+                return opt ? (languageMode === 'en' ? (opt.en || opt.bn) : (opt.bn || opt.en)) : val;
+            }
+            if (val === 'bar') return languageMode === 'en' ? 'BAR CHART' : 'বার চার্ট';
+            if (val === 'line') return languageMode === 'en' ? 'LINE CHART' : 'লাইন চার্ট';
+            if (val === 'pie') return languageMode === 'en' ? 'PIE CHART' : 'পাই চার্ট';
+            return val;
+        };
+
+        return (
+            <View style={styles.dropdownContainer}>
+                {label && <Text style={styles.filterTitle}>{label}</Text>}
+                <TouchableOpacity
+                    style={styles.dropdownButton}
+                    activeOpacity={0.8}
+                    onPress={() => setIsOpen(!isOpen)}
+                >
+                    <Text style={[styles.dropdownButtonText, !selectedValue && { color: '#9CA3AF' }]}>
+                        {getDisplayLabel(selectedValue)}
+                    </Text>
+                    <ChevronDown size={moderateScale(20)} color="#64748B" />
+                </TouchableOpacity>
+
+                {isOpen && (
+                    <View style={styles.dropdownList}>
+                        <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
+                            {options.map((opt: any) => {
+                                const val = isObjKeys ? opt.key : opt;
+                                const display = isObjKeys 
+                                    ? (languageMode === 'en' ? (opt.en || opt.bn) : (opt.bn || opt.en)) 
+                                    : getDisplayLabel(opt);
+                                return (
+                                    <TouchableOpacity
+                                        key={val}
+                                        style={[styles.dropdownItem, selectedValue === val && { backgroundColor: '#F3F4F6' }]}
+                                        onPress={() => handleSelect(val)}
+                                    >
+                                        <Text style={[styles.dropdownItemText, selectedValue === val && { color: '#1D4ED8', fontFamily: 'July-Bold' }]}>
+                                            {display}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </ScrollView>
+                    </View>
+                )}
+            </View>
+        );
+    };
+
+
 
     const SummaryCard = ({ icon: Icon, count, title, colors }: any) => (
         <LinearGradient
@@ -43,151 +221,205 @@ const StatisticsScreen = () => {
     );
 
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header
-                title="পরিসংখ্যান"
-                subtitle="মানব পাচার প্রতিরোধ তথ্য ও উপাত্ত"
+                title={languageMode === 'en' ? "Statistics" : "পরিসংখ্যান"}
+                subtitle={languageMode === 'en' ? "Human trafficking prevention data and statistics" : "মানব পাচার প্রতিরোধ তথ্য ও উপাত্ত"}
                 showBackButton={true}
-                rightComponent={renderRightComponent()}
+            // rightComponent={renderRightComponent()}
             />
             <ScrollView style={styles.flex1} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
                 {/* Summary Cards Grid */}
                 <View style={styles.gridContainer}>
                     <SummaryCard
                         icon={BarChart3}
-                        count="১,২৪৫"
-                        title="মোট রিপোর্টকৃত অভিযোগ"
+                        count={languageMode === 'en' ? "1,245" : "১,২৪৫"}
+                        title={languageMode === 'en' ? "Total Complaints" : "মোট রিপোর্টকৃত অভিযোগ"}
                         colors={['#155DFC', '#1447E6']}
                     />
                     <SummaryCard
                         icon={Users}
-                        count="৮৭৩"
-                        title="উদ্ধারপ্রাপ্ত ভুক্তভোগী"
+                        count={languageMode === 'en' ? "873" : "৮৭৩"}
+                        title={languageMode === 'en' ? "Rescued Victims" : "উদ্ধারপ্রাপ্ত ভুক্তভোগী"}
                         colors={['#009689', '#00786F']}
                     />
                     <SummaryCard
                         icon={Search}
-                        count="১৫৬"
-                        title="চলমান তদন্ত সংখ্যা"
+                        count={languageMode === 'en' ? "156" : "১৫৬"}
+                        title={languageMode === 'en' ? "Ongoing Investigations" : "চলমান তদন্ত সংখ্যা"}
                         colors={['#FA6700', '#C53B00']}
                     />
                     <SummaryCard
                         icon={ShieldCheck}
-                        count="৩৪২"
-                        title="সচেতনতামূলক কার্যক্রম"
+                        count={languageMode === 'en' ? "342" : "৩৪২"}
+                        title={languageMode === 'en' ? "Awareness Activities" : "সচেতনতামূলক কার্যক্রম"}
                         colors={['#00A63E', '#008236']}
                     />
                 </View>
 
-                {/* Rescue Report Chart */}
-                <ChartCard title="উদ্ধার প্রতিবেদন">
-                    <BarChart
-                        barWidth={scale(35)}
-                        noOfSections={3}
-                        barBorderRadius={4}
-                        frontColor="#14B8A6"
-                        data={barData1}
-                        yAxisThickness={0}
-                        xAxisThickness={1}
-                        xAxisColor={'#E5E7EB'}
-                        hideRules
-                        height={verticalScale(180)}
-                        width={screenWidth - scale(60)}
-                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(10) }}
-                    />
-                </ChartCard>
+                {loading && <ActivityIndicator size="large" color="#155DFC" style={{ marginVertical: scale(20) }} />}
+                {!loading && table && (
+                    <>
+                        {/* Filters Dropdown Pickers */}
+                        <View style={styles.filterSection}>
+                            <SelectDropdown
+                                label={languageMode === 'en' ? "Select Report" : "প্রতিবেদন নির্বাচন করুন"}
+                                placeholder={languageMode === 'en' ? "Select Report" : "প্রতিবেদন নির্বাচন করুন"}
+                                options={reportNames}
+                                selectedValue={selectedName}
+                                onSelect={setSelectedName}
+                            />
 
-                {/* Incident Trends Chart */}
-                <ChartCard title="সময়ভিত্তিক ঘটনার প্রবণতা">
-                    <LineChart
-                        data={lineData1}
-                        data2={lineData2}
-                        data3={lineData3}
-                        height={verticalScale(180)}
-                        width={screenWidth - scale(60)}
-                        initialSpacing={scale(20)}
-                        color1="#3B82F6"
-                        color2="#14B8A6"
-                        color3="#F59E0B"
-                        textColor1="green"
-                        dataPointsColor1="#3B82F6"
-                        dataPointsColor2="#14B8A6"
-                        dataPointsColor3="#F59E0B"
-                        curved
-                        startFillColor1="#3B82F6"
-                        startFillColor2="#14B8A6"
-                        startFillColor3="#F59E0B"
-                        startOpacity={0.1}
-                        endOpacity={0.1}
-                        hideRules
-                        hideYAxisText={false}
-                        yAxisThickness={0}
-                        xAxisThickness={1}
-                        xAxisColor={'#E5E7EB'}
-                    />
-                    <View style={styles.legendContainer}>
-                        <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: '#3B82F6' }]} /><Text style={styles.legendText}>উদ্ধার</Text></View>
-                        <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: '#14B8A6' }]} /><Text style={styles.legendText}>চলমান</Text></View>
-                        <View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: '#F59E0B' }]} /><Text style={styles.legendText}>রিপোর্ট</Text></View>
-                    </View>
-                </ChartCard>
+                            <SelectDropdown
+                                label={languageMode === 'en' ? "Select Year" : "বছর নির্বাচন করুন"}
+                                placeholder={languageMode === 'en' ? "Select Year" : "বছর নির্বাচন করুন"}
+                                options={availableYears}
+                                selectedValue={selectedYear}
+                                onSelect={setSelectedYear}
+                            />
+                        </View>
 
-                {/* Analysis Type Chart */}
-                <ChartCard title="ঘটনার ধরন অনুযায়ী বিশ্লেষণ">
-                    <BarChart
-                        barWidth={scale(45)}
-                        noOfSections={4}
-                        maxValue={100}
-                        barBorderRadius={4}
-                        data={barData2}
-                        yAxisThickness={1}
-                        yAxisColor={'#9CA3AF'}
-                        xAxisThickness={1}
-                        xAxisColor={'#9CA3AF'}
-                        rulesType="dashed"
-                        rulesColor={'#E5E7EB'}
-                        height={verticalScale(180)}
-                        width={screenWidth - scale(60)}
-                        spacing={(screenWidth - scale(80) - (scale(45) * 4)) / 4}
-                        initialSpacing={scale(20)}
-                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(10), width: scale(60), textAlign: 'center' }}
-                        yAxisTextStyle={{ color: '#6B7280', fontSize: moderateScale(10) }}
-                    />
-                </ChartCard>
+                        <ChartCard title={languageMode === 'en' ? table.name : (table.nameBn || table.name)}>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                                <View>
+                                    {/* Header Row */}
+                                    <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#E5E7EB', paddingBottom: scale(10) }}>
+                                        {table.columns.filter((col: any) => selectedColumns.includes(col.key)).map((col: any) => (
+                                            <View key={col.key} style={{ width: scale(120), paddingHorizontal: scale(5) }}>
+                                                <Text style={{ fontSize: moderateScale(11), fontWeight: 'bold', color: '#1F2937', fontFamily: 'July-Bold' }}>
+                                                    {languageMode === 'en' ? (col.en || col.bn) : (col.bn || col.en)}
+                                                </Text>
+                                            </View>
+                                        ))}
+                                    </View>
+                                    {/* Data Rows */}
+                                    {table.rows.map((row: any) => (
+                                        <View key={row.id} style={{ flexDirection: 'row', paddingVertical: scale(10), borderBottomWidth: 1, borderBottomColor: '#F3F4F6' }}>
+                                            {table.columns.filter((col: any) => selectedColumns.includes(col.key)).map((col: any) => (
+                                                <View key={col.key} style={{ width: scale(120), paddingHorizontal: scale(5) }}>
+                                                    <Text style={{ fontSize: moderateScale(11), color: '#6B7280', fontFamily: 'July-Regular' }}>
+                                                        {languageMode === 'en' ? (row.data[col.key]?.en || row.data[col.key]?.bn || '-') : (row.data[col.key]?.bn || row.data[col.key]?.en || '-')}
+                                                    </Text>
+                                                </View>
+                                            ))}
+                                        </View>
+                                    ))}
+                                </View>
+                            </ScrollView>
+                        </ChartCard>
 
-                {/* Pie Chart */}
-                <ChartCard title="বয়স ও লিঙ্গভিত্তিক তথ্য">
-                    <View style={styles.pieContainer}>
-                        <PieChart
-                            data={pieData}
-                            donut={false}
-                            showExternalLabels
-                            radius={scale(100)}
-                            labelsPosition="outward"
-                            externalLabelComponent={(item: any) => (
-                                <SvgText
-                                    fill={item.textColor}
-                                    fontSize={moderateScale(11)}
-                                    fontWeight="bold"
-                                    x={item.shiftTextX || 0}
-                                    y={item.shiftTextY || 0}
-                                >
-                                    {item.text}
-                                </SvgText>
-                            )}
-                        />
-                    </View>
-                </ChartCard>
+                        {/* Chart Preview Type Selectors */}
+                        <View style={styles.filterSection}>
+                            <SelectDropdown
+                                label={languageMode === 'en' ? "Chart Type" : "চার্টের ধরন"}
+                                placeholder={languageMode === 'en' ? "Chart Type" : "চার্টের ধরন"}
+                                options={["bar", "line", "pie"]}
+                                selectedValue={chartType}
+                                onSelect={(val: any) => setChartType(val)}
+                            />
+
+                            <SelectDropdown
+                                label="X-axis"
+                                placeholder="X-axis"
+                                options={categoricalColumns}
+                                selectedValue={xKey}
+                                onSelect={setXKey}
+                                isObjKeys={true}
+                            />
+
+                            <SelectDropdown
+                                label="Y-axis"
+                                placeholder="Y-axis"
+                                options={numericColumns}
+                                selectedValue={yKey}
+                                onSelect={setYKey}
+                                isObjKeys={true}
+                            />
+                        </View>
+
+                        {/* Dynamic Chart */}
+                        {xKey && yKey && (
+                            <ChartCard title={languageMode === 'en' ? "Chart Preview" : "চার্ট প্রিভিউ"}>
+                                {chartType === 'bar' && (
+                                    <BarChart
+                                        barWidth={scale(35)}
+                                        noOfSections={4}
+                                        barBorderRadius={4}
+                                        frontColor="#14B8A6"
+                                        data={table.rows.map((row: any) => ({
+                                            value: Number(row.data[yKey]?.en || 0),
+                                            label: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-"))
+                                        }))}
+                                        yAxisThickness={0}
+                                        xAxisThickness={1}
+                                        xAxisColor={'#E5E7EB'}
+                                        hideRules
+                                        height={verticalScale(144)}
+                                        width={screenWidth - scale(60)}
+                                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(9), width: scale(50), textAlign: 'center' }}
+                                    />
+                                )}
+                                {chartType === 'line' && (
+                                    <LineChart
+                                        data={table.rows.map((row: any) => ({
+                                            value: Number(row.data[yKey]?.en || 0),
+                                            label: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-"))
+                                        }))}
+                                        height={verticalScale(144)}
+                                        width={screenWidth - scale(60)}
+                                        initialSpacing={scale(20)}
+                                        color1="#3B82F6"
+                                        dataPointsColor1="#3B82F6"
+                                        startFillColor1="#3B82F6"
+                                        startOpacity={0.1}
+                                        endOpacity={0.1}
+                                        hideRules
+                                        yAxisThickness={0}
+                                        xAxisThickness={1}
+                                        xAxisColor={'#E5E7EB'}
+                                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(9), width: scale(50), textAlign: 'center' }}
+                                    />
+                                )}
+                                {chartType === 'pie' && (
+                                    <View style={styles.pieContainer}>
+                                        <PieChart
+                                            data={table.rows.map((row: any, index: number) => ({
+                                                value: Number(row.data[yKey]?.en || 0),
+                                                text: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-")),
+                                                color: COLORS[index % COLORS.length]
+                                            }))}
+                                            donut={false}
+                                            showExternalLabels
+                                            radius={scale(60)}
+                                            labelsPosition="outward"
+                                            externalLabelComponent={(item: any) => {
+                                                const isRightSide = (item.shiftTextX || 0) > 0;
+                                                return (
+                                                    <SvgText
+                                                        fill={"#1F2937"}
+                                                        fontSize={moderateScale(10)}
+                                                        fontWeight="bold"
+                                                        x={item.shiftTextX || 0}
+                                                        y={item.shiftTextY || 0}
+                                                        textAnchor={isRightSide ? "start" : "end"}
+                                                    >
+                                                        {item.text}
+                                                    </SvgText>
+                                                );
+                                            }}
+                                        />
+                                    </View>
+                                )}
+                            </ChartCard>
+                        )}
+                    </>
+                )}
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F9FAFB',
-    },
     flex1: {
         flex: 1,
     },
@@ -301,6 +533,62 @@ const styles = ScaledSheet.create({
     pieContainer: {
         alignItems: 'center',
         paddingVertical: '20@vs',
+        paddingHorizontal: '20@ms',
+    },
+    filterSection: {
+        marginHorizontal: '16@ms',
+        marginBottom: '10@vs',
+        zIndex: 1, // needed for custom absolute dropdown overlays
+    },
+    filterTitle: {
+        color: '#314158',
+        fontSize: '14@ms',
+        fontWeight: '600',
+        marginBottom: '8@vs',
+        marginTop: '10@vs',
+        fontFamily: 'July-Medium',
+    },
+    dropdownContainer: {
+        position: 'relative',
+        zIndex: 10,
+    },
+    dropdownButton: {
+        backgroundColor: '#F9FAFB',
+        borderRadius: '12@ms',
+        paddingVertical: '14@vs',
+        paddingHorizontal: '16@ms',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        width: '100%',
+    },
+    dropdownButtonText: {
+        fontSize: '14@ms',
+        color: '#314158',
+        fontFamily: 'July-Regular',
+        flex: 1,
+    },
+    dropdownList: {
+        backgroundColor: '#F9FAFB',
+        borderRadius: '12@ms',
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        marginTop: '4@vs',
+        maxHeight: '200@vs',
+        overflow: 'hidden',
+    },
+    dropdownItem: {
+        paddingVertical: '12@vs',
+        paddingHorizontal: '16@ms',
+        borderBottomWidth: 1,
+        borderBottomColor: '#F3F4F6',
+    },
+    dropdownItemText: {
+        fontSize: '14@ms',
+        color: '#314158',
+        fontFamily: 'July-Regular',
     },
 });
 

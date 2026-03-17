@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { showToast } from '../../store/slices/toastSlice';
 import Header from '../../components/Header';
 import Step1BasicInfo from '../../components/TraffickerInfo/Step1BasicInfo';
 import Step2Details from '../../components/TraffickerInfo/Step2Details';
@@ -7,34 +11,230 @@ import Step3Location from '../../components/TraffickerInfo/Step3Location';
 import Step4Evidence from '../../components/TraffickerInfo/Step4Evidence';
 import Step5Identity from '../../components/TraffickerInfo/Step5Identity';
 import Step6Review from '../../components/TraffickerInfo/Step6Review';
-import { ScaledSheet, moderateScale } from 'react-native-size-matters';
+import { ScaledSheet } from 'react-native-size-matters';
+import AppBackground from '../../components/AppBackground';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { GRAPHQL_URI } from '../../api/apolloClient';
 
 const TraffickerInfoScreen = () => {
+    const navigation = useNavigation<any>();
+    const dispatch = useDispatch();
+    const languageMode = useSelector((state: RootState) => state.language.mode);
     const [currentStep, setCurrentStep] = useState(1);
     const totalSteps = 6;
 
     const [formData, setFormData] = useState({
-        name: 'হাসান আহমেদ',
-        nickname: 'হাসান',
-        age: '৪৫',
+        name: '',
+        nickname: '',
+        age: '',
         gender: 'পুরুষ',
         mobile: '',
         socialLink: '',
         lastSeen: '',
-        activities: ['কাজের প্রলোভন'],
-        eventPlace: 'ঢাকা, বাংলাদেশ',
+        activities: [] as string[],
+        eventPlace: '',
         selectPlace: '',
         address: '',
-        description: 'তথ্য দিতে শুরু করুন',
+        description: '',
         hasEvidence: false,
-        identityPreference: 'anonymous'
+        identityPreference: 'anonymous',
+        evidenceFiles: [] as any[],
+        photo: null as any
     });
+    console.log(formData);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    // const [createCriminal, { loading }] = useMutation(CREATE_CRIMINAL); // Replaced with manual fetch for multipart
 
-    const nextStep = () => {
+    const handlePhotoPick = async () => {
+        const result = await launchImageLibrary({
+            mediaType: 'photo',
+            selectionLimit: 1,
+        });
+
+        if (result.assets && result.assets.length > 0) {
+            setFormData(prev => ({
+                ...prev,
+                photo: result.assets![0]
+            }));
+        }
+    };
+
+    const handleFilePick = async () => {
+        const result = await launchImageLibrary({
+            mediaType: 'mixed',
+            selectionLimit: 5,
+        });
+
+        if (result.assets) {
+            setFormData(prev => ({
+                ...prev,
+                evidenceFiles: [...prev.evidenceFiles, ...result.assets!]
+            }));
+        }
+    };
+
+    const nextStep = async () => {
         if (currentStep < totalSteps) {
             setCurrentStep(currentStep + 1);
         } else {
-            console.log('Submitting data:', formData);
+            setIsSubmitting(true);
+            try {
+                const url = GRAPHQL_URI;
+                const formDataUpload = new FormData();
+
+                const operations = {
+                    query: `mutation CreateCriminal(
+                        $name: String,
+                        $nickname: String,
+                        $age: String,
+                        $gender: String,
+                        $phone: String,
+                        $socialMedia: String,
+                        $location: String,
+                        $activity: [String!],
+                        $activityArea: String,
+                        $activityPlace: String,
+                        $activityAddress: String,
+                        $activityTime: String,
+                        $activityDescription: String,
+                        $revealIdentity: YesOrNo!,
+                        $photoUrl: Upload,
+                        $documents: [CreateCriminalDocumentInput!]
+                    ) {
+                        createCriminal(
+                        createCriminalInput: {
+                            name: $name,
+                            nickname: $nickname,
+                            age: $age,
+                            gender: $gender,
+                            phone: $phone,
+                            socialMedia: $socialMedia,
+                            location: $location,
+                            activity: $activity,
+                            activityArea: $activityArea,
+                            activityPlace: $activityPlace,
+                            activityAddress: $activityAddress,
+                            activityTime: $activityTime,
+                            activityDescription: $activityDescription,
+                            revealIdentity: $revealIdentity,
+                            photoUrl: $photoUrl,
+                            documents: $documents
+                        }
+                        ) {
+                        id
+                        name
+                        nickname
+                        }
+                    }`,
+                    variables: {
+                        name: formData.name,
+                        nickname: formData.nickname,
+                        age: formData.age,
+                        gender: formData.gender === 'পুরুষ' ? 'MALE' : formData.gender === 'মহিলা' ? 'FEMALE' : 'OTHER',
+                        phone: formData.mobile,
+                        socialMedia: formData.socialLink,
+                        location: formData.eventPlace,
+                        activity: formData.activities,
+                        activityArea: formData.eventPlace,
+                        activityPlace: formData.selectPlace,
+                        activityAddress: formData.address,
+                        activityTime: new Date().toISOString(),
+                        activityDescription: formData.description,
+                        revealIdentity: formData.identityPreference === 'contact' ? 'YES' : 'NO',
+                        photoUrl: null,
+                        documents: formData.evidenceFiles.map((file, index) => ({
+                            fileName: file.fileName || `file_${index}.jpg`,
+                            description: '',
+                            fileUrl: null
+                        }))
+                    }
+                };
+
+                formDataUpload.append('operations', JSON.stringify(operations));
+
+                const map: any = {};
+                let fileIndex = 0;
+
+                if (formData.photo) {
+                    map[fileIndex] = ["variables.photoUrl"];
+                    fileIndex++;
+                }
+
+                formData.evidenceFiles.forEach((_, index) => {
+                    map[fileIndex] = [`variables.documents.${index}.fileUrl`];
+                    fileIndex++;
+                });
+
+                formDataUpload.append('map', JSON.stringify(map));
+
+                fileIndex = 0;
+                if (formData.photo) {
+                    formDataUpload.append(fileIndex.toString(), {
+                        uri: formData.photo.uri,
+                        type: formData.photo.type || 'image/jpeg',
+                        name: formData.photo.fileName || 'trafficker_photo.jpg',
+                    } as any);
+                    fileIndex++;
+                }
+
+                formData.evidenceFiles.forEach((file, index) => {
+                    formDataUpload.append(fileIndex.toString(), {
+                        uri: file.uri,
+                        type: file.type || 'image/jpeg',
+                        name: file.fileName || `file_${index}.jpg`,
+                    } as any);
+                    fileIndex++;
+                });
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formDataUpload,
+                    headers: {
+                        'Apollo-Require-Preflight': 'true',
+                    },
+                });
+
+                const result = await response.json();
+                console.log('Submission Result:', result);
+
+                if (result.data?.createCriminal) {
+                    dispatch(showToast({
+                        message: languageMode === 'en' ? 'Submitted successfully!' : 'সফলভাবে জমা দেওয়া হয়েছে!',
+                        type: 'success'
+                    }));
+
+                    setFormData({
+                        name: '',
+                        nickname: '',
+                        age: '',
+                        gender: 'পুরুষ',
+                        mobile: '',
+                        socialLink: '',
+                        lastSeen: '',
+                        activities: [] as string[],
+                        eventPlace: '',
+                        selectPlace: '',
+                        address: '',
+                        description: '',
+                        hasEvidence: false,
+                        identityPreference: 'anonymous',
+                        evidenceFiles: [] as any[],
+                        photo: null as any
+                    });
+                    setCurrentStep(1);
+                    navigation.navigate('HomeScreen');
+                } else {
+                    throw new Error(result.errors?.[0]?.message || 'GraphQL Error');
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                Alert.alert(
+                    languageMode === 'en' ? "Error" : "ত্রুটি",
+                    languageMode === 'en' ? "Could not submit information. Please try again." : "তথ্য জমা দেওয়া সম্ভব হয়নি। আবার চেষ্টা করুন।"
+                );
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 
@@ -43,7 +243,9 @@ const TraffickerInfoScreen = () => {
         return (
             <View style={styles.progressContainer}>
                 <View style={styles.progressInfo}>
-                    <Text style={styles.stepText}>ধাপ {currentStep} / {totalSteps}</Text>
+                    <Text style={styles.stepText}>
+                        {languageMode === 'en' ? `Step ${currentStep} / ${totalSteps}` : `ধাপ ${currentStep} / ${totalSteps}`}
+                    </Text>
                     <Text style={styles.percentageText}>{percentage}%</Text>
                 </View>
                 <View style={styles.progressBarBackground}>
@@ -57,19 +259,23 @@ const TraffickerInfoScreen = () => {
 
     const renderStepContent = () => {
         switch (currentStep) {
-            case 1: return <Step1BasicInfo formData={formData} setFormData={setFormData} />;
+            case 1: return <Step1BasicInfo formData={formData} setFormData={setFormData} onPickPhoto={handlePhotoPick} />;
             case 2: return <Step2Details formData={formData} setFormData={setFormData} />;
             case 3: return <Step3Location formData={formData} setFormData={setFormData} />;
-            case 4: return <Step4Evidence />;
+            case 4: return <Step4Evidence formData={formData} onPickFile={handleFilePick} setFormData={setFormData} />;
             case 5: return <Step5Identity formData={formData} setFormData={setFormData} />;
             case 6: return <Step6Review formData={formData} />;
-            default: return <Step1BasicInfo formData={formData} setFormData={setFormData} />;
+            default: return <Step1BasicInfo formData={formData} setFormData={setFormData} onPickPhoto={handlePhotoPick} />;
         }
     };
 
     return (
-        <View style={styles.container}>
-            <Header title="পাচারকারী সম্পর্কে তথ্য" subtitle='নিরাপদভাবে ও সহজভাবে পাচারকারী সম্পর্কে তথ্য প্রদান' showBackButton={true} />
+        <AppBackground>
+            <Header
+                title={languageMode === 'en' ? "Trafficker Information" : "পাচারকারী সম্পর্কে তথ্য"}
+                subtitle={languageMode === 'en' ? "Provide information about traffickers safely and easily" : 'নিরাপদভাবে ও সহজভাবে পাচারকারী সম্পর্কে তথ্য প্রদান'}
+                showBackButton={true}
+            />
 
             <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
                 {renderProgressBar()}
@@ -83,26 +289,29 @@ const TraffickerInfoScreen = () => {
                     onPress={nextStep}
                     activeOpacity={0.8}
                     style={styles.submitButton}
+                    disabled={isSubmitting}
                 >
-                    <Text style={styles.submitButtonText}>
-                        {currentStep === totalSteps ? 'জমা দিন' : 'পরবর্তী ধাপ'}
-                    </Text>
+                    {isSubmitting ? (
+                        <ActivityIndicator color="white" />
+                    ) : (
+                        <Text style={styles.submitButtonText}>
+                            {currentStep === totalSteps
+                                ? (languageMode === 'en' ? 'Submit' : 'জমা দিন')
+                                : (languageMode === 'en' ? 'Next Step' : 'পরবর্তী ধাপ')}
+                        </Text>
+                    )}
                 </TouchableOpacity>
             </View>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F8F9FA',
-    },
     flex1: {
         flex: 1,
     },
     progressContainer: {
-        backgroundColor: 'white',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
         marginHorizontal: '16@ms',
         marginTop: '24@vs',
         padding: '16@ms',
@@ -111,7 +320,7 @@ const styles = ScaledSheet.create({
         borderColor: '#F3F4FB',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
+        shadowOpacity: 0.1,
         shadowRadius: 10,
         elevation: 2,
     },
