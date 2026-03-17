@@ -2,10 +2,11 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import Header from '../../components/Header';
 import { ScaledSheet } from 'react-native-size-matters';
+import AppBackground from '../../components/AppBackground';
 
 const SettingsScreen = () => {
   return (
-    <View style={styles.container}>
+    <AppBackground>
       <Header
         variant="default"
         title="সেটিংস"
@@ -19,15 +20,11 @@ const SettingsScreen = () => {
           Configure your app preferences.
         </Text>
       </View>
-    </View>
+    </AppBackground>
   );
 };
 
 const styles = ScaledSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
   content: {
     flex: 1,
     alignItems: 'center',

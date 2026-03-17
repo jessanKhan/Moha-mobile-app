@@ -5,12 +5,12 @@ import {
     ScrollView,
     TextInput,
     TouchableOpacity,
-    StyleSheet,
     Linking,
 } from 'react-native';
 import Header from '../../components/Header';
 import { Search, ListFilter, MapPin, Phone } from 'lucide-react-native';
-import { scale, verticalScale, moderateScale, ScaledSheet } from 'react-native-size-matters';
+import { moderateScale, ScaledSheet } from 'react-native-size-matters';
+import AppBackground from '../../components/AppBackground';
 
 const RepatriationScreen = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -42,7 +42,7 @@ const RepatriationScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header
                 title="প্রত্যাবর্তন"
                 subtitle="নিরাপদভাবে নিজ দেশে ফেরত যাওয়া"
@@ -95,28 +95,22 @@ const RepatriationScreen = () => {
                 ))}
                 <View style={styles.footerSpacer} />
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F8F9FA',
-    },
     searchContainer: {
         flexDirection: 'row',
         padding: '16@ms',
         alignItems: 'center',
-        backgroundColor: 'white',
-        borderBottomWidth: 1,
-        borderBottomColor: '#F3F4F6',
+        backgroundColor: 'transparent',
     },
     searchBarWrapper: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#F9FAFB',
+        backgroundColor: 'white',
         borderWidth: 1,
         borderColor: '#E5E7EB',
         borderRadius: '12@ms',
@@ -136,7 +130,7 @@ const styles = ScaledSheet.create({
         borderWidth: 1,
         borderColor: '#E5E7EB',
         borderRadius: '12@ms',
-        backgroundColor: '#F9FAFB',
+        backgroundColor: 'white',
     },
     scrollContent: {
         flex: 1,
@@ -150,7 +144,7 @@ const styles = ScaledSheet.create({
         marginBottom: '16@vs',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
+        shadowOpacity: 0.1,
         shadowRadius: 8,
         elevation: 3,
         borderWidth: 1,

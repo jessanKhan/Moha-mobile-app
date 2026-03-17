@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Linking } from 'react-native';
 import { Phone } from 'lucide-react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 
 interface HotlineBannerProps {
@@ -9,24 +11,53 @@ interface HotlineBannerProps {
     onPress?: () => void;
 }
 
-const HotlineBanner = ({ title = "২৪/৭ জরুরি হটলাইন", number = "৯৯৯", onPress }: HotlineBannerProps) => {
+const HotlineBanner = ({ title, number, onPress }: HotlineBannerProps) => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
+
+    const hotlineTitle =
+        title ||
+        (languageMode === 'en'
+            ? '24/7 Emergency Hotline'
+            : '২৪/৭ জরুরি হটলাইন');
+
+    const displayNumber =
+        number ||
+        (languageMode === 'en'
+            ? '999'
+            : '৯৯৯');
+
+    // Always call using English number
+    const callNumber = '999';
+
+    const handleCall = () => {
+        if (onPress) {
+            onPress();
+        } else {
+            Linking.openURL(`tel:${callNumber}`);
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.content}>
                 <View style={styles.iconContainer}>
                     <Phone size={moderateScale(24)} color="white" fill="white" />
                 </View>
+
                 <View>
-                    <Text style={styles.label}>{title}</Text>
-                    <Text style={styles.number}>{number}</Text>
+                    <Text style={styles.label}>{hotlineTitle}</Text>
+                    <Text style={styles.number}>{displayNumber}</Text>
                 </View>
             </View>
+
             <TouchableOpacity
                 activeOpacity={0.8}
                 style={styles.button}
-                onPress={onPress}
+                onPress={handleCall}
             >
-                <Text style={styles.buttonText}>কল করুন</Text>
+                <Text style={styles.buttonText}>
+                    {languageMode === 'en' ? 'Call' : 'কল করুন'}
+                </Text>
             </TouchableOpacity>
         </View>
     );
@@ -50,7 +81,7 @@ const styles = ScaledSheet.create({
         backgroundColor: '#EF4444',
         borderRadius: '24@ms',
         padding: '12@ms',
-        marginRight: '16@ms'
+        marginRight: '16@ms',
     },
     label: {
         color: '#9CA3AF',
@@ -71,14 +102,14 @@ const styles = ScaledSheet.create({
         borderColor: 'rgba(255, 255, 255, 0.1)',
         paddingHorizontal: '16@ms',
         paddingVertical: '8@vs',
-        borderRadius: '8@ms'
+        borderRadius: '8@ms',
     },
     buttonText: {
         color: 'white',
         fontWeight: '500',
         fontSize: '12@ms',
         fontFamily: 'July-Regular',
-    }
+    },
 });
 
 export default HotlineBanner;

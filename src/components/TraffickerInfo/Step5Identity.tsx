@@ -3,79 +3,102 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { UserX, UserPlus, Check } from 'lucide-react-native';
 import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+
 interface Props {
     formData: any;
     setFormData: (data: any) => void;
 }
 
-const Step5Identity = ({ formData, setFormData }: Props) => (
-    <View style={styles.container}>
-        <Text style={styles.title}>আপনার পরিচয়</Text>
-        <Text style={styles.subtitle}>সম্পূর্ণ ঐচ্ছিক</Text>
+const Step5Identity = ({ formData, setFormData }: Props) => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
 
-        <View style={styles.optionContainer}>
-            <TouchableOpacity
-                onPress={() => setFormData({ ...formData, identityPreference: 'anonymous' })}
-                activeOpacity={0.8}
-                style={[
-                    styles.optionCard,
-                    formData.identityPreference === 'anonymous' && styles.optionCardActive
-                ]}
-            >
-                <View style={styles.optionMain}>
-                    <View style={[
-                        styles.iconWrapper,
-                        formData.identityPreference === 'anonymous' ? styles.iconWrapperActive : styles.iconWrapperInactive
-                    ]}>
-                        <UserX size={moderateScale(24)} color="white" />
-                    </View>
-                    <View style={styles.textWrapper}>
-                        <Text style={[
-                            styles.optionTitle,
-                            formData.identityPreference === 'anonymous' && styles.optionTitleActive
-                        ]}>পরিচয় গোপন রেখে জমা দেব</Text>
-                        <Text style={styles.optionDesc}>আপনার পরিচয় সম্পূর্ণ গোপন থাকবে। কর্তৃপক্ষ আপনার সাথে যোগাযোগ করতে পারবে না।</Text>
-                    </View>
-                </View>
-                {formData.identityPreference === 'anonymous' && (
-                    <View style={styles.checkWrapper}>
-                        <Check size={moderateScale(14)} color="white" />
-                    </View>
-                )}
-            </TouchableOpacity>
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>
+                {languageMode === 'en' ? "Your Identity" : "আপনার পরিচয়"}
+            </Text>
+            <Text style={styles.subtitle}>
+                {languageMode === 'en' ? "Completely optional" : "সম্পূর্ণ ঐচ্ছিক"}
+            </Text>
 
-            <TouchableOpacity
-                onPress={() => setFormData({ ...formData, identityPreference: 'contact' })}
-                activeOpacity={0.8}
-                style={[
-                    styles.optionCard,
-                    formData.identityPreference === 'contact' && styles.optionCardActive
-                ]}
-            >
-                <View style={styles.optionMain}>
-                    <View style={[
-                        styles.iconWrapper,
-                        formData.identityPreference === 'contact' ? styles.iconWrapperActive : styles.iconWrapperInactive
-                    ]}>
-                        <UserPlus size={moderateScale(24)} color="white" />
+            <View style={styles.optionContainer}>
+                <TouchableOpacity
+                    onPress={() => setFormData({ ...formData, identityPreference: 'anonymous' })}
+                    activeOpacity={0.8}
+                    style={[
+                        styles.optionCard,
+                        formData.identityPreference === 'anonymous' && styles.optionCardActive
+                    ]}
+                >
+                    <View style={styles.optionMain}>
+                        <View style={[
+                            styles.iconWrapper,
+                            formData.identityPreference === 'anonymous' ? styles.iconWrapperActive : styles.iconWrapperInactive
+                        ]}>
+                            <UserX size={moderateScale(24)} color="white" />
+                        </View>
+                        <View style={styles.textWrapper}>
+                            <Text style={[
+                                styles.optionTitle,
+                                formData.identityPreference === 'anonymous' && styles.optionTitleActive
+                            ]}>
+                                {languageMode === 'en' ? "Submit Anonymously" : "পরিচয় গোপন রেখে জমা দেব"}
+                            </Text>
+                            <Text style={styles.optionDesc}>
+                                {languageMode === 'en'
+                                    ? "Your identity will remain completely secret. Authorities will not be able to contact you."
+                                    : "আপনার পরিচয় সম্পূর্ণ গোপন থাকবে। কর্তৃপক্ষ আপনার সাথে যোগাযোগ করতে পারবে না।"}
+                            </Text>
+                        </View>
                     </View>
-                    <View style={styles.textWrapper}>
-                        <Text style={[
-                            styles.optionTitle,
-                            formData.identityPreference === 'contact' && styles.optionTitleActive
-                        ]}>যোগাযোগ তথ্য দিতে চাই</Text>
-                        <Text style={styles.optionDesc}>প্রয়োজনে কর্তৃপক্ষ আরও তথ্যের জন্য আপনার সাথে যোগাযোগ করতে পারবে।</Text>
+                    {formData.identityPreference === 'anonymous' && (
+                        <View style={styles.checkWrapper}>
+                            <Check size={moderateScale(14)} color="white" />
+                        </View>
+                    )}
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    onPress={() => setFormData({ ...formData, identityPreference: 'contact' })}
+                    activeOpacity={0.8}
+                    style={[
+                        styles.optionCard,
+                        formData.identityPreference === 'contact' && styles.optionCardActive
+                    ]}
+                >
+                    <View style={styles.optionMain}>
+                        <View style={[
+                            styles.iconWrapper,
+                            formData.identityPreference === 'contact' ? styles.iconWrapperActive : styles.iconWrapperInactive
+                        ]}>
+                            <UserPlus size={moderateScale(24)} color="white" />
+                        </View>
+                        <View style={styles.textWrapper}>
+                            <Text style={[
+                                styles.optionTitle,
+                                formData.identityPreference === 'contact' && styles.optionTitleActive
+                            ]}>
+                                {languageMode === 'en' ? "Want to provide contact info" : "যোগাযোগ তথ্য দিতে চাই"}
+                            </Text>
+                            <Text style={styles.optionDesc}>
+                                {languageMode === 'en'
+                                    ? "Authorities can contact you for more information if needed."
+                                    : "প্রয়োজনে কর্তৃপক্ষ আরও তথ্যের জন্য আপনার সাথে যোগাযোগ করতে পারবে।"}
+                            </Text>
+                        </View>
                     </View>
-                </View>
-                {formData.identityPreference === 'contact' && (
-                    <View style={styles.checkWrapper}>
-                        <Check size={moderateScale(14)} color="white" />
-                    </View>
-                )}
-            </TouchableOpacity>
+                    {formData.identityPreference === 'contact' && (
+                        <View style={styles.checkWrapper}>
+                            <Check size={moderateScale(14)} color="white" />
+                        </View>
+                    )}
+                </TouchableOpacity>
+            </View>
         </View>
-    </View>
-);
+    );
+};
 
 const styles = ScaledSheet.create({
     container: {

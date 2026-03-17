@@ -2,10 +2,11 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import Header from '../../components/Header';
+import AppBackground from '../../components/AppBackground';
 
 const ProfileScreen = () => {
   return (
-    <View style={styles.container}>
+    <AppBackground>
       <Header
         variant="default"
         title="প্রোফাইল"
@@ -19,15 +20,11 @@ const ProfileScreen = () => {
           Manage your personal information.
         </Text>
       </View>
-    </View>
+    </AppBackground>
   );
 };
 
 const styles = ScaledSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
   content: {
     flex: 1,
     alignItems: 'center',

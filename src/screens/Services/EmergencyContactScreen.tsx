@@ -1,19 +1,49 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import Header from '../../components/Header';
 import { Clock3, MapPin } from 'lucide-react-native';
-import { moderateScale, verticalScale } from 'react-native-size-matters';
+import { moderateScale } from 'react-native-size-matters';
 import CustomEmergencyContactComponent from '../../components/customEmergencyContact/CustomEmergencyContactComponent';
 import CustomCommonIcon from '../../components/customCommonIconComponent/CustomCommonIcon';
 import CountryDropdown from '../../components/customDropDown/CustomDropDown';
+import AppBackground from '../../components/AppBackground';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { useQuery } from '@apollo/client/react';
+import { HOTLINES_BY_COUNTRY_QUERY } from '../../api/queries';
+
+interface Hotline {
+  id: number;
+  country: string;
+  countryBn: string;
+  title: string;
+  titleBn: string;
+  number: string;
+  numberBn: string;
+}
+
+interface HotlinesData {
+  hotlinesByCountry: Hotline[];
+}
+
 const EmergencyContactScreen = () => {
+  const languageMode = useSelector((state: RootState) => state.language.mode);
+  const [selectedCountryName, setSelectedCountryName] = useState<string>('Bangladesh');
+
+  const { data: hotlinesData, loading: hotlinesLoading } = useQuery<HotlinesData>(HOTLINES_BY_COUNTRY_QUERY, {
+    variables: { page: 1, limit: 100, country: selectedCountryName },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const hotlines = hotlinesData?.hotlinesByCountry || [];
+
   return (
-    <View style={styles.container}>
+    <AppBackground>
       <Header
-        title="জরুরি যোগাযোগ"
+        title={languageMode === 'en' ? "Emergency Contact" : "জরুরি যোগাযোগ"}
         showBackButton
-        subtitle="জরুরি পরিস্থিতিতে এখানে কল করুন"
+        subtitle={languageMode === 'en' ? "Call here in an emergency" : "জরুরি পরিস্থিতিতে এখানে কল করুন"}
       />
 
       <ScrollView
@@ -27,48 +57,45 @@ const EmergencyContactScreen = () => {
             <Clock3 color="rgba(255, 77, 77, 1)" size={moderateScale(20)} />
           </View>
 
-          {/* Texts */}
           <View style={styles.textWrapper}>
             <Text
               style={styles.urgencyText}
               numberOfLines={1}
             >
-              জরুরি পরিস্থিতি?
+              {languageMode === 'en' ? "Emergency?" : "জরুরি পরিস্থিতি?"}
             </Text>
 
             <Text
               style={styles.callText}
               numberOfLines={1}
             >
-              অবিলম্বে ৯৯৯ নম্বরে কল করুন
+              {languageMode === 'en' ? "Call 999 immediately" : "অবিলম্বে ৯৯৯ নম্বরে কল করুন"}
             </Text>
           </View>
         </View>
         <View style={styles.dropdown}>
           <CountryDropdown
             onSelect={country => {
-              console.log(country.value);
+              if (country && country.name) {
+                setSelectedCountryName(country.name);
+              }
             }}
           />
         </View>
-        <View style={styles.dropdown}>
-          <CustomEmergencyContactComponent
-            title="২৪/৭ জরুরি হটলাইন"
-            hotLineNumber="৯৯৯"
-          />
-        </View>
-        <View style={styles.dropdownone}>
-          <CustomEmergencyContactComponent
-            title="মানব পাচার হটলাইন"
-            hotLineNumber="১০৯৮"
-          />
-        </View>
-        <View style={styles.dropdownone}>
-          <CustomEmergencyContactComponent
-            title="নারী ও শিশু নির্যাতন প্রতিরোধ সেল"
-            hotLineNumber="১০৯৮"
-          />
-        </View>
+
+        {hotlinesLoading ? (
+          <ActivityIndicator size="large" color="#009688" style={{ marginTop: 20 }} />
+        ) : (
+          hotlines.map((hotline: any, index: number) => (
+            <View key={hotline.id} style={index === 0 ? styles.dropdown : styles.dropdownone}>
+              <CustomEmergencyContactComponent
+                title={languageMode === 'en' ? hotline.title : hotline.titleBn}
+                hotLineNumber={languageMode === 'en' ? hotline.number : hotline.numberBn}
+              />
+            </View>
+          ))
+        )}
+
         <View style={styles.legalCard}>
           <View style={styles.legalHeader}>
             <CustomCommonIcon
@@ -78,33 +105,31 @@ const EmergencyContactScreen = () => {
               size={moderateScale(20)}
             />
             <Text style={styles.legalTitle}>
-              নিকটস্থ পুলিশ স্টেশন
+              {languageMode === 'en' ? "Nearest Police Station" : "নিকটস্থ পুলিশ স্টেশন"}
             </Text>
           </View>
           <Text style={styles.legalText}>
-            আপনার এলাকার থানায় যোগাযোগ করুন
+            {languageMode === 'en' ? "Contact your local police station" : "আপনার এলাকার থানায় যোগাযোগ করুন"}
           </Text>
         </View>
         <View style={styles.legalCardAddress}>
           <View style={styles.legalInfoWrapper}>
             <Text style={styles.legalTitlecart}>
-              আপনার পরিচয় এবং তথ্য সম্পূর্ণ গোপন থাকবে।
+              {languageMode === 'en' ? "Your identity and information will remain completely confidential." : "আপনার পরিচয় এবং তথ্য সম্পূর্ণ গোপন থাকবে।"}
             </Text>
           </View>
-          <Text style={styles.legalTitlecart}>নিঃসংকোচে যোগাযোগ করুন।</Text>
+          <Text style={styles.legalTitlecart}>
+            {languageMode === 'en' ? "Feel free to contact us." : "নিঃসংকোচে যোগাযোগ করুন।"}
+          </Text>
         </View>
       </ScrollView>
-    </View>
+    </AppBackground>
   );
 };
 
 export default EmergencyContactScreen;
 
 const styles = ScaledSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
   scrollContent: {
     flex: 1,
     padding: '16@ms',

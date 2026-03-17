@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, LayoutAnimation, Platform, UIManager } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, LayoutAnimation, Platform, UIManager, ActivityIndicator, Image } from 'react-native';
 import Header from '../../components/Header';
-import { ChevronDown, ChevronUp, Phone, Scale } from 'lucide-react-native';
-import { policies } from '../../data/policyData';
+import { ChevronDown, ChevronUp, Scale, Gavel } from 'lucide-react-native';
 import HotlineBanner from '../../components/HotlineBanner';
-
-import { ScaledSheet, moderateScale, scale, verticalScale } from 'react-native-size-matters';
+import { ScaledSheet, moderateScale } from 'react-native-size-matters';
+import AppBackground from '../../components/AppBackground';
+import { useQuery } from '@apollo/client/react';
+import { POLICIES_QUERY } from '../../api/queries';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -15,14 +18,40 @@ if (Platform.OS === 'android') {
 
 const PolicyLawScreen = () => {
     const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
+    const languageMode = useSelector((state: RootState) => state.language.mode);
+    const { data, loading, error } = useQuery(POLICIES_QUERY, {
+        variables: { page: 1, limit: 10 },
+        fetchPolicy: 'no-cache',
+    });
 
+    useEffect(() => {
+        if (data) console.warn("DEBUG POLICIES DATA:", JSON.stringify((data as any).policies?.length));
+        console.log("Policy Screen UI State:", {
+            loading,
+            error: error?.message,
+            dataCount: (data as any)?.policies?.length
+        });
+    }, [data, loading, error]);
     const toggleExpand = (index: number) => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setExpandedIndex(expandedIndex === index ? null : index);
     };
 
+    const stripHtml = (html: string) => {
+        return html?.replace(/<[^>]*>?/gm, '') || '';
+    };
+
+    const BG_COLORS = ['#00786Fff', '#18c24bff', '#ceac24ff', '#611764ff', '#3b1cd8ff', '#30b9c0ff', '#E7000Bff', '#2766b8ff'];
+
+    const getRandomBg = (id: number) => {
+        return BG_COLORS[id % BG_COLORS.length];
+    };
+
     const AccordionItem = ({ item, index, expanded, onPress }: any) => {
-        const Icon = item.icon;
+        const title = languageMode === 'bn' ? item.titleBn : item.title;
+        const description = languageMode === 'bn' ? item.descriptionBn : item.description;
+        const randomBg = getRandomBg(item.id);
+
         return (
             <View style={styles.accordionContainer}>
                 <TouchableOpacity
@@ -31,11 +60,19 @@ const PolicyLawScreen = () => {
                     style={styles.accordionHeader}
                 >
                     <View style={styles.headerContent}>
-                        <View style={[styles.iconContainer, { backgroundColor: item.color }]}>
-                            <Icon size={moderateScale(24)} color="white" />
+                        <View style={[styles.iconContainer, { backgroundColor: randomBg }]}>
+                            {item.attachmentUrl ? (
+                                <Image
+                                    source={{ uri: item.attachmentUrl }}
+                                    style={styles.attachmentImage}
+                                    resizeMode="cover"
+                                />
+                            ) : (
+                                <Gavel size={moderateScale(24)} color="#4B5563" />
+                            )}
                         </View>
                         <Text style={styles.itemTitle}>
-                            {item.title}
+                            {title}
                         </Text>
                     </View>
                     {expanded ? <ChevronUp size={moderateScale(20)} color="#9CA3AF" /> : <ChevronDown size={moderateScale(20)} color="#9CA3AF" />}
@@ -44,7 +81,7 @@ const PolicyLawScreen = () => {
                 {expanded && (
                     <View style={styles.expandedContent}>
                         <Text style={styles.contentText}>
-                            {item.content}
+                            {stripHtml(description)}
                         </Text>
                     </View>
                 )}
@@ -53,55 +90,72 @@ const PolicyLawScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <AppBackground>
             <Header
-                title="নীতি ও আইন"
-                subtitle="আইনি তথ্য এবং নির্দেশনা"
+                title={languageMode === 'bn' ? "নীতি ও আইন" : "Policy & Law"}
+                subtitle={languageMode === 'bn' ? "আইনি তথ্য এবং নির্দেশনা" : "Legal information and guidelines"}
                 showBackButton={true}
             />
 
             <ScrollView style={styles.flex1} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-                {policies.map((item, index) => (
-                    <AccordionItem
-                        key={index}
-                        item={item}
-                        index={index}
-                        expanded={expandedIndex === index}
-                        onPress={() => toggleExpand(index)}
-                    />
-                ))}
+                {loading ? (
+                    <ActivityIndicator size="large" color="#1559F7" style={{ marginTop: 50 }} />
+                ) : error ? (
+                    <View style={{ marginTop: 20, padding: 10 }}>
+                        <Text style={{ textAlign: 'center', color: 'red' }}>Error: {error.message}</Text>
+                        {(error as any).graphQLErrors?.length > 0 && (
+                            <Text style={{ textAlign: 'center', color: 'red', fontSize: 12 }}>
+                                {(error as any).graphQLErrors[0].message}
+                            </Text>
+                        )}
+                    </View>
+                ) : (data as any)?.policies?.length > 0 ? (
+                    (data as any)?.policies.map((item: any, index: number) => (
+                        <AccordionItem
+                            key={item.id}
+                            item={item}
+                            index={index}
+                            expanded={expandedIndex === index}
+                            onPress={() => toggleExpand(index)}
+                        />
+                    ))
+                ) : (
+                    <Text style={{ textAlign: 'center', marginTop: 20 }}>
+                        {languageMode === 'bn' ? 'কোন তথ্য পাওয়া যায়নি' : 'No information found'}
+                    </Text>
+                )}
 
                 {/* Legal Advice Card */}
                 <View style={styles.legalCard}>
                     <View style={styles.legalHeader}>
                         <Scale size={moderateScale(20)} color="#0891B2" />
-                        <Text style={styles.legalTitle}>আইনি পরামর্শ</Text>
+                        <Text style={styles.legalTitle}>
+                            {languageMode === 'bn' ? "আইনি পরামর্শ" : "Legal Advice"}
+                        </Text>
                     </View>
                     <Text style={styles.legalText}>
-                        আইনি সহায়তা প্রয়োজন হলে নিকটস্থ আইনজীবী বা আইনি সহায়তা কেন্দ্রে যোগাযোগ করুন।
+                        {languageMode === 'bn'
+                            ? "আইনি সহায়তা প্রয়োজন হলে নিকটস্থ আইনজীবী বা আইনি সহায়তা কেন্দ্রে যোগাযোগ করুন।"
+                            : "If you need legal assistance, contact your nearest lawyer or legal aid center."}
                     </Text>
                     <Text style={styles.legalSubText}>
-                        সকল তথ্য সম্পূর্ণ গোপনীয় রাখা হবে।
+                        {languageMode === 'bn' ? "সকল তথ্য সম্পূর্ণ গোপনীয় রাখা হবে।" : "All information will be kept strictly confidential."}
                     </Text>
                 </View>
 
                 {/* Hotline Banner */}
                 <HotlineBanner
-                    title="২৪/৭ জরুরি হটলাইন"
+                    title={languageMode === 'bn' ? "২৪/৭ জরুরি হটলাইন" : "24/7 Emergency Hotline"}
                     number="৯৯৯"
                     onPress={() => console.log('Call 999')}
                 />
 
             </ScrollView>
-        </View>
+        </AppBackground>
     );
 };
 
 const styles = ScaledSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F9FAFB',
-    },
     flex1: {
         flex: 1,
     },
@@ -145,6 +199,11 @@ const styles = ScaledSheet.create({
         fontSize: '15@ms',
         flex: 1,
         fontFamily: 'July-Bold',
+    },
+    attachmentImage: {
+        width: '60%',
+        height: '60%',
+        borderRadius: '10@ms',
     },
     expandedContent: {
         paddingHorizontal: '16@ms',
