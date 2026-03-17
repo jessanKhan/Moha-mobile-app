@@ -348,13 +348,13 @@ const StatisticsScreen = () => {
                                         frontColor="#14B8A6"
                                         data={table.rows.map((row: any) => ({
                                             value: Number(row.data[yKey]?.en || 0),
-                                            label: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-")).substring(0, 5) + "..."
+                                            label: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-"))
                                         }))}
                                         yAxisThickness={0}
                                         xAxisThickness={1}
                                         xAxisColor={'#E5E7EB'}
                                         hideRules
-                                        height={verticalScale(180)}
+                                        height={verticalScale(144)}
                                         width={screenWidth - scale(60)}
                                         xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(9), width: scale(50), textAlign: 'center' }}
                                     />
@@ -363,9 +363,9 @@ const StatisticsScreen = () => {
                                     <LineChart
                                         data={table.rows.map((row: any) => ({
                                             value: Number(row.data[yKey]?.en || 0),
-                                            label: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-")).substring(0, 5) + "..."
+                                            label: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-"))
                                         }))}
-                                        height={verticalScale(180)}
+                                        height={verticalScale(144)}
                                         width={screenWidth - scale(60)}
                                         initialSpacing={scale(20)}
                                         color1="#3B82F6"
@@ -385,24 +385,28 @@ const StatisticsScreen = () => {
                                         <PieChart
                                             data={table.rows.map((row: any, index: number) => ({
                                                 value: Number(row.data[yKey]?.en || 0),
-                                                text: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-")).substring(0, 5),
+                                                text: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-")),
                                                 color: COLORS[index % COLORS.length]
                                             }))}
                                             donut={false}
                                             showExternalLabels
-                                            radius={scale(100)}
+                                            radius={scale(60)}
                                             labelsPosition="outward"
-                                            externalLabelComponent={(item: any) => (
-                                                <SvgText
-                                                    fill={"#1F2937"}
-                                                    fontSize={moderateScale(11)}
-                                                    fontWeight="bold"
-                                                    x={item.shiftTextX || 0}
-                                                    y={item.shiftTextY || 0}
-                                                >
-                                                    {item.text}
-                                                </SvgText>
-                                            )}
+                                            externalLabelComponent={(item: any) => {
+                                                const isRightSide = (item.shiftTextX || 0) > 0;
+                                                return (
+                                                    <SvgText
+                                                        fill={"#1F2937"}
+                                                        fontSize={moderateScale(10)}
+                                                        fontWeight="bold"
+                                                        x={item.shiftTextX || 0}
+                                                        y={item.shiftTextY || 0}
+                                                        textAnchor={isRightSide ? "start" : "end"}
+                                                    >
+                                                        {item.text}
+                                                    </SvgText>
+                                                );
+                                            }}
                                         />
                                     </View>
                                 )}
@@ -529,6 +533,7 @@ const styles = ScaledSheet.create({
     pieContainer: {
         alignItems: 'center',
         paddingVertical: '20@vs',
+        paddingHorizontal: '20@ms',
     },
     filterSection: {
         marginHorizontal: '16@ms',
