@@ -16,22 +16,54 @@ if (Platform.OS === 'android') {
     }
 }
 
+interface Policy {
+    id: number;
+    title: string;
+    titleBn?: string;
+    attachmentUrl?: string;
+    description: string;
+    descriptionBn?: string;
+    date?: string;
+    isPublished?: boolean;
+}
+
+interface PoliciesData {
+    policies: Policy[];
+}
+
 const PolicyLawScreen = () => {
     const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
     const languageMode = useSelector((state: RootState) => state.language.mode);
-    const { data, loading, error } = useQuery(POLICIES_QUERY, {
-        variables: { page: 1, limit: 10 },
-        fetchPolicy: 'no-cache',
+    const [limit, setLimit] = useState(10);
+    const [hasMore, setHasMore] = useState(true);
+
+    const { data: initialData, loading, error } = useQuery<PoliciesData>(POLICIES_QUERY, {
+        variables: { page: 1, limit },
+        fetchPolicy: 'network-only',
     });
 
     useEffect(() => {
-        if (data) console.warn("DEBUG POLICIES DATA:", JSON.stringify((data as any).policies?.length));
-        console.log("Policy Screen UI State:", {
-            loading,
-            error: error?.message,
-            dataCount: (data as any)?.policies?.length
-        });
-    }, [data, loading, error]);
+        if (initialData?.policies) {
+            if (initialData.policies.length < limit) {
+                setHasMore(false);
+            } else {
+                setHasMore(true);
+            }
+        }
+    }, [initialData, limit]);
+
+    const handleLoadMore = () => {
+        if (loading || !hasMore) return;
+        setLimit(prev => prev + 10);
+    };
+
+    console.log("Policy Screen UI State:", {
+        loading,
+        error: error?.message,
+        dataCount: initialData?.policies?.length || 0,
+        hasMore,
+        limit
+    });
     const toggleExpand = (index: number) => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setExpandedIndex(expandedIndex === index ? null : index);
@@ -43,8 +75,9 @@ const PolicyLawScreen = () => {
 
     const BG_COLORS = ['#00786Fff', '#18c24bff', '#ceac24ff', '#611764ff', '#3b1cd8ff', '#30b9c0ff', '#E7000Bff', '#2766b8ff'];
 
-    const getRandomBg = (id: number) => {
-        return BG_COLORS[id % BG_COLORS.length];
+    const getRandomBg = (id: any) => {
+        const numericId = typeof id === 'number' ? id : (parseInt(id) || 0);
+        return BG_COLORS[numericId % BG_COLORS.length];
     };
 
     const AccordionItem = ({ item, index, expanded, onPress }: any) => {
@@ -98,7 +131,7 @@ const PolicyLawScreen = () => {
             />
 
             <ScrollView style={styles.flex1} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-                {loading ? (
+                {loading && !initialData?.policies ? (
                     <ActivityIndicator size="large" color="#1559F7" style={{ marginTop: 50 }} />
                 ) : error ? (
                     <View style={{ marginTop: 20, padding: 10 }}>
@@ -109,16 +142,34 @@ const PolicyLawScreen = () => {
                             </Text>
                         )}
                     </View>
-                ) : (data as any)?.policies?.length > 0 ? (
-                    (data as any)?.policies.map((item: any, index: number) => (
-                        <AccordionItem
-                            key={item.id}
-                            item={item}
-                            index={index}
-                            expanded={expandedIndex === index}
-                            onPress={() => toggleExpand(index)}
-                        />
-                    ))
+                ) : initialData?.policies && initialData.policies.length > 0 ? (
+                    <>
+                        {initialData.policies.map((item: any, index: number) => (
+                            <AccordionItem
+                                key={item.id}
+                                item={item}
+                                index={index}
+                                expanded={expandedIndex === index}
+                                onPress={() => toggleExpand(index)}
+                            />
+                        ))}
+
+                        {hasMore && (
+                            <TouchableOpacity
+                                style={styles.loadMoreButton}
+                                onPress={handleLoadMore}
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <ActivityIndicator size="small" color="#1559F7" />
+                                ) : (
+                                    <Text style={styles.loadMoreText}>
+                                        {languageMode === 'bn' ? 'আরো দেখুন' : 'View More'}
+                                    </Text>
+                                )}
+                            </TouchableOpacity>
+                        )}
+                    </>
                 ) : (
                     <Text style={{ textAlign: 'center', marginTop: 20 }}>
                         {languageMode === 'bn' ? 'কোন তথ্য পাওয়া যায়নি' : 'No information found'}
@@ -250,6 +301,25 @@ const styles = ScaledSheet.create({
         fontSize: '12@ms',
         opacity: 0.7,
         fontFamily: 'July-Regular',
+    },
+    loadMoreButton: {
+        paddingVertical: '12@vs',
+        paddingHorizontal: '20@ms',
+        marginBottom: '24@vs',
+        borderRadius: '25@ms',
+        backgroundColor: 'white',
+        borderWidth: 1,
+        borderColor: '#1559F7',
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        minWidth: '140@ms',
+    },
+    loadMoreText: {
+        color: '#1559F7',
+        fontSize: '14@ms',
+        fontFamily: 'July-Bold',
+        fontWeight: 'bold',
     },
 });
 

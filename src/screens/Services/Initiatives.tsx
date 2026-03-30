@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, ActivityIndicator, View } from 'react-native';
+import { FlatList, StyleSheet, ActivityIndicator, View, RefreshControl, TouchableOpacity, Text } from 'react-native';
 import React from 'react';
 import InitiativesComponent from '../../components/initiativesComponent/InitiativesComponent';
 import Header from '../../components/Header';
@@ -21,10 +21,36 @@ const stripHtmlTags = (html: string) => {
 
 const Initiatives = () => {
   const languageMode = useSelector((state: RootState) => state.language.mode);
+  const [limit, setLimit] = React.useState(10);
+  const [hasMore, setHasMore] = React.useState(true);
 
-  const { data, loading } = useQuery<any>(INITIATIVES_QUERY, {
-    variables: { page: 1.0, limit: 10.0 },
+  const { data, loading, refetch } = useQuery<any>(INITIATIVES_QUERY, {
+    variables: { page: 1.0, limit: (limit * 1.0) },
+    fetchPolicy: 'cache-and-network',
   });
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  React.useEffect(() => {
+    if (data?.initiatives) {
+      if (data.initiatives.length < limit) {
+        setHasMore(false);
+      } else {
+        setHasMore(true);
+      }
+    }
+  }, [data, limit]);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
+
+  const handleLoadMore = () => {
+    if (loading || !hasMore) return;
+    setLimit(prev => prev + 10);
+  };
 
   const initiatives = data?.initiatives || [];
 
@@ -39,7 +65,7 @@ const Initiatives = () => {
         }
         showBackButton
       />
-      {loading ? (
+      {loading && initiatives.length === 0 ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#ffffff" />
         </View>
@@ -47,6 +73,14 @@ const Initiatives = () => {
         <FlatList
           data={initiatives}
           keyExtractor={item => item.id.toString()}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#155DFC']}
+              tintColor={'#155DFC'}
+            />
+          }
           renderItem={({ item }) => (
             <InitiativesComponent
               title={languageMode === 'en' ? (item.title || '') : (item.titleBn || '')}
@@ -59,6 +93,25 @@ const Initiatives = () => {
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
           style={styles.flatList}
+          ListFooterComponent={() => (
+            <>
+              {hasMore && (
+                <TouchableOpacity
+                  style={styles.loadMoreButton}
+                  onPress={handleLoadMore}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <ActivityIndicator size="small" color="#155DFC" />
+                  ) : (
+                    <Text style={styles.loadMoreText}>
+                      {languageMode === 'bn' ? 'আরো দেখুন' : 'View More'}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              )}
+            </>
+          )}
         />
       )}
     </AppBackground>
@@ -81,5 +134,24 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loadMoreButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginBottom: 24,
+    borderRadius: 25,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#155DFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    minWidth: 140,
+    marginTop: 10,
+  },
+  loadMoreText: {
+    color: '#155DFC',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });

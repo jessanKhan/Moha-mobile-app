@@ -67,6 +67,7 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        tabBarHideOnKeyboard: true,
         headerShown: false,
         headerStyle: {
           backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff',
