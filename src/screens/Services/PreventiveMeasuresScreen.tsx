@@ -72,11 +72,11 @@ const PreventiveMeasuresScreen = () => {
                     data={contents}
                     keyExtractor={item => item.id.toString()}
                     refreshControl={
-                        <RefreshControl 
-                            refreshing={refreshing} 
+                        <RefreshControl
+                            refreshing={refreshing}
                             onRefresh={onRefresh}
-                            colors={['#155DFC']} 
-                            tintColor={'#155DFC'} 
+                            colors={['#155DFC']}
+                            tintColor={'#155DFC'}
                         />
                     }
                     showsVerticalScrollIndicator={false}
@@ -85,7 +85,7 @@ const PreventiveMeasuresScreen = () => {
                         <View style={styles.separator} />
                     )}
                     renderItem={({ item, index }) => {
-                        const description = languageMode === 'en' ? item.descriptionBn : item.description;
+                        const description = languageMode === 'en' ? item.description : item.descriptionBn;
                         const items = parseHtmlItems(description);
                         const palette = (item.color && item.color.startsWith('#'))
                             ? [item.color, item.color]
