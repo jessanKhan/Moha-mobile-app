@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -277,31 +277,36 @@ const TraffickerInfoScreen = () => {
                 showBackButton={true}
             />
 
-            <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
-                {renderProgressBar()}
-                {renderStepContent()}
-                <View style={styles.spacer} />
-            </ScrollView>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={styles.flex1}
+            >
+                <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
+                    {renderProgressBar()}
+                    {renderStepContent()}
+                    <View style={styles.spacer} />
+                </ScrollView>
 
-            {/* Sticky Bottom Button */}
-            <View style={styles.bottomButtonContainer}>
-                <TouchableOpacity
-                    onPress={nextStep}
-                    activeOpacity={0.8}
-                    style={styles.submitButton}
-                    disabled={isSubmitting}
-                >
-                    {isSubmitting ? (
-                        <ActivityIndicator color="white" />
-                    ) : (
-                        <Text style={styles.submitButtonText}>
-                            {currentStep === totalSteps
-                                ? (languageMode === 'en' ? 'Submit' : 'জমা দিন')
-                                : (languageMode === 'en' ? 'Next Step' : 'পরবর্তী ধাপ')}
-                        </Text>
-                    )}
-                </TouchableOpacity>
-            </View>
+                {/* Bottom Button - Now part of flex flow (always at bottom) */}
+                <View style={styles.bottomButtonContainer}>
+                    <TouchableOpacity
+                        onPress={nextStep}
+                        activeOpacity={0.8}
+                        style={styles.submitButton}
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? (
+                            <ActivityIndicator color="white" />
+                        ) : (
+                            <Text style={styles.submitButtonText}>
+                                {currentStep === totalSteps
+                                    ? (languageMode === 'en' ? 'Submit' : 'জমা দিন')
+                                    : (languageMode === 'en' ? 'Next Step' : 'পরবর্তী ধাপ')}
+                            </Text>
+                        )}
+                    </TouchableOpacity>
+                </View>
+            </KeyboardAvoidingView>
         </AppBackground>
     );
 };
@@ -353,14 +358,12 @@ const styles = ScaledSheet.create({
         backgroundColor: '#00897B',
     },
     spacer: {
-        height: '130@vs',
+        height: '24@vs',
     },
     bottomButtonContainer: {
-        position: 'absolute',
-        bottom: '24@vs',
-        left: 0,
-        right: 0,
         paddingHorizontal: '24@ms',
+        paddingBottom: '24@vs',
+        paddingTop: '12@vs',
     },
     submitButton: {
         backgroundColor: '#1E3A8A',
