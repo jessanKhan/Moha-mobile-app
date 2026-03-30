@@ -8,7 +8,7 @@ import PreventiveMeasureComponent from '../../components/preventiveMeasure/Preve
 import AppBackground from '../../components/AppBackground';
 import { useQuery } from '@apollo/client/react';
 import { CONTENTS_BY_COMPONENT_ID } from '../../api/queries';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { BookOpen, Eye, HandFist, Plane } from 'lucide-react-native';
@@ -25,6 +25,12 @@ const PreventiveMeasuresScreen = () => {
         skip: !componentId,
         fetchPolicy: 'cache-and-network',
     });
+
+    useFocusEffect(
+        React.useCallback(() => {
+            refetch();
+        }, [refetch])
+    );
 
     const [refreshing, setRefreshing] = React.useState(false);
 
