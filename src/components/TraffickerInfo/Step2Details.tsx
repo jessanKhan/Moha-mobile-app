@@ -20,6 +20,7 @@ const Step2Details = ({ formData, setFormData }: Props) => {
         { labelBn: 'বলপূর্বক চলাচল', labelEn: 'Forced Movement', val: 'বলপূর্বক চলাচল' },
         { labelBn: 'মিথ্যা বিবাহের প্রস্তাব', labelEn: 'Fake Marriage Proposal', val: 'মিথ্যা বিবাহের প্রস্তাব' },
         { labelBn: 'শিশু পাচার', labelEn: 'Child Trafficking', val: 'শিশু পাচার' },
+        { labelBn: 'অল্প বয়সী', labelEn: 'Underage', val: 'অল্প বয়সী' },
     ];
 
     return (

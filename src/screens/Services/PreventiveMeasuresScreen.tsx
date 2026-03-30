@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import { View, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import Header from '../../components/Header';
 import QuickLinksComponent from '../../components/quickLinkComponent/QuickLinksComponent';
 import { ScaledSheet } from 'react-native-size-matters';
@@ -8,7 +8,7 @@ import PreventiveMeasureComponent from '../../components/preventiveMeasure/Preve
 import AppBackground from '../../components/AppBackground';
 import { useQuery } from '@apollo/client/react';
 import { CONTENTS_BY_COMPONENT_ID } from '../../api/queries';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { BookOpen, Eye, HandFist, Plane } from 'lucide-react-native';
@@ -20,10 +20,25 @@ const PreventiveMeasuresScreen = () => {
     const { componentId } = route.params || {};
     const languageMode = useSelector((state: RootState) => state.language.mode);
 
-    const { data, loading } = useQuery<any>(CONTENTS_BY_COMPONENT_ID, {
+    const { data, loading, refetch } = useQuery<any>(CONTENTS_BY_COMPONENT_ID, {
         variables: { componentId: parseFloat(componentId) },
         skip: !componentId,
+        fetchPolicy: 'cache-and-network',
     });
+
+    useFocusEffect(
+        React.useCallback(() => {
+            refetch();
+        }, [refetch])
+    );
+
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(async () => {
+        setRefreshing(true);
+        await refetch();
+        setRefreshing(false);
+    }, [refetch]);
 
     const parseHtmlItems = (html: string) => {
         if (!html) return [];
@@ -62,13 +77,21 @@ const PreventiveMeasuresScreen = () => {
                 <FlatList
                     data={contents}
                     keyExtractor={item => item.id.toString()}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            colors={['#155DFC']}
+                            tintColor={'#155DFC'}
+                        />
+                    }
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.listContent}
                     ItemSeparatorComponent={() => (
                         <View style={styles.separator} />
                     )}
                     renderItem={({ item, index }) => {
-                        const description = languageMode === 'en' ? item.descriptionBn : item.description;
+                        const description = languageMode === 'en' ? item.description : item.descriptionBn;
                         const items = parseHtmlItems(description);
                         const palette = (item.color && item.color.startsWith('#'))
                             ? [item.color, item.color]
