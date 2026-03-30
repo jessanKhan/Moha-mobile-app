@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import { View, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import Header from '../../components/Header';
 import QuickLinksComponent from '../../components/quickLinkComponent/QuickLinksComponent';
 import { ScaledSheet } from 'react-native-size-matters';
@@ -20,10 +20,19 @@ const PreventiveMeasuresScreen = () => {
     const { componentId } = route.params || {};
     const languageMode = useSelector((state: RootState) => state.language.mode);
 
-    const { data, loading } = useQuery<any>(CONTENTS_BY_COMPONENT_ID, {
+    const { data, loading, refetch } = useQuery<any>(CONTENTS_BY_COMPONENT_ID, {
         variables: { componentId: parseFloat(componentId) },
         skip: !componentId,
+        fetchPolicy: 'cache-and-network',
     });
+
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(async () => {
+        setRefreshing(true);
+        await refetch();
+        setRefreshing(false);
+    }, [refetch]);
 
     const parseHtmlItems = (html: string) => {
         if (!html) return [];
@@ -62,6 +71,14 @@ const PreventiveMeasuresScreen = () => {
                 <FlatList
                     data={contents}
                     keyExtractor={item => item.id.toString()}
+                    refreshControl={
+                        <RefreshControl 
+                            refreshing={refreshing} 
+                            onRefresh={onRefresh}
+                            colors={['#155DFC']} 
+                            tintColor={'#155DFC'} 
+                        />
+                    }
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.listContent}
                     ItemSeparatorComponent={() => (

@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, ActivityIndicator, View } from 'react-native';
+import { FlatList, StyleSheet, ActivityIndicator, View, RefreshControl } from 'react-native';
 import React from 'react';
 import InitiativesComponent from '../../components/initiativesComponent/InitiativesComponent';
 import Header from '../../components/Header';
@@ -22,9 +22,18 @@ const stripHtmlTags = (html: string) => {
 const Initiatives = () => {
   const languageMode = useSelector((state: RootState) => state.language.mode);
 
-  const { data, loading } = useQuery<any>(INITIATIVES_QUERY, {
+  const { data, loading, refetch } = useQuery<any>(INITIATIVES_QUERY, {
     variables: { page: 1.0, limit: 10.0 },
+    fetchPolicy: 'cache-and-network',
   });
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
   const initiatives = data?.initiatives || [];
 
@@ -47,6 +56,14 @@ const Initiatives = () => {
         <FlatList
           data={initiatives}
           keyExtractor={item => item.id.toString()}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#155DFC']}
+              tintColor={'#155DFC'}
+            />
+          }
           renderItem={({ item }) => (
             <InitiativesComponent
               title={languageMode === 'en' ? (item.title || '') : (item.titleBn || '')}
