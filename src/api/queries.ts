@@ -1,16 +1,33 @@
 import { gql } from '@apollo/client';
 
 export const NEWS_ALL_QUERY = gql`
-  query NewsAll($page: Float, $limit: Float) {
-    newsAll(page: $page, limit: $limit) {
+  query GetNews($page: Float, $limit: Float, $pageId: Float) {
+    newsAll(page: $page, limit: $limit, pageId: $pageId) {
       id
+      pageId
+      isCopiedTo
+      category
       title
       titleBn
-      subtitleBn
       subtitle
+      subtitleBn
+      description
+      descriptionBn
       date
       dateBn
+      slug
+      order
+      reporter
       thumbnailUrl
+      isMarquee
+      isPublished
+      isArchived
+      isApprovedByAdmin
+      isCommitment
+      createdAt
+      createdBy
+      updatedAt
+      updatedBy
     }
   }
 `;

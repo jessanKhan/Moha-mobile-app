@@ -26,6 +26,8 @@ import AwarenessScreen from '../screens/Services/AwarenessScreen';
 import PolicyLawScreen from '../screens/Services/PolicyLawScreen';
 import ServiceAidScreen from '../screens/Services/ServiceAidScreen';
 
+import NewsDetailsScreen from '../screens/Services/NewsDetailsScreen';
+
 const Tab = createBottomTabNavigator();
 
 const HomeStack = createNativeStackNavigator();
@@ -40,6 +42,7 @@ const HomeStackNavigator = () => {
       <HomeStack.Screen name="Initiatives" component={Initiatives} />
       <HomeStack.Screen name="Complaint" component={ComplaintScreen} />
       <HomeStack.Screen name="NewsMedia" component={NewsMediaScreen} />
+      <HomeStack.Screen name="NewsDetails" component={NewsDetailsScreen} />
       <HomeStack.Screen name="PreventiveMeasures" component={PreventiveMeasuresScreen} />
       <HomeStack.Screen name="QuickLink" component={QuickLinkScreen} />
       <HomeStack.Screen name="TraffickerInfo" component={TraffickerInfoScreen} />

@@ -4,6 +4,7 @@ import { RootState } from '../../store';
 import { View, Text, ScrollView, ImageBackground, TouchableOpacity, FlatList, Dimensions, ActivityIndicator } from 'react-native';
 import Header from '../../components/Header';
 import { Newspaper, Calendar, Clock } from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
 import { moderateScale, scale, ScaledSheet } from 'react-native-size-matters';
 import HotlineBanner from '../../components/HotlineBanner';
 import { useQuery } from '@apollo/client/react';
@@ -44,6 +45,7 @@ interface EventsData {
 
 const NewsMediaScreen = () => {
     const languageMode = useSelector((state: RootState) => state.language.mode);
+    const navigation = useNavigation<any>();
     const [activeIndex, setActiveIndex] = useState(0);
     const flatListRef = useRef<FlatList>(null);
 
@@ -95,7 +97,11 @@ const NewsMediaScreen = () => {
 
 
     const renderCarouselItem = ({ item }: { item: News }) => (
-        <View style={styles.slideItem}>
+        <TouchableOpacity
+            activeOpacity={0.9}
+            style={styles.slideItem}
+            onPress={() => navigation.navigate('NewsDetails', { item })}
+        >
             <ImageBackground
                 source={{ uri: item.thumbnailUrl }}
                 style={styles.slideImage}
@@ -107,7 +113,7 @@ const NewsMediaScreen = () => {
                     </Text>
                 </View>
             </ImageBackground>
-        </View>
+        </TouchableOpacity>
     );
 
     return (
@@ -166,6 +172,7 @@ const NewsMediaScreen = () => {
                                 <TouchableOpacity
                                     key={item.id}
                                     style={[styles.newsItem, index !== data.newsAll.length - 1 && styles.borderBottom]}
+                                    onPress={() => navigation.navigate('NewsDetails', { item })}
                                 >
                                     <View style={styles.newsItemContent}>
                                         <View style={styles.newsTextContent}>
