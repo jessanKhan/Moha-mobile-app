@@ -16,7 +16,7 @@ const BottomBanner = ({ onPress, thumbnailPath, title }: BottomBannerProps) => {
             style={styles.container}
         >
             <ImageBackground
-                source={{ uri: thumbnailPath || 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }}
+                source={{ uri: thumbnailPath }}
                 style={styles.imageBackground}
             >
                 <View style={styles.overlay} />
