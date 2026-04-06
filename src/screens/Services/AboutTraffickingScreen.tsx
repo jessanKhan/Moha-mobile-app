@@ -41,9 +41,14 @@ const AboutTraffickingScreen = () => {
     const stripHtml = (html: string) => {
         if (!html) return '';
         return html
+            .replace(/<p[^>]*>/g, '')
+            .replace(/<\/p>/g, '\n\n')
             .replace(/<li>/g, '• ')
             .replace(/<\/li>/g, '\n')
+            .replace(/<br\s*\/?>/g, '\n')
+            .replace(/&nbsp;/g, ' ')
             .replace(/<[^>]*>?/gm, '')
+            .replace(/\n{3,}/g, '\n\n')
             .trim();
     };
 
@@ -81,16 +86,36 @@ const AboutTraffickingScreen = () => {
                             style={{ marginTop: verticalScale(40) }}
                         />
                     ) : (
-                        contents.map((item: any, index: number) => {
-                            const title = languageMode === 'en' ? item.title : item.titleBn;
-                            const description = languageMode === 'en' ? item.description : item.descriptionBn;
+                        contents.map((content: any, cIndex: number) => {
+                            const cTitle = languageMode === 'en' ? content.title : content.titleBn;
+                            const cDescription = languageMode === 'en' ? content.description : content.descriptionBn;
 
                             return (
-                                <View key={item.id || index} style={styles.section}>
-                                    {title && <Text style={styles.sectionTitle}>{title}</Text>}
-                                    <Text style={styles.description}>
-                                        {stripHtml(description)}
-                                    </Text>
+                                <View key={content.id || cIndex}>
+                                    {/* Content Title/Description if any */}
+                                    {(cTitle || cDescription) && (
+                                        <View style={styles.section}>
+                                            {cTitle && <Text style={styles.sectionTitleMain}>{cTitle}</Text>}
+                                            {cDescription && (
+                                                <Text style={styles.description}>{stripHtml(cDescription)}</Text>
+                                            )}
+                                        </View>
+                                    )}
+
+                                    {/* Nested Items */}
+                                    {content.items && content.items.map((item: any, iIndex: number) => {
+                                        const iTitle = languageMode === 'en' ? item.title : item.titleBn;
+                                        const iDescription = languageMode === 'en' ? item.description : item.descriptionBn;
+
+                                        return (
+                                            <View key={item.id || iIndex} style={styles.section}>
+                                                {iTitle && <Text style={styles.sectionTitle}>{iTitle}</Text>}
+                                                {iDescription && (
+                                                    <Text style={styles.description}>{stripHtml(iDescription)}</Text>
+                                                )}
+                                            </View>
+                                        );
+                                    })}
                                 </View>
                             );
                         })
@@ -123,11 +148,18 @@ const styles = ScaledSheet.create({
     section: {
         marginBottom: '24@vs',
     },
-    sectionTitle: {
+    sectionTitleMain: {
         fontSize: '22@ms',
         fontWeight: 'bold',
         color: '#1F2937',
-        marginBottom: '12@vs',
+        fontFamily: 'July-Bold',
+        lineHeight: '20@ms',
+    },
+    sectionTitle: {
+        fontSize: '18@ms',
+        fontWeight: 'bold',
+        color: '#1F2937',
+        marginBottom: '6@vs',
         fontFamily: 'July-Bold',
         lineHeight: '30@ms',
     },

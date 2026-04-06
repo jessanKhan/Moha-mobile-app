@@ -139,11 +139,24 @@ export const CONTENTS_BY_COMPONENT_ID = gql`
       componentId
       title
       titleBn
+      subtitle
+      subtitleBn
       description
       descriptionBn
+      order
       color
       iconName
       iconUrl
+      items {
+        id
+        contentId
+        title
+        titleBn
+        subtitle
+        subtitleBn
+        description
+        descriptionBn
+      }
     }
   }
 `;
