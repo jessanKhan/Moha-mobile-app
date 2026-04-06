@@ -50,8 +50,22 @@ const NewsDetailsScreen = () => {
         );
     }
 
+    const getCategoryLabel = (cat: string) => {
+        if (!cat) return languageMode === 'en' ? 'News' : 'সংবাদ';
+        
+        const catMap: { [key: string]: { en: string; bn: string } } = {
+            'News': { en: 'News', bn: 'সংবাদ' },
+            'Update': { en: 'Update', bn: 'আপডেট' },
+            'Campaign': { en: 'Campaign', bn: 'ক্যাম্পেইন' },
+            'Assembly': { en: 'Assembly', bn: 'অ্যাসেম্বলি' },
+        };
+
+        const normalizedCat = cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
+        return catMap[normalizedCat] ? (languageMode === 'en' ? catMap[normalizedCat].en : catMap[normalizedCat].bn) : cat;
+    };
+
     const title = languageMode === 'en' ? newsItem?.title : newsItem?.titleBn;
-    const category = newsItem?.category || (languageMode === 'en' ? 'News' : 'সংবাদ');
+    const category = getCategoryLabel(newsItem?.category);
     const date = languageMode === 'en' ? (newsItem?.date ? new Date(newsItem.date).toLocaleDateString() : '') : (newsItem?.dateBn || (newsItem?.date ? new Date(newsItem.date).toLocaleDateString() : ''));
     const description = languageMode === 'en' ? newsItem?.description : newsItem?.descriptionBn;
 
