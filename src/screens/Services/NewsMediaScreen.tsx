@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { View, Text, ScrollView, ImageBackground, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import { View, Text, ScrollView, ImageBackground, TouchableOpacity, FlatList, Dimensions, ActivityIndicator } from 'react-native';
 import Header from '../../components/Header';
 import { Newspaper, Calendar, Clock } from 'lucide-react-native';
 import { moderateScale, scale, ScaledSheet } from 'react-native-size-matters';
@@ -47,15 +47,27 @@ const NewsMediaScreen = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const flatListRef = useRef<FlatList>(null);
 
-    const queryVariables = React.useMemo(() => ({ page: 1, limit: 10 }), []);
+    const [limit, setLimit] = useState(10);
 
     const { data, loading, error } = useQuery<NewsData>(NEWS_ALL_QUERY, {
-        variables: queryVariables,
+        variables: { page: 1, limit },
+        fetchPolicy: 'cache-and-network',
     });
 
+    const handleViewMore = () => {
+        setLimit(prev => prev + 10);
+    };
+
+    const [eventsLimit, setEventsLimit] = useState(10);
+
     const { data: eventsData, loading: eventsLoading } = useQuery<EventsData>(GET_EVENTS_QUERY, {
-        variables: { page: 1, limit: 10 },
+        variables: { page: 1, limit: eventsLimit },
+        fetchPolicy: 'cache-and-network',
     });
+
+    const handleViewMoreEvents = () => {
+        setEventsLimit(prev => prev + 10);
+    };
 
     const onViewRef = useRef(({ viewableItems }: any) => {
         if (viewableItems.length > 0) {
@@ -180,16 +192,27 @@ const NewsMediaScreen = () => {
                         )}
                     </View>
 
-                    <TouchableOpacity activeOpacity={0.8} style={styles.viewMoreBtnContainer}>
-                        <LinearGradient
-                            colors={['#155DFC', '#1447E6']}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                            style={styles.viewMoreBtn}
+                    {data?.newsAll && data.newsAll.length >= limit && (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={styles.viewMoreBtnContainer}
+                            onPress={handleViewMore}
+                            disabled={loading}
                         >
-                            <Text style={styles.viewMoreText}>{languageMode === 'en' ? "View More" : "আরো ও দেখুন"}</Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
+                            <LinearGradient
+                                colors={['#155DFC', '#1447E6']}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                                style={styles.viewMoreBtn}
+                            >
+                                {loading && data?.newsAll && data.newsAll.length > 0 ? (
+                                    <ActivityIndicator size="small" color="#fff" />
+                                ) : (
+                                    <Text style={styles.viewMoreText}>{languageMode === 'en' ? "View More" : "আরো দেখুন"}</Text>
+                                )}
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    )}
                 </View>
 
                 <View style={styles.eventsSection}>
@@ -229,6 +252,27 @@ const NewsMediaScreen = () => {
                             </View>
                         )}
                     </LinearGradient>
+                    {eventsData?.events && eventsData.events.length >= eventsLimit && (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={[styles.viewMoreBtnContainer, { marginHorizontal: 0, marginTop: moderateScale(16), marginBottom: 0 }]}
+                            onPress={handleViewMoreEvents}
+                            disabled={eventsLoading}
+                        >
+                            <LinearGradient
+                                colors={['#009689', '#00786F']}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                                style={styles.viewMoreBtn}
+                            >
+                                {eventsLoading && eventsData?.events && eventsData.events.length > 0 ? (
+                                    <ActivityIndicator size="small" color="#fff" />
+                                ) : (
+                                    <Text style={styles.viewMoreText}>{languageMode === 'en' ? "View More" : "আরো দেখুন"}</Text>
+                                )}
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    )}
                 </View>
 
                 <View style={styles.footerHotline}>
