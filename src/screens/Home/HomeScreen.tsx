@@ -112,6 +112,7 @@ const HomeScreen = () => {
                 onPress={() =>
                   navigation.navigate('AboutTrafficking', {
                     componentId: aboutTraffickingComponent?.id,
+                    thumbnailPath: aboutTraffickingComponent?.thumbnailPath,
                   })
                 }
                 thumbnailPath={aboutTraffickingComponent?.thumbnailPath}
