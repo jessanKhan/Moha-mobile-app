@@ -86,7 +86,9 @@ const HomeScreen = () => {
         }
       />
       <FlatList
-        data={(componentsData?.components || []).filter((item: any) => item.isMobile === 'YES')}
+        data={(componentsData?.components || []).filter(
+          (item: any) => item.isMobile === 'YES' && item.mobileRouteName !== 'AboutTrafficking'
+        )}
         renderItem={({ item }) => (
           <ServiceCard
             title={languageMode === 'bn' ? item.labelBn : item.label}
@@ -99,12 +101,30 @@ const HomeScreen = () => {
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
         ListHeaderComponent={renderHeader}
-        ListFooterComponent={() => (
-          <View style={styles.footer}>
-            <BottomBanner onPress={() => navigation.navigate('AboutTrafficking')} />
-            <HotlineBar />
-          </View>
-        )}
+        ListFooterComponent={() => {
+          const aboutTraffickingComponent = (componentsData?.components || []).find(
+            (item: any) => item.mobileRouteName === 'AboutTrafficking' && item.isMobile === 'YES'
+          );
+
+          return (
+            <View style={styles.footer}>
+              <BottomBanner
+                onPress={() =>
+                  navigation.navigate('AboutTrafficking', {
+                    componentId: aboutTraffickingComponent?.id,
+                  })
+                }
+                thumbnailPath={aboutTraffickingComponent?.thumbnailPath}
+                title={
+                  languageMode === 'bn'
+                    ? aboutTraffickingComponent?.labelBn
+                    : aboutTraffickingComponent?.label
+                }
+              />
+              <HotlineBar />
+            </View>
+          );
+        }}
         showsVerticalScrollIndicator={false}
       />
     </AppBackground>
