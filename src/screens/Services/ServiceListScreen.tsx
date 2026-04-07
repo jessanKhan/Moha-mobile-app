@@ -60,10 +60,10 @@ const ServiceListScreen = () => {
 
     return (
         <AppBackground>
-            <Header 
-                title={title || 'Services'} 
-                subtitle={subtitle || 'নিরাপদভাবে নিজ দেশে ফেরত যাওয়া'} 
-                showBackButton={true} 
+            <Header
+                title={title || 'Services'}
+                subtitle={subtitle || 'নিরাপদভাবে নিজ দেশে ফেরত যাওয়া'}
+                showBackButton={true}
             />
 
             <View style={styles.searchContainer}>
@@ -77,9 +77,9 @@ const ServiceListScreen = () => {
                         onChangeText={setSearchQuery}
                     />
                 </View>
-                <TouchableOpacity activeOpacity={0.7} style={styles.filterButton}>
+                {/* <TouchableOpacity activeOpacity={0.7} style={styles.filterButton}>
                     <ListFilter color="#374151" size={moderateScale(20)} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
 
             <FlatList
