@@ -33,13 +33,16 @@ const TraffickerInfoScreen = () => {
         lastSeen: '',
         activities: [] as string[],
         eventPlace: '',
+        eventDate: new Date().toLocaleDateString(),
+        eventTime: '',
         selectPlace: '',
         address: '',
         description: '',
         hasEvidence: false,
         identityPreference: 'anonymous',
         evidenceFiles: [] as any[],
-        photo: null as any
+        photo: null as any,
+        isConfirmed: false
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -211,13 +214,16 @@ const TraffickerInfoScreen = () => {
                         lastSeen: '',
                         activities: [] as string[],
                         eventPlace: '',
+                        eventDate: new Date().toLocaleDateString(),
+                        eventTime: '',
                         selectPlace: '',
                         address: '',
                         description: '',
                         hasEvidence: false,
                         identityPreference: 'anonymous',
                         evidenceFiles: [] as any[],
-                        photo: null as any
+                        photo: null as any,
+                        isConfirmed: false
                     });
                     setCurrentStep(1);
                     navigation.navigate('HomeScreen');
@@ -262,7 +268,7 @@ const TraffickerInfoScreen = () => {
             case 3: return <Step3Location formData={formData} setFormData={setFormData} />;
             case 4: return <Step4Evidence formData={formData} onPickFile={handleFilePick} setFormData={setFormData} />;
             case 5: return <Step5Identity formData={formData} setFormData={setFormData} />;
-            case 6: return <Step6Review formData={formData} />;
+            case 6: return <Step6Review formData={formData} setFormData={setFormData} />;
             default: return <Step1BasicInfo formData={formData} setFormData={setFormData} onPickPhoto={handlePhotoPick} />;
         }
     };
@@ -280,8 +286,8 @@ const TraffickerInfoScreen = () => {
                 style={styles.flex1}
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
             >
-                <ScrollView 
-                    style={styles.flex1} 
+                <ScrollView
+                    style={styles.flex1}
                     contentContainerStyle={styles.scrollContent}
                     showsVerticalScrollIndicator={false}
                 >
@@ -289,9 +295,9 @@ const TraffickerInfoScreen = () => {
                     <View style={styles.stepContentContainer}>
                         {renderStepContent()}
                     </View>
-                    
+
                     <View style={styles.footerSpacer} />
-                    
+
                     {/* Navigation Buttons */}
                     <View style={styles.navigationButtonsContainer}>
                         {currentStep > 1 && (
@@ -306,21 +312,25 @@ const TraffickerInfoScreen = () => {
                                 </Text>
                             </TouchableOpacity>
                         )}
-                        
+
                         <TouchableOpacity
                             onPress={nextStep}
                             activeOpacity={0.8}
                             style={[
-                                styles.navButton, 
+                                styles.navButton,
                                 styles.submitButton,
-                                currentStep === 1 && { width: '100%' }
+                                currentStep === 1 && { width: '100%' },
+                                currentStep === totalSteps && !formData.isConfirmed && { backgroundColor: '#CBD5E1', elevation: 0, shadowOpacity: 0 }
                             ]}
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || (currentStep === totalSteps && !formData.isConfirmed)}
                         >
                             {isSubmitting ? (
                                 <ActivityIndicator color="white" />
                             ) : (
-                                <Text style={styles.submitButtonText}>
+                                <Text style={[
+                                    styles.submitButtonText,
+                                    currentStep === totalSteps && !formData.isConfirmed && { color: '#94A3B8' }
+                                ]}>
                                     {currentStep === totalSteps
                                         ? (languageMode === 'en' ? 'Submit' : 'জমা দিন')
                                         : (languageMode === 'en' ? 'Next Step' : 'পরবর্তী ধাপ')}
