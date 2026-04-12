@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, LayoutAnimation, Platform, UIManager, ActivityIndicator, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, LayoutAnimation, Platform, UIManager, ActivityIndicator, Image, RefreshControl } from 'react-native';
 import Header from '../../components/Header';
 import { ChevronDown, ChevronUp, Scale, Gavel } from 'lucide-react-native';
 import HotlineBanner from '../../components/HotlineBanner';
@@ -7,6 +7,7 @@ import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 import AppBackground from '../../components/AppBackground';
 import { useQuery } from '@apollo/client/react';
 import { POLICIES_QUERY } from '../../api/queries';
+import { useRoute, useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 
@@ -37,10 +38,24 @@ const PolicyLawScreen = () => {
     const [limit, setLimit] = useState(10);
     const [hasMore, setHasMore] = useState(true);
 
-    const { data: initialData, loading, error } = useQuery<PoliciesData>(POLICIES_QUERY, {
+    const { data: initialData, loading, error, refetch } = useQuery<PoliciesData>(POLICIES_QUERY, {
         variables: { page: 1, limit },
-        fetchPolicy: 'network-only',
+        fetchPolicy: 'cache-and-network',
     });
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            refetch();
+        }, [refetch])
+    );
+
+    const onRefresh = React.useCallback(async () => {
+        setRefreshing(true);
+        await refetch();
+        setRefreshing(false);
+    }, [refetch]);
 
     useEffect(() => {
         if (initialData?.policies) {
@@ -130,7 +145,19 @@ const PolicyLawScreen = () => {
                 showBackButton={true}
             />
 
-            <ScrollView style={styles.flex1} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                style={styles.flex1}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        colors={['#155DFC']}
+                        tintColor={'#155DFC'}
+                    />
+                }
+            >
                 {loading && !initialData?.policies ? (
                     <ActivityIndicator size="large" color="#1559F7" style={{ marginTop: 50 }} />
                 ) : error ? (

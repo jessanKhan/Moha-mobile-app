@@ -355,7 +355,7 @@ const styles = ScaledSheet.create({
         flex: 1,
     },
     progressContainer: {
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: 'rgba(223, 236, 253, 0.8)',
         marginHorizontal: '16@ms',
         marginTop: '24@vs',
         padding: '16@ms',
@@ -366,7 +366,7 @@ const styles = ScaledSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 10,
-        elevation: 2,
+        // elevation: 2,
     },
     progressInfo: {
         flexDirection: 'row',
@@ -388,7 +388,7 @@ const styles = ScaledSheet.create({
     },
     progressBarBackground: {
         height: '8@vs',
-        backgroundColor: '#F3F4FB',
+        backgroundColor: '#e1eafdff',
         borderRadius: '4@vs',
         overflow: 'hidden',
     },
