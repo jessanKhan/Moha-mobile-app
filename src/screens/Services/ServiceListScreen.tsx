@@ -70,7 +70,7 @@ const ServiceListScreen = () => {
                 <View style={styles.searchBarWrapper}>
                     <Search color="#9CA3AF" size={moderateScale(20)} />
                     <TextInput
-                        placeholder="সেবা বা এলাকা লিখুন"
+                        placeholder={languageMode === 'en' ? "Search service or area" : "সেবা বা এলাকা লিখুন"}
                         placeholderTextColor="#9CA3AF"
                         style={styles.textInput}
                         value={searchQuery}

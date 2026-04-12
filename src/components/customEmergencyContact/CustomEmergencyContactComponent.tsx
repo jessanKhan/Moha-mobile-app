@@ -45,9 +45,9 @@ const CustomEmergencyContactComponent: FC<
           style={styles.hotlineBtn}
           onPress={() => {
             if (onPress) {
-                onPress();
+              onPress();
             } else if (hotLineNumber) {
-                Linking.openURL(`tel:${hotLineNumber}`);
+              Linking.openURL(`tel:${hotLineNumber}`);
             }
           }}
           activeOpacity={0.7}
@@ -70,7 +70,7 @@ const styles = ScaledSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
-    width: '95%',
+    width: '100%',
     alignSelf: 'center',
   },
 

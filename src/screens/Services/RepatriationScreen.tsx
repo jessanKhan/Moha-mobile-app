@@ -12,7 +12,11 @@ import { Search, ListFilter, MapPin, Phone } from 'lucide-react-native';
 import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 import AppBackground from '../../components/AppBackground';
 
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+
 const RepatriationScreen = () => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
     const [searchQuery, setSearchQuery] = useState('');
 
     const services = [
@@ -44,8 +48,8 @@ const RepatriationScreen = () => {
     return (
         <AppBackground>
             <Header
-                title="প্রত্যাবর্তন"
-                subtitle="নিরাপদভাবে নিজ দেশে ফেরত যাওয়া"
+                title={languageMode === 'en' ? "Repatriation" : "প্রত্যাবর্তন"}
+                subtitle={languageMode === 'en' ? "Returning safely to one's own country" : "নিরাপদভাবে নিজ দেশে ফেরত যাওয়া"}
                 showBackButton={true}
             />
 
@@ -53,7 +57,7 @@ const RepatriationScreen = () => {
                 <View style={styles.searchBarWrapper}>
                     <Search color="#9CA3AF" size={moderateScale(20)} />
                     <TextInput
-                        placeholder="সেবা বা এলাকা লিখুন"
+                        placeholder={languageMode === 'en' ? "Search service or area" : "সেবা বা এলাকা লিখুন"}
                         placeholderTextColor="#9CA3AF"
                         style={styles.textInput}
                         value={searchQuery}

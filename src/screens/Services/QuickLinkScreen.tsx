@@ -3,7 +3,6 @@ import { View, FlatList, ActivityIndicator } from 'react-native';
 import Header from '../../components/Header';
 import { ExternalLink } from 'lucide-react-native';
 import { moderateScale } from 'react-native-size-matters';
-import CustomEmergencyContactComponent from '../../components/customEmergencyContact/CustomEmergencyContactComponent';
 import QuickLinksComponent from '../../components/quickLinkComponent/QuickLinksComponent';
 import LinkComponent from '../../components/quickLinkComponent/LinkComponent';
 import AppBackground from '../../components/AppBackground';
@@ -12,6 +11,7 @@ import { CATEGORY_BY_COMPONENT_ID, ALL_QUICK_LINKS } from '../../api/queries';
 import { useRoute } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import HotlineBar from '../../components/Home/HotlineBar';
 
 const QuickLinkScreen = () => {
   const route = useRoute<any>();
@@ -94,10 +94,9 @@ const QuickLinkScreen = () => {
           />
         )}
         ListFooterComponent={() => (
-          <CustomEmergencyContactComponent
-            title={languageMode === 'bn' ? "২৪/৭ জরুরি হটলাইন" : "24/7 Emergency Hotline"}
-            hotLineNumber="৯৯৯"
-          />
+          <View style={{ marginHorizontal: -moderateScale(16) }}>
+            <HotlineBar />
+          </View>
         )}
       />
     </AppBackground>

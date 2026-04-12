@@ -35,7 +35,7 @@ const QuickLinksComponent: FC<QuickLinksComponentProps> = ({
                 <CustomCommonIcon
                     icon={headerIcon}
                     imageUrl={logoUrl}
-                    bgColor="rgba(255, 255, 255, 0.2)"
+                    // bgColor="rgba(233, 10, 10, 0.2)"
                     iconColor="#ffffff"
                     size={moderateScale(20)}
                 />

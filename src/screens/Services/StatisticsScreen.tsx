@@ -319,8 +319,8 @@ const StatisticsScreen = () => {
                             />
 
                             <SelectDropdown
-                                label="X-axis"
-                                placeholder="X-axis"
+                                label={languageMode === 'en' ? "X-axis" : "এক্স-অক্ষ (X-axis)"}
+                                placeholder={languageMode === 'en' ? "X-axis" : "এক্স-অক্ষ"}
                                 options={categoricalColumns}
                                 selectedValue={xKey}
                                 onSelect={setXKey}
@@ -328,8 +328,8 @@ const StatisticsScreen = () => {
                             />
 
                             <SelectDropdown
-                                label="Y-axis"
-                                placeholder="Y-axis"
+                                label={languageMode === 'en' ? "Y-axis" : "ওয়াই-অক্ষ (Y-axis)"}
+                                placeholder={languageMode === 'en' ? "Y-axis" : "ওয়াই-অক্ষ"}
                                 options={numericColumns}
                                 selectedValue={yKey}
                                 onSelect={setYKey}
