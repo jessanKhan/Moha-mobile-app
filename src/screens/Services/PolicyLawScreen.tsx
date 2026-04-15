@@ -74,7 +74,7 @@ const PolicyLawScreen = () => {
                 {/* Tabs */}
                 <View style={styles.tabsContainer}>
                     {loadingCategories ? (
-                        <ActivityIndicator size="small" color="#0F172A" style={{ paddingVertical: moderateScale(8) }} />
+                        <ActivityIndicator size="small" color="#155DFC" style={{ paddingVertical: moderateScale(8) }} />
                     ) : categories.length === 0 ? (
                         <Text style={{ textAlign: 'center', color: '#4B5563' }}>No categories found.</Text>
                     ) : (
@@ -107,7 +107,7 @@ const PolicyLawScreen = () => {
 
                     {/* Cards */}
                     {loadingPolicies ? (
-                        <ActivityIndicator size="large" color="#0F172A" style={{ marginTop: 20 }} />
+                        <ActivityIndicator size="large" color="#155DFC" style={{ marginTop: 20 }} />
                     ) : policies.length === 0 ? (
                         <Text style={{ textAlign: 'center', color: '#4B5563', marginTop: 20 }}>
                             {languageMode === 'bn' ? 'কোনো তথ্য পাওয়া যায়নি।' : 'No data found.'}
@@ -162,7 +162,7 @@ const styles = ScaledSheet.create({
         justifyContent: 'center',
     },
     tabButtonActive: {
-        backgroundColor: '#0F172A',
+        backgroundColor: '#1E3A8A',
     },
     tabText: {
         color: '#4B5563',
@@ -183,7 +183,7 @@ const styles = ScaledSheet.create({
     },
     sectionTitle: {
         fontSize: '20@ms',
-        color: '#0F172A',
+        color: '#000000ff',
         fontFamily: 'July-Bold',
         fontWeight: 'bold',
         marginBottom: '16@vs',
@@ -201,7 +201,7 @@ const styles = ScaledSheet.create({
     },
     cardTitle: {
         fontSize: '16@ms',
-        color: '#0F172A',
+        color: '#1F2937',
         fontFamily: 'July-Bold',
         fontWeight: '600',
         marginBottom: '12@vs',
@@ -216,12 +216,12 @@ const styles = ScaledSheet.create({
         marginRight: '6@ms',
     },
     dateText: {
-        color: '#4B5563',
+        color: '#6B7280',
         fontSize: '12@ms',
         fontFamily: 'July-Regular',
     },
     pdfButton: {
-        backgroundColor: '#0F172A',
+        backgroundColor: '#1E3A8A',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
