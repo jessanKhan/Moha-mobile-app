@@ -6,7 +6,7 @@ import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 import AppBackground from '../../components/AppBackground';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { GET_CATEGORIES_OF_POLICY } from '../../api/queries';
+import { GET_CATEGORIES_OF_POLICY, GET_POLICIES_BY_CATEGORY } from '../../api/queries';
 import { useQuery } from '@apollo/client/react';
 
 if (Platform.OS === 'android') {
@@ -25,29 +25,24 @@ interface CategoriesData {
     categoriesOfPolicy: PolicyCategory[];
 }
 
-const MOCK_DATA = [
-    {
-        id: 1,
-        title: 'Received Digital Data Sovereignty Standards',
-        date: 'Jan 15, 2024'
-    },
-    {
-        id: 2,
-        title: 'Received Digital Data Sovereignty Standards',
-        date: 'Jan 15, 2024'
-    },
-    {
-        id: 3,
-        title: 'Received Digital Data Sovereignty Standards',
-        date: 'Jan 15, 2024'
-    }
-];
+interface PolicyDetail {
+    id: number;
+    title: string;
+    titleBn: string;
+    attachmentUrl: string;
+    date: string;
+    dateBn: string;
+}
+
+interface PoliciesByCategoryData {
+    policiesByCategory: PolicyDetail[];
+}
 
 const PolicyLawScreen = () => {
     const languageMode = useSelector((state: RootState) => state.language.mode);
     const [activeTab, setActiveTab] = useState(0);
 
-    const { data: categoriesData, loading: loadingCategories, error } = useQuery<CategoriesData>(GET_CATEGORIES_OF_POLICY, {
+    const { data: categoriesData, loading: loadingCategories } = useQuery<CategoriesData>(GET_CATEGORIES_OF_POLICY, {
         fetchPolicy: 'cache-and-network',
     });
 
@@ -56,6 +51,16 @@ const PolicyLawScreen = () => {
     const currentTabName = categories[activeTab]
         ? (languageMode === 'bn' ? categories[activeTab].nameBn : categories[activeTab].name)
         : '';
+
+    const activeCategoryQueryName = categories[activeTab]?.name || 'Legal';
+
+    const { data: policiesData, loading: loadingPolicies } = useQuery<PoliciesByCategoryData>(GET_POLICIES_BY_CATEGORY, {
+        variables: { category: activeCategoryQueryName },
+        skip: categories.length === 0,
+        fetchPolicy: 'cache-and-network',
+    });
+
+    const policies = policiesData?.policiesByCategory || [];
 
     return (
         <AppBackground>
@@ -101,21 +106,32 @@ const PolicyLawScreen = () => {
                     )}
 
                     {/* Cards */}
-                    {MOCK_DATA.map((item) => (
-                        <View key={item.id} style={styles.card}>
-                            <Text style={styles.cardTitle}>{item.title}</Text>
+                    {loadingPolicies ? (
+                        <ActivityIndicator size="large" color="#0F172A" style={{ marginTop: 20 }} />
+                    ) : policies.length === 0 ? (
+                        <Text style={{ textAlign: 'center', color: '#4B5563', marginTop: 20 }}>
+                            {languageMode === 'bn' ? 'কোনো তথ্য পাওয়া যায়নি।' : 'No data found.'}
+                        </Text>
+                    ) : (
+                        policies.map((item) => (
+                            <View key={item.id} style={styles.card}>
+                                <Text style={styles.cardTitle}>{languageMode === 'bn' ? item.titleBn : item.title}</Text>
 
-                            <View style={styles.dateContainer}>
-                                <Calendar size={moderateScale(14)} color="#4B5563" style={styles.calendarIcon} />
-                                <Text style={styles.dateText}>Effective: {item.date}</Text>
+                                <View style={styles.dateContainer}>
+                                    <Calendar size={moderateScale(14)} color="#4B5563" style={styles.calendarIcon} />
+                                    <Text style={styles.dateText}>
+                                        {languageMode === 'bn' ? 'কার্যকর: ' : 'Effective: '}
+                                        {item.date ? item.date : (languageMode === 'bn' ? 'প্রযোজ্য নয়' : 'N/A')}
+                                    </Text>
+                                </View>
+
+                                <TouchableOpacity style={styles.pdfButton} activeOpacity={0.8}>
+                                    <FileText size={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
+                                    <Text style={styles.pdfButtonText}>{languageMode === 'bn' ? 'পিডিএফ দেখুন' : 'View PDF'}</Text>
+                                </TouchableOpacity>
                             </View>
-
-                            <TouchableOpacity style={styles.pdfButton} activeOpacity={0.8}>
-                                <FileText size={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
-                                <Text style={styles.pdfButtonText}>View PDF</Text>
-                            </TouchableOpacity>
-                        </View>
-                    ))}
+                        ))
+                    )}
                 </ScrollView>
             </View>
         </AppBackground>

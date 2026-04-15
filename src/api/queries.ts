@@ -349,3 +349,16 @@ export const GET_CATEGORIES_OF_POLICY = gql`
     }
   }
 `;
+
+export const GET_POLICIES_BY_CATEGORY = gql`
+  query GetPoliciesByCategory($category: String!) {
+    policiesByCategory(category: $category) {
+      id
+      title
+      titleBn
+      attachmentUrl
+      date
+      dateBn
+    }
+  }
+`;
