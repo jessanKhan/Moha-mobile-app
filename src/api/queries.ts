@@ -338,3 +338,14 @@ export const REPORT_TABLES_QUERY = gql`
     }
   }
 `;
+
+
+export const GET_CATEGORIES_OF_POLICY = gql`
+  query GetCategoriesOfPolicy {
+    categoriesOfPolicy {
+      id
+      name
+      nameBn
+    }
+  }
+`;

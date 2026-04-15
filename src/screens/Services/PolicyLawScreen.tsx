@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Platform, UIManager } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Platform, UIManager, ActivityIndicator } from 'react-native';
 import Header from '../../components/Header';
 import { Calendar, FileText } from 'lucide-react-native';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 import AppBackground from '../../components/AppBackground';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { GET_CATEGORIES_OF_POLICY } from '../../api/queries';
+import { useQuery } from '@apollo/client/react';
 
 if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -13,7 +15,15 @@ if (Platform.OS === 'android') {
     }
 }
 
-const TABS = ['Rules', 'Legal', 'Policy', 'Insurance', 'Compliance'];
+interface PolicyCategory {
+    id: number;
+    name: string;
+    nameBn: string;
+}
+
+interface CategoriesData {
+    categoriesOfPolicy: PolicyCategory[];
+}
 
 const MOCK_DATA = [
     {
@@ -37,38 +47,58 @@ const PolicyLawScreen = () => {
     const languageMode = useSelector((state: RootState) => state.language.mode);
     const [activeTab, setActiveTab] = useState(0);
 
+    const { data: categoriesData, loading: loadingCategories, error } = useQuery<CategoriesData>(GET_CATEGORIES_OF_POLICY, {
+        fetchPolicy: 'cache-and-network',
+    });
+
+    const categories = categoriesData?.categoriesOfPolicy || [];
+
+    const currentTabName = categories[activeTab]
+        ? (languageMode === 'bn' ? categories[activeTab].nameBn : categories[activeTab].name)
+        : '';
+
     return (
         <AppBackground>
             <Header
                 title={languageMode === 'bn' ? "নীতি ও আইন" : "Policy & Law"}
+                subtitle={languageMode === 'en' ? 'Legal information and guidelines' : 'আইনি তথ্য এবং নির্দেশনা'}
                 showBackButton={true}
             />
 
             <View style={styles.container}>
                 {/* Tabs */}
                 <View style={styles.tabsContainer}>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsScroll}>
-                        {TABS.map((tab, index) => {
-                            const isActive = activeTab === index;
-                            return (
-                                <TouchableOpacity
-                                    key={index}
-                                    style={[styles.tabButton, isActive && styles.tabButtonActive]}
-                                    onPress={() => setActiveTab(index)}
-                                    activeOpacity={0.7}
-                                >
-                                    <Text style={[styles.tabText, isActive && styles.tabTextActive]}>
-                                        {tab}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </ScrollView>
+                    {loadingCategories ? (
+                        <ActivityIndicator size="small" color="#0F172A" style={{ paddingVertical: moderateScale(8) }} />
+                    ) : categories.length === 0 ? (
+                        <Text style={{ textAlign: 'center', color: '#4B5563' }}>No categories found.</Text>
+                    ) : (
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsScroll}>
+                            {categories.map((cat, index) => {
+                                const isActive = activeTab === index;
+                                const tabName = languageMode === 'bn' ? cat.nameBn : cat.name;
+                                return (
+                                    <TouchableOpacity
+                                        key={cat.id || index}
+                                        style={[styles.tabButton, isActive && styles.tabButtonActive]}
+                                        onPress={() => setActiveTab(index)}
+                                        activeOpacity={0.7}
+                                    >
+                                        <Text style={[styles.tabText, isActive && styles.tabTextActive]}>
+                                            {tabName}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </ScrollView>
+                    )}
                 </View>
 
                 <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
                     {/* Section Title */}
-                    <Text style={styles.sectionTitle}>{TABS[activeTab]}</Text>
+                    {!loadingCategories && categories.length > 0 && (
+                        <Text style={styles.sectionTitle}>{currentTabName}</Text>
+                    )}
 
                     {/* Cards */}
                     {MOCK_DATA.map((item) => (
@@ -100,6 +130,7 @@ const styles = ScaledSheet.create({
     tabsContainer: {
         paddingVertical: '16@vs',
         backgroundColor: '#F9FAFB',
+        minHeight: '64@vs',
     },
     tabsScroll: {
         paddingHorizontal: '16@ms',
