@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Platform, UIManager, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Platform, UIManager, ActivityIndicator, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Header from '../../components/Header';
 import { Calendar, FileText } from 'lucide-react-native';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
@@ -39,6 +40,7 @@ interface PoliciesByCategoryData {
 }
 
 const PolicyLawScreen = () => {
+    const navigation = useNavigation<any>();
     const languageMode = useSelector((state: RootState) => state.language.mode);
     const [activeTab, setActiveTab] = useState(0);
 
@@ -62,6 +64,20 @@ const PolicyLawScreen = () => {
 
     const policies = policiesData?.policiesByCategory || [];
 
+    const handleViewPdf = (item: PolicyDetail) => {
+        if (item.attachmentUrl) {
+            navigation.navigate('PdfViewer', {
+                url: item.attachmentUrl,
+                title: languageMode === 'bn' ? item.titleBn : item.title
+            });
+        } else {
+            Alert.alert(
+                languageMode === 'bn' ? "সতর্কতা" : "Warning",
+                languageMode === 'bn' ? "পিডিএফ ফাইল পাওয়া যায়নি।" : "PDF file not found."
+            );
+        }
+    };
+
     return (
         <AppBackground>
             <Header
@@ -74,7 +90,7 @@ const PolicyLawScreen = () => {
                 {/* Tabs */}
                 <View style={styles.tabsContainer}>
                     {loadingCategories ? (
-                        <ActivityIndicator size="small" color="#155DFC" style={{ paddingVertical: moderateScale(8) }} />
+                        <ActivityIndicator size="small" color="#1E3A8A" style={{ paddingVertical: moderateScale(8) }} />
                     ) : categories.length === 0 ? (
                         <Text style={{ textAlign: 'center', color: '#4B5563' }}>No categories found.</Text>
                     ) : (
@@ -107,7 +123,7 @@ const PolicyLawScreen = () => {
 
                     {/* Cards */}
                     {loadingPolicies ? (
-                        <ActivityIndicator size="large" color="#155DFC" style={{ marginTop: 20 }} />
+                        <ActivityIndicator size="large" color="#1E3A8A" style={{ marginTop: 20 }} />
                     ) : policies.length === 0 ? (
                         <Text style={{ textAlign: 'center', color: '#4B5563', marginTop: 20 }}>
                             {languageMode === 'bn' ? 'কোনো তথ্য পাওয়া যায়নি।' : 'No data found.'}
@@ -125,7 +141,11 @@ const PolicyLawScreen = () => {
                                     </Text>
                                 </View>
 
-                                <TouchableOpacity style={styles.pdfButton} activeOpacity={0.8}>
+                                <TouchableOpacity
+                                    style={styles.pdfButton}
+                                    activeOpacity={0.8}
+                                    onPress={() => handleViewPdf(item)}
+                                >
                                     <FileText size={moderateScale(16)} color="#FFFFFF" strokeWidth={2} />
                                     <Text style={styles.pdfButtonText}>{languageMode === 'bn' ? 'পিডিএফ দেখুন' : 'View PDF'}</Text>
                                 </TouchableOpacity>

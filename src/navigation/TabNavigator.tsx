@@ -27,6 +27,7 @@ import TrainingScreen from '../screens/Services/TrainingScreen';
 import AwarenessScreen from '../screens/Services/AwarenessScreen';
 import PolicyLawScreen from '../screens/Services/PolicyLawScreen';
 import ServiceAidScreen from '../screens/Services/ServiceAidScreen';
+import PdfViewerScreen from '../screens/Services/PdfViewerScreen';
 
 import NewsDetailsScreen from '../screens/Services/NewsDetailsScreen';
 
@@ -59,6 +60,7 @@ const HomeStackNavigator = () => {
       <HomeStack.Screen name="SocialIntegration" component={SocialIntegrationScreen} />
       <HomeStack.Screen name="Training" component={TrainingScreen} />
       <HomeStack.Screen name="Awareness" component={AwarenessScreen} />
+      <HomeStack.Screen name="PdfViewer" component={PdfViewerScreen} />
     </HomeStack.Navigator>
   );
 };
