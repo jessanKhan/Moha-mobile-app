@@ -388,36 +388,51 @@ const StatisticsScreen = () => {
                                         xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(9), width: scale(50), textAlign: 'center' }}
                                     />
                                 )}
-                                {chartType === 'pie' && (
-                                    <View style={styles.pieContainer}>
-                                        <PieChart
-                                            data={table.rows.map((row: any, index: number) => ({
-                                                value: safeNumber(row.data[yKey]?.en),
-                                                text: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-")),
-                                                color: COLORS[index % COLORS.length]
-                                            }))}
-                                            donut={false}
-                                            showExternalLabels
-                                            radius={scale(60)}
-                                            labelsPosition="outward"
-                                            externalLabelComponent={(item: any) => {
-                                                const isRightSide = (item.shiftTextX || 0) > 0;
-                                                return (
-                                                    <SvgText
-                                                        fill={"#1F2937"}
-                                                        fontSize={moderateScale(10)}
-                                                        fontWeight="bold"
-                                                        x={item.shiftTextX || 0}
-                                                        y={item.shiftTextY || 0}
-                                                        textAnchor={isRightSide ? "start" : "end"}
-                                                    >
-                                                        {item.text}
-                                                    </SvgText>
-                                                );
-                                            }}
-                                        />
-                                    </View>
-                                )}
+                                {chartType === 'pie' && (() => {
+                                    const pieData = table.rows.map((row: any, index: number) => ({
+                                        value: safeNumber(row.data[yKey]?.en),
+                                        label: (languageMode === 'en'
+                                            ? (row.data[xKey]?.en || row.data[xKey]?.bn || '-')
+                                            : (row.data[xKey]?.bn || row.data[xKey]?.en || '-')),
+                                        color: COLORS[index % COLORS.length],
+                                    }));
+                                    const total = pieData.reduce((s: number, d: any) => s + d.value, 0);
+
+                                    return (
+                                        <View style={styles.pieContainer}>
+                                            <PieChart
+                                                data={pieData.map((d: any) => ({
+                                                    value: d.value,
+                                                    color: d.color,
+                                                }))}
+                                                donut
+                                                radius={scale(75)}
+                                                innerRadius={scale(42)}
+                                                innerCircleColor={'#FFFFFF'}
+                                                centerLabelComponent={() => (
+                                                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                                        <Text style={{ fontSize: moderateScale(18), fontWeight: 'bold', color: '#1F2937', fontFamily: 'July-Bold' }}>
+                                                            {total}
+                                                        </Text>
+                                                        <Text style={{ fontSize: moderateScale(10), color: '#6B7280', fontFamily: 'July-Regular' }}>
+                                                            {languageMode === 'en' ? 'Total' : 'মোট'}
+                                                        </Text>
+                                                    </View>
+                                                )}
+                                            />
+                                            {/* Legend */}
+                                            <View style={styles.pieLegendWrap}>
+                                                {pieData.map((d: any, i: number) => (
+                                                    <View key={i} style={styles.pieLegendRow}>
+                                                        <View style={[styles.pieLegendDot, { backgroundColor: d.color }]} />
+                                                        <Text style={styles.pieLegendLabel} numberOfLines={1}>{d.label}</Text>
+                                                        <Text style={styles.pieLegendVal}>{d.value}</Text>
+                                                    </View>
+                                                ))}
+                                            </View>
+                                        </View>
+                                    );
+                                })()}
                             </ChartCard>
                         )}
                     </>
@@ -540,8 +555,39 @@ const styles = ScaledSheet.create({
     },
     pieContainer: {
         alignItems: 'center',
-        paddingVertical: '20@vs',
-        paddingHorizontal: '20@ms',
+        paddingTop: '16@vs',
+        paddingBottom: '8@vs',
+    },
+    pieLegendWrap: {
+        marginTop: '20@vs',
+        width: '100%',
+    },
+    pieLegendRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: '8@vs',
+        paddingHorizontal: '4@ms',
+        borderBottomWidth: 1,
+        borderBottomColor: '#F3F4F6',
+    },
+    pieLegendDot: {
+        width: '12@ms',
+        height: '12@ms',
+        borderRadius: '6@ms',
+        marginRight: '10@ms',
+    },
+    pieLegendLabel: {
+        flex: 1,
+        fontSize: '13@ms',
+        color: '#374151',
+        fontFamily: 'July-Regular',
+    },
+    pieLegendVal: {
+        fontSize: '14@ms',
+        color: '#1F2937',
+        fontWeight: 'bold',
+        fontFamily: 'July-Bold',
+        marginLeft: '8@ms',
     },
     filterSection: {
         marginHorizontal: '16@ms',
