@@ -91,8 +91,6 @@ const PolicyLawScreen = () => {
                 <View style={styles.tabsContainer}>
                     {loadingCategories ? (
                         <ActivityIndicator size="small" color="#1E3A8A" style={{ paddingVertical: moderateScale(8) }} />
-                    ) : categories.length === 0 ? (
-                        <Text style={{ textAlign: 'center', color: '#4B5563' }}>No categories found.</Text>
                     ) : (
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsScroll}>
                             {categories.map((cat, index) => {
@@ -125,7 +123,7 @@ const PolicyLawScreen = () => {
                     {loadingPolicies ? (
                         <ActivityIndicator size="large" color="#1E3A8A" style={{ marginTop: 20 }} />
                     ) : policies.length === 0 ? (
-                        <Text style={{ textAlign: 'center', color: '#4B5563', marginTop: 20 }}>
+                        <Text style={{ textAlign: 'center', color: '#4B5563', fontSize: moderateScale(16), marginTop: 10 }}>
                             {languageMode === 'bn' ? 'কোনো তথ্য পাওয়া যায়নি।' : 'No data found.'}
                         </Text>
                     ) : (
