@@ -20,6 +20,14 @@ const isNumeric = (str: string) => {
     return !isNaN(str as any) && !isNaN(parseFloat(str));
 };
 
+// Safe number parser — strips commas, returns 0 for any non-numeric value
+const safeNumber = (val: any): number => {
+    if (val === null || val === undefined) return 0;
+    const str = String(val).replace(/,/g, '').trim();
+    const num = Number(str);
+    return isNaN(num) ? 0 : num;
+};
+
 const StatisticsScreen = () => {
     const languageMode = useSelector((state: RootState) => state.language.mode);
     const { data, loading, error } = useQuery<any>(REPORT_TABLES_QUERY);
@@ -172,8 +180,8 @@ const StatisticsScreen = () => {
                         <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
                             {options.map((opt: any) => {
                                 const val = isObjKeys ? opt.key : opt;
-                                const display = isObjKeys 
-                                    ? (languageMode === 'en' ? (opt.en || opt.bn) : (opt.bn || opt.en)) 
+                                const display = isObjKeys
+                                    ? (languageMode === 'en' ? (opt.en || opt.bn) : (opt.bn || opt.en))
                                     : getDisplayLabel(opt);
                                 return (
                                     <TouchableOpacity
@@ -347,7 +355,7 @@ const StatisticsScreen = () => {
                                         barBorderRadius={4}
                                         frontColor="#14B8A6"
                                         data={table.rows.map((row: any) => ({
-                                            value: Number(row.data[yKey]?.en || 0),
+                                            value: safeNumber(row.data[yKey]?.en),
                                             label: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-"))
                                         }))}
                                         yAxisThickness={0}
@@ -362,7 +370,7 @@ const StatisticsScreen = () => {
                                 {chartType === 'line' && (
                                     <LineChart
                                         data={table.rows.map((row: any) => ({
-                                            value: Number(row.data[yKey]?.en || 0),
+                                            value: safeNumber(row.data[yKey]?.en),
                                             label: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-"))
                                         }))}
                                         height={verticalScale(144)}
@@ -384,7 +392,7 @@ const StatisticsScreen = () => {
                                     <View style={styles.pieContainer}>
                                         <PieChart
                                             data={table.rows.map((row: any, index: number) => ({
-                                                value: Number(row.data[yKey]?.en || 0),
+                                                value: safeNumber(row.data[yKey]?.en),
                                                 text: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-")),
                                                 color: COLORS[index % COLORS.length]
                                             }))}
