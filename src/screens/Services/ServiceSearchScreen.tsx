@@ -75,6 +75,9 @@ const ServiceSearchScreen = () => {
     const { data, loading, error } = useQuery<ServicesData>(SERVICES_QUERY, {
         variables: { page: 1.0, limit: 20.0 },
     });
+    // console.log("Service Search Screen UI State:", {
+    //     dataCount: data
+    // });
 
     const GRADIENT_PALETTE = [
         ['#4285F4', '#1976D2'], // Blue
@@ -115,7 +118,7 @@ const ServiceSearchScreen = () => {
     return (
         <AppBackground>
             <Header
-                title={languageMode === 'en' ? "Service Search" : " "}
+                title={languageMode === 'en' ? "Service Search" : "পরিষেবা অনুসন্ধান"}
                 subtitle={languageMode === 'en' ? "Find services according to your needs" : 'আপনার প্রয়োজন অনুযায়ী সেবা খুঁজুন'}
                 showBackButton={true}
             />

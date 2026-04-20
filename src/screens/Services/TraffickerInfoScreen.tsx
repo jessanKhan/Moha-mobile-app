@@ -33,17 +33,19 @@ const TraffickerInfoScreen = () => {
         lastSeen: '',
         activities: [] as string[],
         eventPlace: '',
+        eventDate: new Date().toLocaleDateString(),
+        eventTime: '',
         selectPlace: '',
         address: '',
         description: '',
         hasEvidence: false,
         identityPreference: 'anonymous',
         evidenceFiles: [] as any[],
-        photo: null as any
+        photo: null as any,
+        isConfirmed: false
     });
-    console.log(formData);
+
     const [isSubmitting, setIsSubmitting] = useState(false);
-    // const [createCriminal, { loading }] = useMutation(CREATE_CRIMINAL); // Replaced with manual fetch for multipart
 
     const handlePhotoPick = async () => {
         const result = await launchImageLibrary({
@@ -195,7 +197,6 @@ const TraffickerInfoScreen = () => {
                 });
 
                 const result = await response.json();
-                console.log('Submission Result:', result);
 
                 if (result.data?.createCriminal) {
                     dispatch(showToast({
@@ -213,13 +214,16 @@ const TraffickerInfoScreen = () => {
                         lastSeen: '',
                         activities: [] as string[],
                         eventPlace: '',
+                        eventDate: new Date().toLocaleDateString(),
+                        eventTime: '',
                         selectPlace: '',
                         address: '',
                         description: '',
                         hasEvidence: false,
                         identityPreference: 'anonymous',
                         evidenceFiles: [] as any[],
-                        photo: null as any
+                        photo: null as any,
+                        isConfirmed: false
                     });
                     setCurrentStep(1);
                     navigation.navigate('HomeScreen');
@@ -264,7 +268,7 @@ const TraffickerInfoScreen = () => {
             case 3: return <Step3Location formData={formData} setFormData={setFormData} />;
             case 4: return <Step4Evidence formData={formData} onPickFile={handleFilePick} setFormData={setFormData} />;
             case 5: return <Step5Identity formData={formData} setFormData={setFormData} />;
-            case 6: return <Step6Review formData={formData} />;
+            case 6: return <Step6Review formData={formData} setFormData={setFormData} />;
             default: return <Step1BasicInfo formData={formData} setFormData={setFormData} onPickPhoto={handlePhotoPick} />;
         }
     };
@@ -278,34 +282,63 @@ const TraffickerInfoScreen = () => {
             />
 
             <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 style={styles.flex1}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
             >
-                <ScrollView style={styles.flex1} showsVerticalScrollIndicator={false}>
+                <ScrollView
+                    style={styles.flex1}
+                    contentContainerStyle={styles.scrollContent}
+                    showsVerticalScrollIndicator={false}
+                >
                     {renderProgressBar()}
-                    {renderStepContent()}
-                    <View style={styles.spacer} />
-                </ScrollView>
+                    <View style={styles.stepContentContainer}>
+                        {renderStepContent()}
+                    </View>
 
-                {/* Bottom Button - Now part of flex flow (always at bottom) */}
-                <View style={styles.bottomButtonContainer}>
-                    <TouchableOpacity
-                        onPress={nextStep}
-                        activeOpacity={0.8}
-                        style={styles.submitButton}
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting ? (
-                            <ActivityIndicator color="white" />
-                        ) : (
-                            <Text style={styles.submitButtonText}>
-                                {currentStep === totalSteps
-                                    ? (languageMode === 'en' ? 'Submit' : 'জমা দিন')
-                                    : (languageMode === 'en' ? 'Next Step' : 'পরবর্তী ধাপ')}
-                            </Text>
+                    <View style={styles.footerSpacer} />
+
+                    {/* Navigation Buttons */}
+                    <View style={styles.navigationButtonsContainer}>
+                        {currentStep > 1 && (
+                            <TouchableOpacity
+                                onPress={() => setCurrentStep(prev => prev - 1)}
+                                activeOpacity={0.8}
+                                style={[styles.navButton, styles.backButton]}
+                                disabled={isSubmitting}
+                            >
+                                <Text style={styles.backButtonText}>
+                                    {languageMode === 'en' ? 'Previous' : 'পূর্ববর্তী'}
+                                </Text>
+                            </TouchableOpacity>
                         )}
-                    </TouchableOpacity>
-                </View>
+
+                        <TouchableOpacity
+                            onPress={nextStep}
+                            activeOpacity={0.8}
+                            style={[
+                                styles.navButton,
+                                styles.submitButton,
+                                currentStep === 1 && { width: '100%' },
+                                currentStep === totalSteps && !formData.isConfirmed && { backgroundColor: '#CBD5E1', elevation: 0, shadowOpacity: 0 }
+                            ]}
+                            disabled={isSubmitting || (currentStep === totalSteps && !formData.isConfirmed)}
+                        >
+                            {isSubmitting ? (
+                                <ActivityIndicator color="white" />
+                            ) : (
+                                <Text style={[
+                                    styles.submitButtonText,
+                                    currentStep === totalSteps && !formData.isConfirmed && { color: '#94A3B8' }
+                                ]}>
+                                    {currentStep === totalSteps
+                                        ? (languageMode === 'en' ? 'Submit' : 'জমা দিন')
+                                        : (languageMode === 'en' ? 'Next Step' : 'পরবর্তী ধাপ')}
+                                </Text>
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
             </KeyboardAvoidingView>
         </AppBackground>
     );
@@ -315,8 +348,14 @@ const styles = ScaledSheet.create({
     flex1: {
         flex: 1,
     },
+    scrollContent: {
+        flexGrow: 1,
+    },
+    stepContentContainer: {
+        flex: 1,
+    },
     progressContainer: {
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: 'rgba(223, 236, 253, 0.8)',
         marginHorizontal: '16@ms',
         marginTop: '24@vs',
         padding: '16@ms',
@@ -327,7 +366,7 @@ const styles = ScaledSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 10,
-        elevation: 2,
+        // elevation: 2,
     },
     progressInfo: {
         flexDirection: 'row',
@@ -349,7 +388,7 @@ const styles = ScaledSheet.create({
     },
     progressBarBackground: {
         height: '8@vs',
-        backgroundColor: '#F3F4FB',
+        backgroundColor: '#e1eafdff',
         borderRadius: '4@vs',
         overflow: 'hidden',
     },
@@ -357,30 +396,45 @@ const styles = ScaledSheet.create({
         height: '100%',
         backgroundColor: '#00897B',
     },
-    spacer: {
-        height: '24@vs',
+    footerSpacer: {
+        height: '40@vs',
     },
-    bottomButtonContainer: {
+    navigationButtonsContainer: {
+        flexDirection: 'row',
         paddingHorizontal: '24@ms',
-        paddingBottom: '24@vs',
-        paddingTop: '12@vs',
+        paddingBottom: '32@vs',
+        gap: '12@ms',
     },
-    submitButton: {
-        backgroundColor: '#1E3A8A',
+    navButton: {
         height: '56@vs',
         borderRadius: '16@ms',
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: '#1E3A8A',
+        flex: 1,
+        elevation: 4,
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 5,
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+    },
+    backButton: {
+        backgroundColor: '#F3F4F6',
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+    },
+    submitButton: {
+        backgroundColor: '#1E3A8A',
+    },
+    backButtonText: {
+        color: '#4B5563',
+        fontWeight: 'bold',
+        fontSize: '16@ms',
+        fontFamily: 'July-Bold',
     },
     submitButtonText: {
         color: 'white',
         fontWeight: 'bold',
-        fontSize: '18@ms',
+        fontSize: '16@ms',
         fontFamily: 'July-Bold',
     },
 });

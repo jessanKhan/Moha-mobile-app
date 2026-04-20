@@ -4,9 +4,11 @@ import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 
 interface BottomBannerProps {
     onPress?: () => void;
+    thumbnailPath?: string;
+    title?: string;
 }
 
-const BottomBanner = ({ onPress }: BottomBannerProps) => {
+const BottomBanner = ({ onPress, thumbnailPath, title }: BottomBannerProps) => {
     return (
         <TouchableOpacity
             activeOpacity={0.9}
@@ -14,7 +16,7 @@ const BottomBanner = ({ onPress }: BottomBannerProps) => {
             style={styles.container}
         >
             <ImageBackground
-                source={{ uri: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }}
+                source={{ uri: thumbnailPath }}
                 style={styles.imageBackground}
             >
                 <View style={styles.overlay} />
@@ -27,7 +29,7 @@ const BottomBanner = ({ onPress }: BottomBannerProps) => {
                     <Text
                         style={styles.text}
                     >
-                        মানবপাচার সম্পর্কে জানুন
+                        {title || 'মানবপাচার সম্পর্কে জানুন'}
                     </Text>
                 </View>
             </ImageBackground>
@@ -62,7 +64,7 @@ const styles = ScaledSheet.create({
         zIndex: 10,
     },
     iconContainer: {
-        backgroundColor: 'rgba(0, 130, 54, 1)',
+        backgroundColor: '#008236ff',
         borderRadius: '12@ms',
         padding: '12@ms',
         marginBottom: '8@vs',

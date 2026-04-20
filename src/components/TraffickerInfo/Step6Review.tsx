@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { User, MapPin, FileText } from 'lucide-react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { User, MapPin, FileText, Check } from 'lucide-react-native';
 import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 
 import { useSelector } from 'react-redux';
@@ -8,9 +8,10 @@ import { RootState } from '../../store';
 
 interface Props {
     formData: any;
+    setFormData: any;
 }
 
-const Step6Review = ({ formData }: Props) => {
+const Step6Review = ({ formData, setFormData }: Props) => {
     const languageMode = useSelector((state: RootState) => state.language.mode);
 
     const getGenderLabel = (gender: string) => {
@@ -33,6 +34,13 @@ const Step6Review = ({ formData }: Props) => {
             'শিশু পাচার': 'Child Trafficking'
         };
         return mapping[act] || act;
+    };
+
+    const toggleConfirmation = () => {
+        setFormData((prev: any) => ({
+            ...prev,
+            isConfirmed: !prev.isConfirmed
+        }));
     };
 
     return (
@@ -94,10 +102,10 @@ const Step6Review = ({ formData }: Props) => {
                     </View>
                     <Text style={styles.locationMain}>{formData.eventPlace}</Text>
                     <Text style={styles.locationSub}>
-                        {languageMode === 'en' ? "Date: 19/1/2026" : "তারিখ: ১৯/১/২০২৬"}
+                        {languageMode === 'en' ? `Date: ${formData.eventDate || ''}` : `তারিখ: ${formData.eventDate || ''}`}
                     </Text>
                     <Text style={styles.locationSub}>
-                        {languageMode === 'en' ? "Time: 02:24" : "সময়: ০২:২৪"}
+                        {languageMode === 'en' ? `Time: ${formData.eventTime || ''}` : `সময়: ${formData.eventTime || ''}`}
                     </Text>
                 </View>
 
@@ -123,6 +131,22 @@ const Step6Review = ({ formData }: Props) => {
                             : (languageMode === 'en' ? 'Providing contact information' : 'যোগাযোগ তথ্য প্রদান করা হচ্ছে')}
                     </Text>
                 </View>
+
+                {/* Confirmation Checkbox Section */}
+                <TouchableOpacity 
+                    style={styles.confirmationContainer} 
+                    activeOpacity={0.7}
+                    onPress={toggleConfirmation}
+                >
+                    <View style={[styles.checkbox, formData.isConfirmed && styles.checkboxChecked]}>
+                        {formData.isConfirmed && <Check size={moderateScale(14)} color="white" />}
+                    </View>
+                    <Text style={styles.confirmationText}>
+                        {languageMode === 'en' 
+                            ? "I confirm that the information provided is true to the best of my knowledge and is being provided in good faith." 
+                            : "আমি নিশ্চিত করছি যে প্রদত্ত তথ্য আমার জানামতে সত্য এবং সদিচ্ছা থেকে প্রদান করা হচ্ছে।"}
+                    </Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -276,6 +300,38 @@ const styles = ScaledSheet.create({
         color: '#00897B',
         marginTop: '4@vs',
         fontFamily: 'July-Bold',
+    },
+    confirmationContainer: {
+        flexDirection: 'row',
+        backgroundColor: '#F9FAFB',
+        borderRadius: '16@ms',
+        padding: '16@ms',
+        borderWidth: 1,
+        borderColor: '#F3F4FB',
+        alignItems: 'center',
+        marginTop: '8@vs',
+    },
+    checkbox: {
+        width: '20@ms',
+        height: '20@ms',
+        borderRadius: '6@ms',
+        borderWidth: 2,
+        borderColor: '#D1D5DB',
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: '12@ms',
+    },
+    checkboxChecked: {
+        backgroundColor: '#1E3A8A',
+        borderColor: '#1E3A8A',
+    },
+    confirmationText: {
+        flex: 1,
+        fontSize: '12@ms',
+        color: '#374151',
+        lineHeight: '18@ms',
+        fontFamily: 'July-Regular',
     },
 });
 

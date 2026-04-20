@@ -37,6 +37,23 @@ const Step3Location = ({ formData, setFormData }: Props) => {
                     value={formData.selectPlace}
                     onChangeText={(val) => setFormData({ ...formData, selectPlace: val })}
                 />
+                
+                {/* Default text entries for date and time as requested */}
+                <TextInput
+                    placeholder={languageMode === 'en' ? "Incident Date (DD/MM/YYYY)" : "ঘটনার তারিখ (দিন/মাস/বছর)"}
+                    style={styles.input}
+                    placeholderTextColor="#9CA3AF"
+                    value={formData.eventDate}
+                    onChangeText={(val) => setFormData({ ...formData, eventDate: val })}
+                />
+                <TextInput
+                    placeholder={languageMode === 'en' ? "Incident Time" : "ঘটনার সময়"}
+                    style={styles.input}
+                    placeholderTextColor="#9CA3AF"
+                    value={formData.eventTime}
+                    onChangeText={(val) => setFormData({ ...formData, eventTime: val })}
+                />
+
                 <TextInput
                     placeholder={languageMode === 'en' ? "Write Address" : "ঠিকানা লিখুন"}
                     style={styles.input}

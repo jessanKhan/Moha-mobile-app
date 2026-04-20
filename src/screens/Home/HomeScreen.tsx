@@ -20,7 +20,7 @@ import {
   Users,
   Search,
 } from 'lucide-react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { ScaledSheet } from 'react-native-size-matters';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -45,15 +45,28 @@ const HomeScreen = () => {
   const navigation = useNavigation<any>();
   const languageMode = useSelector((state: RootState) => state.language.mode);
 
-  const { data: sliderData } = useQuery<any>(GET_SLIDERS_QUERY, {
-    variables: { page: 1, limit: 5 },
-    fetchPolicy: 'cache-and-network',
-  });
+  const { data: sliderData, refetch: refetchSliders } = useQuery<any>(
+    GET_SLIDERS_QUERY,
+    {
+      variables: { page: 1, limit: 5 },
+      fetchPolicy: 'cache-and-network',
+    }
+  );
 
-  const { data: componentsData } = useQuery<any>(COMPONENTS_QUERY, {
-    variables: { page: 1, limit: 100 },
-    fetchPolicy: 'cache-and-network',
-  });
+  const { data: componentsData, refetch: refetchComponents } = useQuery<any>(
+    COMPONENTS_QUERY,
+    {
+      variables: { page: 1, limit: 100 },
+      fetchPolicy: 'cache-and-network',
+    }
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      refetchSliders();
+      refetchComponents();
+    }, [refetchSliders, refetchComponents])
+  );
 
   const renderHeader = () => (
     <View style={styles.headerContent}>
@@ -86,7 +99,9 @@ const HomeScreen = () => {
         }
       />
       <FlatList
-        data={(componentsData?.components || []).filter((item: any) => item.isMobile === 'YES')}
+        data={(componentsData?.components || []).filter(
+          (item: any) => item.isMobile === 'YES' && item.mobileRouteName !== 'AboutTrafficking'
+        )}
         renderItem={({ item }) => (
           <ServiceCard
             title={languageMode === 'bn' ? item.labelBn : item.label}
@@ -99,12 +114,31 @@ const HomeScreen = () => {
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
         ListHeaderComponent={renderHeader}
-        ListFooterComponent={() => (
-          <View style={styles.footer}>
-            <BottomBanner onPress={() => navigation.navigate('AboutTrafficking')} />
-            <HotlineBar />
-          </View>
-        )}
+        ListFooterComponent={() => {
+          const aboutTraffickingComponent = (componentsData?.components || []).find(
+            (item: any) => item.mobileRouteName === 'AboutTrafficking' && item.isMobile === 'YES'
+          );
+
+          return (
+            <View style={styles.footer}>
+              <BottomBanner
+                onPress={() =>
+                  navigation.navigate('AboutTrafficking', {
+                    componentId: aboutTraffickingComponent?.id,
+                    thumbnailPath: aboutTraffickingComponent?.thumbnailPath,
+                  })
+                }
+                thumbnailPath={aboutTraffickingComponent?.thumbnailPath}
+                title={
+                  languageMode === 'bn'
+                    ? aboutTraffickingComponent?.labelBn
+                    : aboutTraffickingComponent?.label
+                }
+              />
+              <HotlineBar />
+            </View>
+          );
+        }}
         showsVerticalScrollIndicator={false}
       />
     </AppBackground>

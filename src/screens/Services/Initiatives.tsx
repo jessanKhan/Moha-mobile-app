@@ -1,5 +1,6 @@
 import { FlatList, StyleSheet, ActivityIndicator, View, RefreshControl, TouchableOpacity, Text } from 'react-native';
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import InitiativesComponent from '../../components/initiativesComponent/InitiativesComponent';
 import Header from '../../components/Header';
 import AppBackground from '../../components/AppBackground';
@@ -28,6 +29,12 @@ const Initiatives = () => {
     variables: { page: 1.0, limit: (limit * 1.0) },
     fetchPolicy: 'cache-and-network',
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   const [refreshing, setRefreshing] = React.useState(false);
 

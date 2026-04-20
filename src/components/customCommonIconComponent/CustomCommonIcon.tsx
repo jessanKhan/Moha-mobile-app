@@ -13,16 +13,18 @@ const CustomCommonIcon: FC<CustomCommonIconProps> = ({
   const Icon: any = icon;
   return (
     <View
-      style={[styles.container, { backgroundColor: bgColor }, imageUrl ? { padding: 0 } : null]}
+      style={[styles.container, { backgroundColor: bgColor }, (!Icon && imageUrl) ? { padding: 0 } : null]}
     >
-      {imageUrl ? (
-        <Image
-          source={{ uri: imageUrl }}
-          style={{ width: moderateScale(size), height: moderateScale(size) }}
-          resizeMode="contain"
-        />
+      {Icon ? (
+        <Icon color={iconColor} size={moderateScale(size)} />
       ) : (
-        Icon && <Icon color={iconColor} size={moderateScale(size)} />
+        imageUrl && (
+          <Image
+            source={{ uri: imageUrl }}
+            style={{ width: moderateScale(size), height: moderateScale(size) }}
+            resizeMode="contain"
+          />
+        )
       )}
     </View>
   );
@@ -32,10 +34,10 @@ const styles = ScaledSheet.create({
   container: {
     height: '40@vs',
     width: '40@ms',
-    borderRadius: '14@ms',
+    borderRadius: '10@ms',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '25@ms',
+    padding: '6@ms',
   },
 });
 
