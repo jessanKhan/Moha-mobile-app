@@ -17,7 +17,7 @@ function AppContent() {
   const dispatch = useDispatch();
   const { visible, message, type } = useSelector((state: RootState) => state.toast);
 
-  console.log('Toast State:', { visible, message, type });
+  // console.log('Toast State:', { visible, message, type });
 
   return (
     <View style={{ flex: 1 }}>

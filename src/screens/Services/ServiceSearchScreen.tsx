@@ -75,9 +75,9 @@ const ServiceSearchScreen = () => {
     const { data, loading, error } = useQuery<ServicesData>(SERVICES_QUERY, {
         variables: { page: 1.0, limit: 20.0 },
     });
-    console.log("Service Search Screen UI State:", {
-        dataCount: data
-    });
+    // console.log("Service Search Screen UI State:", {
+    //     dataCount: data
+    // });
 
     const GRADIENT_PALETTE = [
         ['#4285F4', '#1976D2'], // Blue

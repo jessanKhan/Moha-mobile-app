@@ -2,10 +2,10 @@ import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 
 // Replace with your GraphQL API endpoint
 //dev
-export const GRAPHQL_URI = 'http://146.190.99.6:4000/graphql';
+// export const GRAPHQL_URI = 'http://146.190.99.6:4000/graphql';
 
 // //qa
-// export const GRAPHQL_URI = 'http://165.232.183.42:4000/graphql';
+export const GRAPHQL_URI = 'http://165.232.183.42:4000/graphql';
 
 const client = new ApolloClient({
     link: new HttpLink({

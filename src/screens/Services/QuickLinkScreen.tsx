@@ -87,7 +87,7 @@ const QuickLinkScreen = () => {
               <LinkComponent
                 text={languageMode === 'bn' ? linkItem.labelBn : linkItem.label}
                 icon={ExternalLink}
-                onPress={() => console.log(linkItem.url)}
+                //    onPress={() => console.log(linkItem.url)}
                 isFirst={index === 0}
               />
             )}
