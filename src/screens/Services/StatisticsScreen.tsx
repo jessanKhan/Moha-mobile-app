@@ -364,7 +364,9 @@ const StatisticsScreen = () => {
                                         hideRules
                                         height={verticalScale(144)}
                                         width={screenWidth - scale(60)}
-                                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(9), width: scale(50), textAlign: 'center' }}
+                                        spacing={scale(35)}
+                                        xAxisTextNumberOfLines={2}
+                                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(9), textAlign: 'center', width: scale(50) }}
                                     />
                                 )}
                                 {chartType === 'line' && (
@@ -385,7 +387,9 @@ const StatisticsScreen = () => {
                                         yAxisThickness={0}
                                         xAxisThickness={1}
                                         xAxisColor={'#E5E7EB'}
-                                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(9), width: scale(50), textAlign: 'center' }}
+                                        spacing={scale(50)}
+                                        xAxisTextNumberOfLines={2}
+                                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(9), textAlign: 'center', width: scale(60) }}
                                     />
                                 )}
                                 {chartType === 'pie' && (() => {
