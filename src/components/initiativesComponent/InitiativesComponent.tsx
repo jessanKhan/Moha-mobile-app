@@ -40,7 +40,7 @@ const InitiativesComponent: FC<InitiativeCardProps> = ({
             iconColor={iconBgColor || '#ffffff'}
             size={25}
           />
-          <Text style={styles.text} numberOfLines={1}>
+          <Text style={styles.text} numberOfLines={3}>
             {title}
           </Text>
         </View>
