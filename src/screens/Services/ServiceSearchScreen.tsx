@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import Header from '../../components/Header';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
     Home,
@@ -72,9 +72,16 @@ const ServiceSearchScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const languageMode = useSelector((state: RootState) => state.language.mode);
 
-    const { data, loading, error } = useQuery<ServicesData>(SERVICES_QUERY, {
+    const { data, loading, error, refetch } = useQuery<ServicesData>(SERVICES_QUERY, {
         variables: { page: 1.0, limit: 20.0 },
+        fetchPolicy: 'cache-and-network',
     });
+
+    useFocusEffect(
+        React.useCallback(() => {
+            refetch();
+        }, [refetch])
+    );
     // console.log("Service Search Screen UI State:", {
     //     dataCount: data
     // });
@@ -122,7 +129,19 @@ const ServiceSearchScreen = () => {
                 subtitle={languageMode === 'en' ? "Find services according to your needs" : 'আপনার প্রয়োজন অনুযায়ী সেবা খুঁজুন'}
                 showBackButton={true}
             />
-            <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
+            <ScrollView
+                style={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.scrollContainer}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={loading}
+                        onRefresh={refetch}
+                        tintColor="#ffffff"
+                        colors={['#4285F4']}
+                    />
+                }
+            >
                 {loading ? (
                     <View style={styles.centerContainer}>
                         <ActivityIndicator size="large" color="#ffffff" />
