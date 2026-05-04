@@ -31,7 +31,10 @@ const Step1BasicInfo = ({ formData, setFormData, onPickPhoto }: Props) => {
 
             <TouchableOpacity
                 activeOpacity={0.8}
-                style={styles.uploadCard}
+                style={[
+                    styles.uploadCard,
+                    !formData.photo && { padding: moderateScale(32) }
+                ]}
                 onPress={onPickPhoto}
             >
                 {formData.photo ? (
@@ -140,10 +143,11 @@ const styles = ScaledSheet.create({
         borderStyle: 'dashed',
         borderColor: '#D1D5DB',
         borderRadius: '24@ms',
-        padding: '32@ms',
+        height: '180@vs',
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: '24@vs',
+        overflow: 'hidden',
     },
     iconWrapper: {
         backgroundColor: 'white',
@@ -171,22 +175,20 @@ const styles = ScaledSheet.create({
     imagePreviewContainer: {
         width: '100%',
         height: '100%',
-        position: 'relative',
-        borderRadius: '24@ms',
-        overflow: 'hidden',
     },
     imagePreview: {
         width: '100%',
         height: '100%',
-        borderRadius: '24@ms',
+        resizeMode: 'cover',
     },
     removePhotoButton: {
         position: 'absolute',
-        top: '10@vs',
-        right: '10@ms',
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        top: '12@vs',
+        right: '12@ms',
+        backgroundColor: 'rgba(0,0,0,0.6)',
         padding: '8@ms',
         borderRadius: '20@ms',
+        zIndex: 10,
     },
     inputContainer: {
         gap: '12@vs',

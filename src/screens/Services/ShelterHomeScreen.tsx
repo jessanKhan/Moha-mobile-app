@@ -12,7 +12,11 @@ import { Search, ListFilter, MapPin, Phone } from 'lucide-react-native';
 import { moderateScale, ScaledSheet } from 'react-native-size-matters';
 import AppBackground from '../../components/AppBackground';
 
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+
 const ShelterHomeScreen = () => {
+    const languageMode = useSelector((state: RootState) => state.language.mode);
     const [searchQuery, setSearchQuery] = useState('');
 
     const services = [
@@ -44,8 +48,8 @@ const ShelterHomeScreen = () => {
     return (
         <AppBackground>
             <Header
-                title="সেল্টার হোম"
-                subtitle="নিরাপদ অস্থায়ী আশ্রয়"
+                title={languageMode === 'en' ? "Shelter Home" : "সেল্টার হোম"}
+                subtitle={languageMode === 'en' ? "Safe Temporary Shelter" : "নিরাপদ অস্থায়ী আশ্রয়"}
                 showBackButton={true}
             />
 
@@ -53,7 +57,7 @@ const ShelterHomeScreen = () => {
                 <View style={styles.searchBarWrapper}>
                     <Search color="#9CA3AF" size={moderateScale(20)} />
                     <TextInput
-                        placeholder="সেবা বা এলাকা লিখুন"
+                        placeholder={languageMode === 'en' ? "Search service or area" : "সেবা বা এলাকা লিখুন"}
                         placeholderTextColor="#9CA3AF"
                         style={styles.textInput}
                         value={searchQuery}

@@ -5,7 +5,7 @@ import { Lock, Upload, Send, X } from 'lucide-react-native';
 import { ScaledSheet, moderateScale } from 'react-native-size-matters';
 import HotlineBanner from '../../components/HotlineBanner';
 import AppBackground from '../../components/AppBackground';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { pick, types, isErrorWithCode, errorCodes } from '@react-native-documents/picker';
 import { GRAPHQL_URI } from '../../api/apolloClient';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -24,13 +24,26 @@ const ComplaintScreen = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleFilePick = async () => {
-        const result = await launchImageLibrary({
-            mediaType: 'mixed',
-            selectionLimit: 1,
-        });
+        try {
+            const result = await pick({
+                type: [types.images, types.pdf],
+                allowMultiSelection: false,
+            });
 
-        if (result.assets && result.assets.length > 0) {
-            setAttachment(result.assets[0]);
+            if (result && result.length > 0) {
+                const file = result[0];
+                setAttachment({
+                    uri: file.uri,
+                    type: file.type,
+                    fileName: file.name,
+                });
+            }
+        } catch (err) {
+            if (isErrorWithCode(err) && err.code === errorCodes.OPERATION_CANCELED) {
+                // User cancelled the picker
+            } else {
+                console.error('Document picker error:', err);
+            }
         }
     };
 

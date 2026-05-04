@@ -37,7 +37,7 @@ const QuickLinksComponent: FC<QuickLinksComponentProps> = ({
                     imageUrl={logoUrl}
                     bgColor="rgba(255, 255, 255, 0.2)"
                     iconColor="#ffffff"
-                    size={moderateScale(20)}
+                    size={20}
                 />
                 <Text style={styles.helptxt}>{title}</Text>
             </LinearGradient>
@@ -79,12 +79,12 @@ const styles = ScaledSheet.create({
         gap: '12@ms',
     },
     helptxt: {
+        flex: 1,
         fontSize: '20@ms',
         color: 'rgba(255, 255, 255, 1)',
         fontWeight: '700',
         lineHeight: '24@ms',
         fontFamily: 'July-Bold',
-        paddingVertical: '10@ms',
     },
     linkContainer: {
         padding: '16@ms',

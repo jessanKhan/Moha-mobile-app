@@ -1,16 +1,33 @@
 import { gql } from '@apollo/client';
 
 export const NEWS_ALL_QUERY = gql`
-  query NewsAll($page: Float, $limit: Float) {
-    newsAll(page: $page, limit: $limit) {
+  query GetNews($page: Float, $limit: Float, $pageId: Float) {
+    newsAll(page: $page, limit: $limit, pageId: $pageId) {
       id
+      pageId
+      isCopiedTo
+      category
       title
       titleBn
-      subtitleBn
       subtitle
+      subtitleBn
+      description
+      descriptionBn
       date
       dateBn
+      slug
+      order
+      reporter
       thumbnailUrl
+      isMarquee
+      isPublished
+      isArchived
+      isApprovedByAdmin
+      isCommitment
+      createdAt
+      createdBy
+      updatedAt
+      updatedBy
     }
   }
 `;
@@ -139,11 +156,24 @@ export const CONTENTS_BY_COMPONENT_ID = gql`
       componentId
       title
       titleBn
+      subtitle
+      subtitleBn
       description
       descriptionBn
+      order
       color
       iconName
       iconUrl
+      items {
+        id
+        contentId
+        title
+        titleBn
+        subtitle
+        subtitleBn
+        description
+        descriptionBn
+      }
     }
   }
 `;
@@ -305,6 +335,30 @@ export const REPORT_TABLES_QUERY = gql`
         createdAt
         updatedAt
       }
+    }
+  }
+`;
+
+
+export const GET_CATEGORIES_OF_POLICY = gql`
+  query GetCategoriesOfPolicy {
+    categoriesOfPolicy {
+      id
+      name
+      nameBn
+    }
+  }
+`;
+
+export const GET_POLICIES_BY_CATEGORY = gql`
+  query GetPoliciesByCategory($category: String!) {
+    policiesByCategory(category: $category) {
+      id
+      title
+      titleBn
+      attachmentUrl
+      date
+      dateBn
     }
   }
 `;

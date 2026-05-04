@@ -1,8 +1,10 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Home, UserCircle, FilePenLine } from 'lucide-react-native';
+import { Home, UserCircle, FilePenLine, Search } from 'lucide-react-native';
 import { useColorScheme } from 'react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 import HomeScreen from '../screens/Home/HomeScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import StatisticsScreen from '../screens/Services/StatisticsScreen';
@@ -25,6 +27,9 @@ import TrainingScreen from '../screens/Services/TrainingScreen';
 import AwarenessScreen from '../screens/Services/AwarenessScreen';
 import PolicyLawScreen from '../screens/Services/PolicyLawScreen';
 import ServiceAidScreen from '../screens/Services/ServiceAidScreen';
+import PdfViewerScreen from '../screens/Services/PdfViewerScreen';
+
+import NewsDetailsScreen from '../screens/Services/NewsDetailsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -40,6 +45,7 @@ const HomeStackNavigator = () => {
       <HomeStack.Screen name="Initiatives" component={Initiatives} />
       <HomeStack.Screen name="Complaint" component={ComplaintScreen} />
       <HomeStack.Screen name="NewsMedia" component={NewsMediaScreen} />
+      <HomeStack.Screen name="NewsDetails" component={NewsDetailsScreen} />
       <HomeStack.Screen name="PreventiveMeasures" component={PreventiveMeasuresScreen} />
       <HomeStack.Screen name="QuickLink" component={QuickLinkScreen} />
       <HomeStack.Screen name="TraffickerInfo" component={TraffickerInfoScreen} />
@@ -54,6 +60,7 @@ const HomeStackNavigator = () => {
       <HomeStack.Screen name="SocialIntegration" component={SocialIntegrationScreen} />
       <HomeStack.Screen name="Training" component={TrainingScreen} />
       <HomeStack.Screen name="Awareness" component={AwarenessScreen} />
+      <HomeStack.Screen name="PdfViewer" component={PdfViewerScreen} />
     </HomeStack.Navigator>
   );
 };
@@ -63,6 +70,7 @@ import { verticalScale, moderateScale } from 'react-native-size-matters';
 
 const TabNavigator = () => {
   const isDarkMode = useColorScheme() === 'dark';
+  const languageMode = useSelector((state: RootState) => state.language.mode);
 
   return (
     <Tab.Navigator
@@ -86,7 +94,7 @@ const TabNavigator = () => {
           paddingTop: verticalScale(5),
         },
         tabBarLabelPosition: 'below-icon',
-        tabBarActiveTintColor: '#1559F7', // Blue-600
+        tabBarActiveTintColor: '#009689',
         tabBarInactiveTintColor: '#8696BB',
         tabBarLabelStyle: {
           fontSize: moderateScale(11),
@@ -100,6 +108,8 @@ const TabNavigator = () => {
             return <Home color={color} size={iconSize} />;
           } else if (route.name === 'Complaint') {
             return <FilePenLine color={color} size={iconSize} />;
+          } else if (route.name === 'TraffickerInfo') {
+            return <Search color={color} size={iconSize} />;
           } else if (route.name === 'Profile') {
             return <UserCircle color={color} size={iconSize} />;
           }
@@ -110,18 +120,23 @@ const TabNavigator = () => {
       <Tab.Screen
         name="Home"
         component={HomeStackNavigator}
-        options={{ title: 'হোম' }}
+        options={{ title: languageMode === 'bn' ? 'হোম' : 'Home' }}
       />
       <Tab.Screen
         name="Complaint"
         component={ComplaintScreen}
-        options={{ title: 'অভিযোগ করুন' }}
+        options={{ title: languageMode === 'bn' ? 'অভিযোগ করুন' : 'Complaint' }}
       />
       <Tab.Screen
+        name="TraffickerInfo"
+        component={TraffickerInfoScreen}
+        options={{ title: languageMode === 'bn' ? 'পাচারকারীর তথ্য' : 'Trafficker Info' }}
+      />
+      {/* <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{ title: 'প্রোফাইল' }}
-      />
+        options={{ title: languageMode === 'bn' ? 'প্রোফাইল' : 'Profile' }}
+      /> */}
     </Tab.Navigator>
   );
 };

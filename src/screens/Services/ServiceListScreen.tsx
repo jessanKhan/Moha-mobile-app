@@ -60,26 +60,26 @@ const ServiceListScreen = () => {
 
     return (
         <AppBackground>
-            <Header 
-                title={title || 'Services'} 
-                subtitle={subtitle || 'নিরাপদভাবে নিজ দেশে ফেরত যাওয়া'} 
-                showBackButton={true} 
+            <Header
+                title={title || 'Services'}
+                subtitle={subtitle || 'নিরাপদভাবে নিজ দেশে ফেরত যাওয়া'}
+                showBackButton={true}
             />
 
             <View style={styles.searchContainer}>
                 <View style={styles.searchBarWrapper}>
                     <Search color="#9CA3AF" size={moderateScale(20)} />
                     <TextInput
-                        placeholder="সেবা বা এলাকা লিখুন"
+                        placeholder={languageMode === 'en' ? "Search service or area" : "সেবা বা এলাকা লিখুন"}
                         placeholderTextColor="#9CA3AF"
                         style={styles.textInput}
                         value={searchQuery}
                         onChangeText={setSearchQuery}
                     />
                 </View>
-                <TouchableOpacity activeOpacity={0.7} style={styles.filterButton}>
+                {/* <TouchableOpacity activeOpacity={0.7} style={styles.filterButton}>
                     <ListFilter color="#374151" size={moderateScale(20)} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
 
             <FlatList

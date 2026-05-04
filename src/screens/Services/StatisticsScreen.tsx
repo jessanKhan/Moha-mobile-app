@@ -20,6 +20,14 @@ const isNumeric = (str: string) => {
     return !isNaN(str as any) && !isNaN(parseFloat(str));
 };
 
+// Safe number parser — strips commas, returns 0 for any non-numeric value
+const safeNumber = (val: any): number => {
+    if (val === null || val === undefined) return 0;
+    const str = String(val).replace(/,/g, '').trim();
+    const num = Number(str);
+    return isNaN(num) ? 0 : num;
+};
+
 const StatisticsScreen = () => {
     const languageMode = useSelector((state: RootState) => state.language.mode);
     const { data, loading, error } = useQuery<any>(REPORT_TABLES_QUERY);
@@ -172,8 +180,8 @@ const StatisticsScreen = () => {
                         <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
                             {options.map((opt: any) => {
                                 const val = isObjKeys ? opt.key : opt;
-                                const display = isObjKeys 
-                                    ? (languageMode === 'en' ? (opt.en || opt.bn) : (opt.bn || opt.en)) 
+                                const display = isObjKeys
+                                    ? (languageMode === 'en' ? (opt.en || opt.bn) : (opt.bn || opt.en))
                                     : getDisplayLabel(opt);
                                 return (
                                     <TouchableOpacity
@@ -319,8 +327,8 @@ const StatisticsScreen = () => {
                             />
 
                             <SelectDropdown
-                                label="X-axis"
-                                placeholder="X-axis"
+                                label={languageMode === 'en' ? "X-axis" : "এক্স-অক্ষ (X-axis)"}
+                                placeholder={languageMode === 'en' ? "X-axis" : "এক্স-অক্ষ"}
                                 options={categoricalColumns}
                                 selectedValue={xKey}
                                 onSelect={setXKey}
@@ -328,8 +336,8 @@ const StatisticsScreen = () => {
                             />
 
                             <SelectDropdown
-                                label="Y-axis"
-                                placeholder="Y-axis"
+                                label={languageMode === 'en' ? "Y-axis" : "ওয়াই-অক্ষ (Y-axis)"}
+                                placeholder={languageMode === 'en' ? "Y-axis" : "ওয়াই-অক্ষ"}
                                 options={numericColumns}
                                 selectedValue={yKey}
                                 onSelect={setYKey}
@@ -347,7 +355,7 @@ const StatisticsScreen = () => {
                                         barBorderRadius={4}
                                         frontColor="#14B8A6"
                                         data={table.rows.map((row: any) => ({
-                                            value: Number(row.data[yKey]?.en || 0),
+                                            value: safeNumber(row.data[yKey]?.en),
                                             label: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-"))
                                         }))}
                                         yAxisThickness={0}
@@ -356,13 +364,15 @@ const StatisticsScreen = () => {
                                         hideRules
                                         height={verticalScale(144)}
                                         width={screenWidth - scale(60)}
-                                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(9), width: scale(50), textAlign: 'center' }}
+                                        spacing={scale(35)}
+                                        xAxisTextNumberOfLines={2}
+                                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(9), textAlign: 'center', width: scale(50) }}
                                     />
                                 )}
                                 {chartType === 'line' && (
                                     <LineChart
                                         data={table.rows.map((row: any) => ({
-                                            value: Number(row.data[yKey]?.en || 0),
+                                            value: safeNumber(row.data[yKey]?.en),
                                             label: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-"))
                                         }))}
                                         height={verticalScale(144)}
@@ -377,39 +387,56 @@ const StatisticsScreen = () => {
                                         yAxisThickness={0}
                                         xAxisThickness={1}
                                         xAxisColor={'#E5E7EB'}
-                                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(9), width: scale(50), textAlign: 'center' }}
+                                        spacing={scale(50)}
+                                        xAxisTextNumberOfLines={2}
+                                        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: moderateScale(9), textAlign: 'center', width: scale(60) }}
                                     />
                                 )}
-                                {chartType === 'pie' && (
-                                    <View style={styles.pieContainer}>
-                                        <PieChart
-                                            data={table.rows.map((row: any, index: number) => ({
-                                                value: Number(row.data[yKey]?.en || 0),
-                                                text: (languageMode === 'en' ? (row.data[xKey]?.en || row.data[xKey]?.bn || "-") : (row.data[xKey]?.bn || row.data[xKey]?.en || "-")),
-                                                color: COLORS[index % COLORS.length]
-                                            }))}
-                                            donut={false}
-                                            showExternalLabels
-                                            radius={scale(60)}
-                                            labelsPosition="outward"
-                                            externalLabelComponent={(item: any) => {
-                                                const isRightSide = (item.shiftTextX || 0) > 0;
-                                                return (
-                                                    <SvgText
-                                                        fill={"#1F2937"}
-                                                        fontSize={moderateScale(10)}
-                                                        fontWeight="bold"
-                                                        x={item.shiftTextX || 0}
-                                                        y={item.shiftTextY || 0}
-                                                        textAnchor={isRightSide ? "start" : "end"}
-                                                    >
-                                                        {item.text}
-                                                    </SvgText>
-                                                );
-                                            }}
-                                        />
-                                    </View>
-                                )}
+                                {chartType === 'pie' && (() => {
+                                    const pieData = table.rows.map((row: any, index: number) => ({
+                                        value: safeNumber(row.data[yKey]?.en),
+                                        label: (languageMode === 'en'
+                                            ? (row.data[xKey]?.en || row.data[xKey]?.bn || '-')
+                                            : (row.data[xKey]?.bn || row.data[xKey]?.en || '-')),
+                                        color: COLORS[index % COLORS.length],
+                                    }));
+                                    const total = pieData.reduce((s: number, d: any) => s + d.value, 0);
+
+                                    return (
+                                        <View style={styles.pieContainer}>
+                                            <PieChart
+                                                data={pieData.map((d: any) => ({
+                                                    value: d.value,
+                                                    color: d.color,
+                                                }))}
+                                                donut
+                                                radius={scale(75)}
+                                                innerRadius={scale(42)}
+                                                innerCircleColor={'#FFFFFF'}
+                                                centerLabelComponent={() => (
+                                                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                                        <Text style={{ fontSize: moderateScale(18), fontWeight: 'bold', color: '#1F2937', fontFamily: 'July-Bold' }}>
+                                                            {total}
+                                                        </Text>
+                                                        <Text style={{ fontSize: moderateScale(10), color: '#6B7280', fontFamily: 'July-Regular' }}>
+                                                            {languageMode === 'en' ? 'Total' : 'মোট'}
+                                                        </Text>
+                                                    </View>
+                                                )}
+                                            />
+                                            {/* Legend */}
+                                            <View style={styles.pieLegendWrap}>
+                                                {pieData.map((d: any, i: number) => (
+                                                    <View key={i} style={styles.pieLegendRow}>
+                                                        <View style={[styles.pieLegendDot, { backgroundColor: d.color }]} />
+                                                        <Text style={styles.pieLegendLabel} numberOfLines={1}>{d.label}</Text>
+                                                        <Text style={styles.pieLegendVal}>{d.value}</Text>
+                                                    </View>
+                                                ))}
+                                            </View>
+                                        </View>
+                                    );
+                                })()}
                             </ChartCard>
                         )}
                     </>
@@ -532,8 +559,39 @@ const styles = ScaledSheet.create({
     },
     pieContainer: {
         alignItems: 'center',
-        paddingVertical: '20@vs',
-        paddingHorizontal: '20@ms',
+        paddingTop: '16@vs',
+        paddingBottom: '8@vs',
+    },
+    pieLegendWrap: {
+        marginTop: '20@vs',
+        width: '100%',
+    },
+    pieLegendRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: '8@vs',
+        paddingHorizontal: '4@ms',
+        borderBottomWidth: 1,
+        borderBottomColor: '#F3F4F6',
+    },
+    pieLegendDot: {
+        width: '12@ms',
+        height: '12@ms',
+        borderRadius: '6@ms',
+        marginRight: '10@ms',
+    },
+    pieLegendLabel: {
+        flex: 1,
+        fontSize: '13@ms',
+        color: '#374151',
+        fontFamily: 'July-Regular',
+    },
+    pieLegendVal: {
+        fontSize: '14@ms',
+        color: '#1F2937',
+        fontWeight: 'bold',
+        fontFamily: 'July-Bold',
+        marginLeft: '8@ms',
     },
     filterSection: {
         marginHorizontal: '16@ms',
