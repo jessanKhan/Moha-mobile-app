@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import { View, FlatList, ActivityIndicator, Linking, RefreshControl, Alert } from 'react-native';
 import Header from '../../components/Header';
 import { ExternalLink } from 'lucide-react-native';
 import { moderateScale } from 'react-native-size-matters';
@@ -8,7 +8,7 @@ import LinkComponent from '../../components/quickLinkComponent/LinkComponent';
 import AppBackground from '../../components/AppBackground';
 import { useQuery } from '@apollo/client/react';
 import { CATEGORY_BY_COMPONENT_ID, ALL_QUICK_LINKS } from '../../api/queries';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import HotlineBar from '../../components/Home/HotlineBar';
@@ -18,14 +18,53 @@ const QuickLinkScreen = () => {
   const { componentId } = route.params || {};
   const languageMode = useSelector((state: RootState) => state.language.mode);
 
-  const { data: categoryData, loading: categoryLoading } = useQuery<any>(CATEGORY_BY_COMPONENT_ID, {
+  const { data: categoryData, loading: categoryLoading, refetch: refetchCategories } = useQuery<any>(CATEGORY_BY_COMPONENT_ID, {
     variables: { componentId: parseInt(componentId) },
     skip: !componentId,
+    fetchPolicy: 'cache-and-network',
   });
 
-  const { data: linksData, loading: linksLoading } = useQuery<any>(ALL_QUICK_LINKS, {
+  const { data: linksData, loading: linksLoading, refetch: refetchLinks } = useQuery<any>(ALL_QUICK_LINKS, {
     variables: { page: 1, limit: 100 },
+    fetchPolicy: 'cache-and-network',
   });
+
+  const handleRefresh = React.useCallback(() => {
+    refetchCategories();
+    refetchLinks();
+  }, [refetchCategories, refetchLinks]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      handleRefresh();
+    }, [handleRefresh])
+  );
+
+  const handleLinkPress = async (url: string) => {
+    if (!url) return;
+    
+    // Trim and ensure protocol
+    let targetUrl = url.trim();
+    if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+      targetUrl = 'https://' + targetUrl;
+    }
+
+    try {
+      const supported = await Linking.canOpenURL(targetUrl);
+      if (supported) {
+        await Linking.openURL(targetUrl);
+      } else {
+        // Fallback: try opening directly if canOpenURL fails
+        try {
+          await Linking.openURL(targetUrl);
+        } catch (e) {
+          Alert.alert("Error", "Don't know how to open this URL: " + targetUrl);
+        }
+      }
+    } catch (error) {
+      Alert.alert("Error", "An error occurred while opening the link");
+    }
+  };
 
   const sections = useMemo(() => {
     const categories = categoryData?.categoryByComponentId;
@@ -72,6 +111,13 @@ const QuickLinkScreen = () => {
         data={sections}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={categoryLoading || linksLoading}
+            onRefresh={handleRefresh}
+            tintColor="#009689"
+          />
+        }
         contentContainerStyle={{
           padding: moderateScale(20),
           gap: moderateScale(15),
@@ -87,7 +133,7 @@ const QuickLinkScreen = () => {
               <LinkComponent
                 text={languageMode === 'bn' ? linkItem.labelBn : linkItem.label}
                 icon={ExternalLink}
-                //    onPress={() => console.log(linkItem.url)}
+                onPress={() => handleLinkPress(linkItem.url)}
                 isFirst={index === 0}
               />
             )}
