@@ -28,6 +28,7 @@ import ServiceAidScreen from '../screens/Services/ServiceAidScreen';
 import PdfViewerScreen from '../screens/Services/PdfViewerScreen';
 import { verticalScale, moderateScale } from 'react-native-size-matters';
 import OngoingProgrammes from '../screens/Services/OngoingProgrammes';
+import OngoingProgrammeDetails from '../screens/Services/OngoingProgrammeDetails';
 import NewsDetailsScreen from '../screens/Services/NewsDetailsScreen';
 
 const Tab = createBottomTabNavigator();
@@ -42,6 +43,7 @@ const HomeStackNavigator = () => {
       <HomeStack.Screen name="PolicyLaw" component={PolicyLawScreen} />
       <HomeStack.Screen name="EmergencyContact" component={EmergencyContactScreen} />
       <HomeStack.Screen name="OngoingProgrammes" component={OngoingProgrammes} />
+      <HomeStack.Screen name="OngoingProgrammeDetails" component={OngoingProgrammeDetails} />
       <HomeStack.Screen name="Complaint" component={ComplaintScreen} />
       <HomeStack.Screen name="NewsMedia" component={NewsMediaScreen} />
       <HomeStack.Screen name="NewsDetails" component={NewsDetailsScreen} />
