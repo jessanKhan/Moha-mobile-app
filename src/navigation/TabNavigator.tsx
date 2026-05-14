@@ -6,10 +6,8 @@ import { useColorScheme } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import HomeScreen from '../screens/Home/HomeScreen';
-import ProfileScreen from '../screens/Profile/ProfileScreen';
 import StatisticsScreen from '../screens/Services/StatisticsScreen';
 import EmergencyContactScreen from '../screens/Services/EmergencyContactScreen';
-import Initiatives from '../screens/Services/Initiatives';
 import ComplaintScreen from '../screens/Services/ComplaintScreen';
 import NewsMediaScreen from '../screens/Services/NewsMediaScreen';
 import PreventiveMeasuresScreen from '../screens/Services/PreventiveMeasuresScreen';
@@ -28,7 +26,8 @@ import AwarenessScreen from '../screens/Services/AwarenessScreen';
 import PolicyLawScreen from '../screens/Services/PolicyLawScreen';
 import ServiceAidScreen from '../screens/Services/ServiceAidScreen';
 import PdfViewerScreen from '../screens/Services/PdfViewerScreen';
-
+import { verticalScale, moderateScale } from 'react-native-size-matters';
+import OngoingProgrammes from '../screens/Services/OngoingProgrammes';
 import NewsDetailsScreen from '../screens/Services/NewsDetailsScreen';
 
 const Tab = createBottomTabNavigator();
@@ -42,7 +41,7 @@ const HomeStackNavigator = () => {
       <HomeStack.Screen name="Statistics" component={StatisticsScreen} />
       <HomeStack.Screen name="PolicyLaw" component={PolicyLawScreen} />
       <HomeStack.Screen name="EmergencyContact" component={EmergencyContactScreen} />
-      <HomeStack.Screen name="Initiatives" component={Initiatives} />
+      <HomeStack.Screen name="OngoingProgrammes" component={OngoingProgrammes} />
       <HomeStack.Screen name="Complaint" component={ComplaintScreen} />
       <HomeStack.Screen name="NewsMedia" component={NewsMediaScreen} />
       <HomeStack.Screen name="NewsDetails" component={NewsDetailsScreen} />
@@ -65,7 +64,7 @@ const HomeStackNavigator = () => {
   );
 };
 
-import { verticalScale, moderateScale } from 'react-native-size-matters';
+
 
 
 const TabNavigator = () => {

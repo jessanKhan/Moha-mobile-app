@@ -20,7 +20,7 @@ const stripHtmlTags = (html: string) => {
     .trim();
 };
 
-const Initiatives = () => {
+const OngoingProgrammes = () => {
   const languageMode = useSelector((state: RootState) => state.language.mode);
   const [limit, setLimit] = React.useState(10);
   const [hasMore, setHasMore] = React.useState(true);
@@ -64,7 +64,7 @@ const Initiatives = () => {
   return (
     <AppBackground>
       <Header
-        title={languageMode === 'en' ? 'Initiatives' : 'উদ্যোগসমূহ'}
+        title={languageMode === 'en' ? 'On going Programmes/Projects' : 'চলমান প্রোগ্রাম/প্রকল্পসমূহ'}
         subtitle={
           languageMode === 'en'
             ? 'Human trafficking prevention initiatives'
@@ -125,7 +125,7 @@ const Initiatives = () => {
   );
 };
 
-export default Initiatives;
+export default OngoingProgrammes;
 
 const styles = StyleSheet.create({
   flatList: {
