@@ -362,3 +362,46 @@ export const GET_POLICIES_BY_CATEGORY = gql`
     }
   }
 `;
+
+export const GET_ALL_ACHIEVEMENTS = gql`
+  query GetAllAchievements($page: Float, $limit: Float, $pageId: Float) {
+    allAchievements(page: $page, limit: $limit, pageId: $pageId) {
+      id
+      pageId
+      isCopiedTo
+      slug
+      category
+      title
+      titleBn
+      subtitle
+      subtitleBn
+      description
+      descriptionBn
+      order
+      fromDate
+      toDate
+      fromDateBn
+      toDateBn
+      location
+      locationBn
+      thumbnail
+      photos {
+        id
+        achievementId
+        url
+        createdAt
+        createdBy
+        updatedAt
+        updatedBy
+      }
+      isMarquee
+      isArchived
+      isPublished
+      isApprovedByAdmin
+      createdAt
+      createdBy
+      updatedAt
+      updatedBy
+    }
+  }
+`;
